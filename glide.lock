@@ -1,0 +1,6 @@
+hash: 4f33b06a81f6e37b03920027363ba8c68c2da581d9b24fcb58029264d9a6e93f
+updated: 2017-10-16T23:02:58.336942+02:00
+imports:
+- name: github.com/spf13/cobra
+  version: c29ece4386f74084680e5e6d02d7b943ae630f63
+testImports: []
