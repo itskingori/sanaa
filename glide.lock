@@ -1,8 +1,10 @@
-hash: 28f80171c824447ef78d599d067f2365fea944044a489e33c5b7a734ee8326d4
-updated: 2017-10-17T01:42:52.676232+02:00
+hash: d7e03fa2e178e96fb95252579841a704439883e29741308db7e9beb0ea168f50
+updated: 2017-10-17T20:58:48.159331+02:00
 imports:
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
+- name: github.com/gorilla/mux
+  version: 24fca303ac6da784b9e8269f724ddeb0b2eea5e7
 - name: github.com/hashicorp/hcl
   version: 42e33e2d55a0ff1d6263f738896ea8c13571a8d0
   subpackages:

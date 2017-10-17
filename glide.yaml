@@ -6,3 +6,5 @@ import:
 - package: golang.org/x/crypto
   subpackages:
   - ssh/terminal
+- package: github.com/gorilla/mux
+  version: ^1.5.0
