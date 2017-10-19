@@ -55,11 +55,15 @@ func init() {
 func initConfig() {
 	if cfgFile != "" {
 		viper.SetConfigFile(cfgFile)
+	} else {
+		viper.SetConfigName("config")        // name of config file (without extension)
+		viper.AddConfigPath("./")            // optionally look for config in the working directory
+		viper.AddConfigPath("$HOME/.sanaa/") // then look for config file in user's home directory
+		viper.AddConfigPath("/etc/sanaa/")   // if that fails, look in popular config directory
 	}
 
-	viper.SetConfigName(".config") // name of config file (without extension)
-	viper.AddConfigPath("$HOME")   // adding home directory as first search path
-	viper.AutomaticEnv()           // read in environment variables that match
+	// Read in environment variables that match
+	viper.AutomaticEnv()
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
