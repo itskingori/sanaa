@@ -48,7 +48,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "location of configuration file")
+	RootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "location of configuration file")
 }
 
 // initConfig reads in config file and ENV variables if set.
