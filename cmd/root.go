@@ -18,11 +18,12 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	log "github.com/sirupsen/logrus"
 )
 
 var cfgFile string
@@ -39,7 +40,7 @@ wkhtmltoimage and xvfb.`,
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		log.Fatalf("Failed executing command : %s", err)
 		os.Exit(-1)
 	}
 }
@@ -62,6 +63,6 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		log.Infof("Detected config file: %s", viper.ConfigFileUsed())
 	}
 }
