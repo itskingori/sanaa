@@ -18,6 +18,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -40,7 +41,7 @@ wkhtmltoimage and xvfb.`,
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		log.Fatalf("Failed executing command : %s", err)
+		fmt.Printf("Failed executing command, %s\n", err)
 		os.Exit(-1)
 	}
 }
