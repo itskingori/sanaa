@@ -23,8 +23,6 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-
-	log "github.com/sirupsen/logrus"
 )
 
 var cfgFile string
@@ -46,28 +44,15 @@ func Execute() {
 	}
 }
 
+// init initializes the command
 func init() {
-	cobra.OnInitialize(initConfig)
+	// Add flags to RootCmd
+	RootCmd.PersistentFlags().String("redis-host", "127.0.0.1", "host of redis server")
+	RootCmd.PersistentFlags().Int("redis-port", 6379, "port of redis server")
+	RootCmd.PersistentFlags().String("redis-namespace", "sanaa", "namespace to use when storing data in redis server")
 
-	RootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "location of configuration file")
-}
-
-// initConfig reads in config file and ENV variables if set.
-func initConfig() {
-	if cfgFile != "" {
-		viper.SetConfigFile(cfgFile)
-	} else {
-		viper.SetConfigName("config")        // name of config file (without extension)
-		viper.AddConfigPath("./")            // optionally look for config in the working directory
-		viper.AddConfigPath("$HOME/.sanaa/") // then look for config file in user's home directory
-		viper.AddConfigPath("/etc/sanaa/")   // if that fails, look in popular config directory
-	}
-
-	// Read in environment variables that match
-	viper.AutomaticEnv()
-
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		log.Debugf("Detected config file: %s", viper.ConfigFileUsed())
-	}
+	// Bind RootCmd flags with viper configuration
+	viper.BindPFlag("redis.host", RootCmd.PersistentFlags().Lookup("redis-host"))
+	viper.BindPFlag("redis.port", RootCmd.PersistentFlags().Lookup("redis-port"))
+	viper.BindPFlag("redis.namespace", RootCmd.PersistentFlags().Lookup("redis-namespace"))
 }

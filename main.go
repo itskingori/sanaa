@@ -17,7 +17,9 @@
 
 package main
 
-import "github.com/itskingori/sanaa/cmd"
+import (
+	"github.com/itskingori/sanaa/cmd"
+)
 
 func main() {
 	cmd.Execute()

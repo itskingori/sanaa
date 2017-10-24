@@ -37,6 +37,7 @@ var versionCmd = &cobra.Command{
 	},
 }
 
+// init initializes the command
 func init() {
 	RootCmd.AddCommand(versionCmd)
 }
