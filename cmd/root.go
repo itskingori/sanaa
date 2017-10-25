@@ -23,9 +23,12 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	log "github.com/sirupsen/logrus"
 )
 
 var cfgFile string
+var verbose bool
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -46,7 +49,10 @@ func Execute() {
 
 // init initializes the command
 func init() {
+	cobra.OnInitialize(initConfig)
+
 	// Add flags to RootCmd
+	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output for debugging")
 	RootCmd.PersistentFlags().String("redis-host", "127.0.0.1", "host of redis server")
 	RootCmd.PersistentFlags().Int("redis-port", 6379, "port of redis server")
 	RootCmd.PersistentFlags().String("redis-namespace", "sanaa", "namespace to use when storing data in redis server")
@@ -55,4 +61,13 @@ func init() {
 	viper.BindPFlag("redis.host", RootCmd.PersistentFlags().Lookup("redis-host"))
 	viper.BindPFlag("redis.port", RootCmd.PersistentFlags().Lookup("redis-port"))
 	viper.BindPFlag("redis.namespace", RootCmd.PersistentFlags().Lookup("redis-namespace"))
+}
+
+// initConfig applies initial configuration
+func initConfig() {
+	if verbose {
+		log.SetLevel(log.DebugLevel)
+	} else {
+		log.SetLevel(log.InfoLevel)
+	}
 }
