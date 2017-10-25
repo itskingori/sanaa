@@ -18,9 +18,9 @@
 package service
 
 var (
-	majorVersion string = "0"
-	minorVersion string = "0"
-	patchVersion string = "0"
+	majorVersion = "0"
+	minorVersion = "0"
+	patchVersion = "0"
 )
 
 // Version represents version information.
