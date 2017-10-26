@@ -29,7 +29,6 @@ var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print out the version of the software",
 	Long:  "Print out the version of the software.",
-	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		version := service.GetVersion()
 
