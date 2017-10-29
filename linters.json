@@ -1,0 +1,4 @@
+{
+  "Enable": ["vet", "golint"],
+  "Vendor": true
+}

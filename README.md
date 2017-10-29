@@ -62,3 +62,9 @@ For normal usage the above installation instruction should do.
    placed in `./vendor`.
 3. Build and install the binary with `go build` from within the repository.
 4. Run the command e.g. `./sanaa help`.
+
+### Testing
+
+1. Install the Go linter, `go get -u github.com/golang/lint/golint`.
+2. Intall the Go Meta Linter, `go get -u github.com/alecthomas/gometalinter`.
+3. Run linter using `make lint` and test using `make test`.
