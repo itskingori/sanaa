@@ -60,7 +60,7 @@ For normal usage the above installation instruction should do.
 1. Fetch the code with `go get github.com/itskingori/sanaa`.
 2. Install dependencies with `glide install --strip-vendor`, which will be
    placed in `./vendor`.
-3. Build and install the binary with `go build` from within the repository.
+3. Build and install the binary with `make build`.
 4. Run the command e.g. `./sanaa help`.
 
 ### Testing
