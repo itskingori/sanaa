@@ -3,12 +3,51 @@
 A HTML to PDF/Image conversion microservice powered by `wkhtmltopdf`,
 `wkhtmltoimage` and `xvfb`.
 
-## Running
+## Usage
 
-This tool is self documenting, so running the following will get you started:
+### Rendering Images
 
-```console
-$ sanaa help
+Make a `POST` request to `/render/image`.
+
+```http
+POST /render/image HTTP/1.1
+Content-Type: application/json
+Host: 127.0.0.1:8080
+
+{
+    "target": {
+        "format": "png",
+        "height": 480,
+        "weight": 640
+    },
+    "source": {
+        "url": "https://google.com"
+    }
+}
+```
+
+### Rendering PDFs
+
+Make a `POST` request to `/render/pdf`.
+
+```http
+POST /render/pdf HTTP/1.1
+Content-Type: application/json
+Host: 127.0.0.1:8080
+
+{
+    "target": {
+        "margin_top": 10,
+        "margin_bottom": 10,
+        "margin_left": 10,
+        "margin_right": 10,
+        "page_height": 210,
+        "page_width": 300
+    },
+    "source": {
+        "url": "https://google.com"
+    }
+}
 ```
 
 ## Development
