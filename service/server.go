@@ -24,7 +24,6 @@ import (
 	"net/url"
 
 	"github.com/gorilla/mux"
-	"github.com/satori/go.uuid"
 	"github.com/spf13/viper"
 
 	log "github.com/sirupsen/logrus"
@@ -40,40 +39,62 @@ type source struct {
 }
 
 type renderRequest interface {
-	save(c *Client) (uuid.UUID, error)
+	save(c *Client) (ConversionJob, error)
 	sourceURL() (*url.URL, error)
 	runConversion(c *Client, cj *ConversionJob) error
+}
+
+type renderResponse struct {
+	Identifier string `json:"uuid"`
+	CreatedAt  string `json:"created_at"`
+	StartedAt  string `json:"started_at"`
+	EndedAt    string `json:"ended_at"`
+	ExpiresIn  int    `json:"expires_in"`
 }
 
 func (c *Client) renderHandler(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	target := params["target"]
 
-	var rR renderRequest
+	var rReq renderRequest
 	switch target {
 	case "image":
-		rR = &imageRenderRequest{}
+		rReq = &imageRenderRequest{}
 	case "pdf":
-		rR = &pdfRenderRequest{}
+		rReq = &pdfRenderRequest{}
 	default:
 		log.Errorf("Invalid target: %s", target)
 	}
 
-	err := json.NewDecoder(r.Body).Decode(rR)
+	err := json.NewDecoder(r.Body).Decode(rReq)
 	if err != nil {
 		log.Error(err)
 	}
 	log.Debugf("Received render %s request", target)
 
-	uid, err := rR.save(c)
+	cj, err := rReq.save(c)
 	if err != nil {
 		log.Error(err)
 	}
-	log.Infof("Enqueued render %s job, uuid: %s", target, uid)
+	log.Infof("Enqueued render %s job, uuid: %s", target, cj.Identifier)
+
+	rRes := cj.generateResponse()
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(rR)
+	json.NewEncoder(w).Encode(&rRes)
+}
+
+func (cj *ConversionJob) generateResponse() renderResponse {
+	var rRes = renderResponse{
+		Identifier: cj.Identifier,
+		CreatedAt:  cj.CreatedAt,
+		StartedAt:  cj.StartedAt,
+		EndedAt:    cj.EndedAt,
+		ExpiresIn:  cj.ExpiresIn,
+	}
+
+	return rRes
 }
 
 // StartServer starts the application web server

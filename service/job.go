@@ -65,53 +65,50 @@ func (c *Client) enqueueConversionJob(u uuid.UUID) error {
 	return nil
 }
 
-func (c *Client) saveRequestJobDetails(rR renderRequest) (uuid.UUID, error) {
-	var uid uuid.UUID
+func (c *Client) saveRequestJobDetails(rR renderRequest) (ConversionJob, error) {
+	cj := ConversionJob{}
+	rt := viper.GetInt("server.request_ttl")
 
 	su, err := rR.sourceURL()
 	if err != nil {
-		return uid, err
+		return cj, err
 	}
 
-	uid = generateJobID(su.Host)
+	uid := generateJobID(su.Host)
 	key := jobKey(uid)
 
 	serializedRequest, err := json.Marshal(rR)
 	if err != nil {
-		return uid, err
+		return cj, err
 	}
 
-	jobExpiryDuration := viper.GetInt("server.request_ttl")
-
-	job := ConversionJob{
-		Identifier:  uid.String(),
-		CreatedAt:   time.Now().String(),
-		StartedAt:   "",
-		EndedAt:     "",
-		ExpiresIn:   jobExpiryDuration,
-		RequestType: reflect.TypeOf(rR).String(),
-		RequestData: serializedRequest,
-	}
+	cj.Identifier = uid.String()
+	cj.CreatedAt = time.Now().String()
+	cj.StartedAt = ""
+	cj.EndedAt = ""
+	cj.ExpiresIn = rt
+	cj.RequestType = reflect.TypeOf(rR).String()
+	cj.RequestData = serializedRequest
 
 	conn := c.redisPool.Get()
 	defer conn.Close()
 
-	_, err = conn.Do("HMSET", redis.Args{}.Add(key).AddFlat(&job)...)
+	_, err = conn.Do("HMSET", redis.Args{}.Add(key).AddFlat(&cj)...)
 	if err != nil {
-		return uid, err
+		return cj, err
 	}
 
-	_, err = conn.Do("EXPIRE", key, jobExpiryDuration)
+	_, err = conn.Do("EXPIRE", key, rt)
 	if err != nil {
-		return uid, err
+		return cj, err
 	}
 
 	err = c.enqueueConversionJob(uid)
 	if err != nil {
-		return uid, err
+		return cj, err
 	}
 
-	return uid, nil
+	return cj, nil
 }
 
 func (c *Client) updateRequestJobDetails(cj *ConversionJob) error {

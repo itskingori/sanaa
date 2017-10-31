@@ -22,7 +22,6 @@ import (
 	"time"
 
 	"github.com/itskingori/sanaa/wkhtmltopdf"
-	"github.com/satori/go.uuid"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -32,13 +31,13 @@ type pdfRenderRequest struct {
 	Target wkhtmltopdf.Pdf `json:"target"`
 }
 
-func (r *pdfRenderRequest) save(c *Client) (uuid.UUID, error) {
-	uuid, err := c.saveRequestJobDetails(r)
+func (r *pdfRenderRequest) save(c *Client) (ConversionJob, error) {
+	cj, err := c.saveRequestJobDetails(r)
 	if err != nil {
 		log.Error(err)
 	}
 
-	return uuid, nil
+	return cj, nil
 }
 
 func (r *pdfRenderRequest) sourceURL() (*url.URL, error) {

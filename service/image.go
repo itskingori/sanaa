@@ -22,7 +22,6 @@ import (
 	"time"
 
 	"github.com/itskingori/sanaa/wkhtmltoimage"
-	"github.com/satori/go.uuid"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -32,13 +31,13 @@ type imageRenderRequest struct {
 	Target wkhtmltoimage.Image `json:"target"`
 }
 
-func (r *imageRenderRequest) save(c *Client) (uuid.UUID, error) {
-	u, err := c.saveRequestJobDetails(r)
+func (r *imageRenderRequest) save(c *Client) (ConversionJob, error) {
+	cj, err := c.saveRequestJobDetails(r)
 	if err != nil {
 		log.Error(err)
 	}
 
-	return u, nil
+	return cj, nil
 }
 
 func (r *imageRenderRequest) sourceURL() (*url.URL, error) {
