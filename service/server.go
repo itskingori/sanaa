@@ -87,6 +87,25 @@ func (c *Client) renderHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&rRes)
 }
 
+func (c *Client) statusHandler(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	uuidStr := params["uuid"]
+
+	conn := c.redisPool.Get()
+	defer conn.Close()
+
+	cj, err := c.getConversionJob(uuidStr)
+	if err != nil {
+		log.Error(err)
+	}
+
+	rRes := cj.generateResponse()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&rRes)
+}
+
 func (cj *ConversionJob) generateResponse() renderResponse {
 	var rRes = renderResponse{
 		Identifier: cj.Identifier,
@@ -115,6 +134,9 @@ func (c *Client) StartServer() {
 	router.HandleFunc("/render/{target}", c.renderHandler).
 		Headers("Content-Type", "application/json").
 		Methods("POST")
+	router.HandleFunc("/status/{uuid}", c.statusHandler).
+		Headers("Content-Type", "application/json").
+		Methods("GET")
 
 	http.Handle("/", router)
 	http.ListenAndServe(binding, nil)
