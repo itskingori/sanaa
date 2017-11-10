@@ -21,14 +21,14 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/itskingori/sanaa/wkhtmltopdf"
+	"github.com/itskingori/go-wkhtml/pdf"
 
 	log "github.com/sirupsen/logrus"
 )
 
 type pdfRenderRequest struct {
-	Source source          `json:"source"`
-	Target wkhtmltopdf.Pdf `json:"target"`
+	Source source      `json:"source"`
+	Target pdf.Options `json:"target"`
 }
 
 func (r *pdfRenderRequest) save(c *Client) (ConversionJob, error) {

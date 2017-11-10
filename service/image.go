@@ -21,14 +21,14 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/itskingori/sanaa/wkhtmltoimage"
+	"github.com/itskingori/go-wkhtml/image"
 
 	log "github.com/sirupsen/logrus"
 )
 
 type imageRenderRequest struct {
-	Source source              `json:"source"`
-	Target wkhtmltoimage.Image `json:"target"`
+	Source source        `json:"source"`
+	Target image.Options `json:"target"`
 }
 
 func (r *imageRenderRequest) save(c *Client) (ConversionJob, error) {
