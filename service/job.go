@@ -84,8 +84,6 @@ func (c *Client) saveRequestJobDetails(rR renderRequest) (ConversionJob, error) 
 
 	cj.Identifier = uid.String()
 	cj.CreatedAt = time.Now().String()
-	cj.StartedAt = ""
-	cj.EndedAt = ""
 	cj.ExpiresIn = rt
 	cj.RequestType = reflect.TypeOf(rR).String()
 	cj.RequestData = serializedRequest
