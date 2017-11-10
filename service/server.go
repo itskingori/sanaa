@@ -50,6 +50,8 @@ type renderResponse struct {
 	StartedAt  string `json:"started_at"`
 	EndedAt    string `json:"ended_at"`
 	ExpiresIn  int    `json:"expires_in"`
+	Status     string `json:"status"`
+	Logs       string `json:"logs"`
 }
 
 func (c *Client) renderHandler(w http.ResponseWriter, r *http.Request) {
@@ -92,6 +94,8 @@ func (cj *ConversionJob) generateResponse() renderResponse {
 		StartedAt:  cj.StartedAt,
 		EndedAt:    cj.EndedAt,
 		ExpiresIn:  cj.ExpiresIn,
+		Status:     cj.Status,
+		Logs:       cj.Logs,
 	}
 
 	return rRes
