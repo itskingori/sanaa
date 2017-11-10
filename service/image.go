@@ -18,7 +18,9 @@
 package service
 
 import (
+	"fmt"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/itskingori/go-wkhtml/image"
@@ -51,20 +53,36 @@ func (r *imageRenderRequest) sourceURL() (*url.URL, error) {
 
 func (r *imageRenderRequest) runConversion(c *Client, cj *ConversionJob) error {
 	cj.StartedAt = time.Now().String()
+	cj.Status = "processing"
 	log.Infof("Starting processing of request %s", cj.Identifier)
 	err := c.updateRequestJobDetails(cj)
 	if err != nil {
 		return err
 	}
+	log.Debugf("Saved changes to %s job", cj.Identifier)
 
-	// COVERT HERE!
+	fss := r.Target.Flags()
+	inputURL := r.Source.URL
+	format, _ := fss.GetFormat()
+	outputFile := fmt.Sprintf("%s.%s", "file", format)
+	outputLogs, gErr := image.Generate(&fss, inputURL, outputFile)
 
+	cj.Logs = strings.TrimRight(string(outputLogs), "\r\n")
 	cj.EndedAt = time.Now().String()
+	if gErr != nil {
+		cj.Status = "failed"
+		log.Errorf("Failed to process request %s", cj.Identifier)
+	} else {
+		cj.OutputFile = outputFile
+		cj.Status = "processed"
+		log.Infof("Completed processing of request %s", cj.Identifier)
+	}
+
 	err = c.updateRequestJobDetails(cj)
 	if err != nil {
 		return err
 	}
-	log.Infof("Completed processing of request %s", cj.Identifier)
+	log.Debugf("Saved changes to %s job", cj.Identifier)
 
 	return nil
 }

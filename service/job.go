@@ -38,6 +38,9 @@ type ConversionJob struct {
 	StartedAt   string `redis:"started_at"`
 	EndedAt     string `redis:"ended_at"`
 	ExpiresIn   int    `redis:"expires_in"`
+	Status      string `redis:"status"`
+	Logs        string `redis:"logs"`
+	OutputFile  string `redis:"output_file"`
 	RequestType string `redis:"request_type"`
 	RequestData []byte `redis:"request_data"`
 }
@@ -85,6 +88,7 @@ func (c *Client) saveRequestJobDetails(rR renderRequest) (ConversionJob, error) 
 	cj.Identifier = uid.String()
 	cj.CreatedAt = time.Now().String()
 	cj.ExpiresIn = rt
+	cj.Status = "pending"
 	cj.RequestType = reflect.TypeOf(rR).String()
 	cj.RequestData = serializedRequest
 
@@ -122,6 +126,8 @@ func (c *Client) updateRequestJobDetails(cj *ConversionJob) error {
 	key := jobKey(uid)
 	_, err = conn.Do("HMSET", redis.Args{}.Add(key).AddFlat(&job)...)
 	if err != nil {
+		log.Errorf("Failed to save job details: %s", err)
+
 		return err
 	}
 
