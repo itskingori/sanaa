@@ -113,6 +113,30 @@ func (c *Client) createAndSaveConversionJob(rR renderRequest) (ConversionJob, er
 	return cj, nil
 }
 
+func (c *Client) getConversionJob(uuidStr string) (ConversionJob, error) {
+	var cj ConversionJob
+
+	conn := c.redisPool.Get()
+	defer conn.Close()
+
+	uid, err := uuid.FromString(uuidStr)
+	if err != nil {
+		return cj, err
+	}
+
+	v, err := redis.Values(conn.Do("HGETALL", jobKey(uid)))
+	if err != nil {
+		return cj, err
+	}
+
+	err = redis.ScanStruct(v, &cj)
+	if err != nil {
+		return cj, err
+	}
+
+	return cj, err
+}
+
 func (c *Client) updateConversionJob(cj *ConversionJob) error {
 	conn := c.redisPool.Get()
 	defer conn.Close()

@@ -22,11 +22,9 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/garyburd/redigo/redis"
 	"github.com/gocraft/work"
 	"github.com/itskingori/go-wkhtml/image"
 	"github.com/itskingori/go-wkhtml/pdf"
-	"github.com/satori/go.uuid"
 	"github.com/spf13/viper"
 
 	log "github.com/sirupsen/logrus"
@@ -49,24 +47,14 @@ type context struct {
 }
 
 func (c *context) convert(job *work.Job) error {
-	uid, err := uuid.FromString(job.ArgString("uuid"))
-	if err != nil {
-		return err
-	}
-
 	cl := NewClient()
 	conn := cl.redisPool.Get()
 	defer conn.Close()
 
-	v, err := redis.Values(conn.Do("HGETALL", jobKey(uid)))
+	uuidStr := job.ArgString("uuid")
+	cj, err := cl.getConversionJob(uuidStr)
 	if err != nil {
-		return err
-	}
-
-	var cj ConversionJob
-	err = redis.ScanStruct(v, &cj)
-	if err != nil {
-		return err
+		log.Error(err)
 	}
 
 	var rR renderRequest
