@@ -58,12 +58,12 @@ For normal usage the above installation instruction should do.
 ### Building
 
 1. Fetch the code with `go get github.com/itskingori/sanaa`.
-2. Install dependencies with `glide install --strip-vendor`, which will be
+1. Install dependencies with `glide install --strip-vendor`, which will be
    placed in `./vendor`.
-3. Build and install the binary with `make build`.
-4. Run the command e.g. `./sanaa help`.
+1. Build and install the binary with `make build`.
+1. Run the command e.g. `./sanaa help`.
 
 ### Testing
 
 1. Install the Go testing tools via `make testing_dependencies`.
-2. Run linter using `make lint` and test using `make test`.
+1. Run linter using `make lint` and test using `make test`.
