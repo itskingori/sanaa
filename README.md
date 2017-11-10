@@ -65,6 +65,5 @@ For normal usage the above installation instruction should do.
 
 ### Testing
 
-1. Install the Go linter, `go get -u github.com/golang/lint/golint`.
-2. Intall the Go Meta Linter, `go get -u github.com/alecthomas/gometalinter`.
-3. Run linter using `make lint` and test using `make test`.
+1. Install the Go testing tools via `make testing_dependencies`.
+2. Run linter using `make lint` and test using `make test`.
