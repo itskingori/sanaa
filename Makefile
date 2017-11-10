@@ -1,3 +1,7 @@
+development_dependencies:
+	# install glide (assumes Mac OS)
+	brew install glide
+
 testing_dependencies:
 	# install golint
 	go get -u github.com/golang/lint/golint
