@@ -72,10 +72,7 @@ func (c *context) convert(job *work.Job) error {
 		return err
 	}
 
-	err = rR.runConversion(&cl, &cj)
-	if err != nil {
-		return err
-	}
+	rR.runConversion(&cl, &cj)
 
 	return nil
 }

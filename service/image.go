@@ -54,19 +54,19 @@ func (r *imageRenderRequest) sourceURL() (*url.URL, error) {
 	return u, nil
 }
 
-func (r *imageRenderRequest) runConversion(c *Client, cj *ConversionJob) error {
+func (r *imageRenderRequest) runConversion(c *Client, cj *ConversionJob) {
 	cj.StartedAt = time.Now().UTC().Format(time.RFC3339)
 	cj.Status = "processing"
 	log.Infof("Starting processing of request %s", cj.Identifier)
 	err := c.updateConversionJob(cj)
 	if err != nil {
-		return err
+		log.Errorln(err)
 	}
 	log.Debugf("Saved changes to %s job", cj.Identifier)
 
 	outputDir, err := ioutil.TempDir("", cj.Identifier)
 	if err != nil {
-		return err
+		log.Errorln(err)
 	}
 	defer os.RemoveAll(outputDir)
 
@@ -90,9 +90,7 @@ func (r *imageRenderRequest) runConversion(c *Client, cj *ConversionJob) error {
 
 	err = c.updateConversionJob(cj)
 	if err != nil {
-		return err
+		log.Errorln(err)
 	}
 	log.Debugf("Saved changes to %s job", cj.Identifier)
-
-	return nil
 }
