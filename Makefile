@@ -12,6 +12,9 @@ testing_dependencies:
 	# install all known linters:
 	gometalinter --install
 
+install:
+	glide install --strip-vendor
+
 build:
 	go build
 
