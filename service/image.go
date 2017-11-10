@@ -37,7 +37,7 @@ type imageRenderRequest struct {
 }
 
 func (r *imageRenderRequest) save(c *Client) (ConversionJob, error) {
-	cj, err := c.saveRequestJobDetails(r)
+	cj, err := c.createAndSaveConversionJob(r)
 	if err != nil {
 		log.Error(err)
 	}
@@ -58,7 +58,7 @@ func (r *imageRenderRequest) runConversion(c *Client, cj *ConversionJob) error {
 	cj.StartedAt = time.Now().UTC().Format(time.RFC3339)
 	cj.Status = "processing"
 	log.Infof("Starting processing of request %s", cj.Identifier)
-	err := c.updateRequestJobDetails(cj)
+	err := c.updateConversionJob(cj)
 	if err != nil {
 		return err
 	}
@@ -88,7 +88,7 @@ func (r *imageRenderRequest) runConversion(c *Client, cj *ConversionJob) error {
 		log.Infof("Completed processing of request %s", cj.Identifier)
 	}
 
-	err = c.updateRequestJobDetails(cj)
+	err = c.updateConversionJob(cj)
 	if err != nil {
 		return err
 	}

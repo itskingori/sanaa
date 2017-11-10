@@ -68,7 +68,7 @@ func (c *Client) enqueueConversionJob(u uuid.UUID) error {
 	return nil
 }
 
-func (c *Client) saveRequestJobDetails(rR renderRequest) (ConversionJob, error) {
+func (c *Client) createAndSaveConversionJob(rR renderRequest) (ConversionJob, error) {
 	cj := ConversionJob{}
 	rt := viper.GetInt("server.request_ttl")
 
@@ -113,7 +113,7 @@ func (c *Client) saveRequestJobDetails(rR renderRequest) (ConversionJob, error) 
 	return cj, nil
 }
 
-func (c *Client) updateRequestJobDetails(cj *ConversionJob) error {
+func (c *Client) updateConversionJob(cj *ConversionJob) error {
 	conn := c.redisPool.Get()
 	defer conn.Close()
 
