@@ -86,7 +86,7 @@ func (c *Client) saveRequestJobDetails(rR renderRequest) (ConversionJob, error) 
 	}
 
 	cj.Identifier = uid.String()
-	cj.CreatedAt = time.Now().String()
+	cj.CreatedAt = time.Now().UTC().Format(time.RFC3339)
 	cj.ExpiresIn = rt
 	cj.Status = "pending"
 	cj.RequestType = reflect.TypeOf(rR).String()

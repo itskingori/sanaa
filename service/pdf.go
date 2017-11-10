@@ -52,7 +52,7 @@ func (r *pdfRenderRequest) sourceURL() (*url.URL, error) {
 }
 
 func (r *pdfRenderRequest) runConversion(c *Client, cj *ConversionJob) error {
-	cj.StartedAt = time.Now().String()
+	cj.StartedAt = time.Now().UTC().Format(time.RFC3339)
 	cj.Status = "processing"
 	log.Infof("Starting processing of request %s", cj.Identifier)
 	err := c.updateRequestJobDetails(cj)
@@ -67,7 +67,7 @@ func (r *pdfRenderRequest) runConversion(c *Client, cj *ConversionJob) error {
 	outputLogs, gErr := pdf.Generate(&fss, inputURL, outputFile)
 
 	cj.Logs = strings.TrimRight(string(outputLogs), "\r\n")
-	cj.EndedAt = time.Now().String()
+	cj.EndedAt = time.Now().UTC().Format(time.RFC3339)
 	if gErr != nil {
 		cj.Status = "failed"
 		log.Errorf("Failed to process request %s", cj.Identifier)
