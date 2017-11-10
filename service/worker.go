@@ -24,6 +24,8 @@ import (
 
 	"github.com/garyburd/redigo/redis"
 	"github.com/gocraft/work"
+	"github.com/itskingori/go-wkhtml/image"
+	"github.com/itskingori/go-wkhtml/pdf"
 	"github.com/satori/go.uuid"
 	"github.com/spf13/viper"
 
@@ -95,22 +97,40 @@ func (c *Client) StartWorker() {
 	concurrency := viper.GetSizeInBytes("worker.concurrency")
 	namespace := viper.GetString("redis.namespace")
 
-	log.Infof("Concurrency set to %d", concurrency)
-	pool := work.NewWorkerPool(context{}, concurrency, namespace, c.redisPool)
+	// Check for wkhtmltoimage installation
+	_, version, erri := image.LookupConverterBinary()
+	log.Infof("Using %s", version)
+	if erri != nil {
+		log.Errorln("Unable to lookup wkhtmltoimage, make sure it's installed correctly")
+	}
 
-	// Assign queues to jobs
-	log.Infof("Registering '%s' queue", conversionQueue)
-	pool.Job(conversionQueue, (*context).convert)
+	// Check for wkhtmltopdf installation
+	_, version, errp := pdf.LookupConverterBinary()
+	log.Infof("Using %s", version)
+	if erri != nil {
+		log.Errorln("Unable to lookup wkhtmltopdf, make sure it's installed correctly")
+	}
 
-	// Start processing jobs
-	log.Infof("Waiting to pick up jobs placed on any registered queue")
-	pool.Start()
+	if erri != nil && errp != nil {
+		log.Errorln("Will not start workers due to errors")
+	} else {
+		log.Infof("Concurrency set to %d", concurrency)
+		pool := work.NewWorkerPool(context{}, concurrency, namespace, c.redisPool)
 
-	// Wait for a signal to quit
-	signalChan := make(chan os.Signal, 1)
-	signal.Notify(signalChan, os.Interrupt, os.Kill)
-	<-signalChan
+		// Assign queues to jobs
+		log.Infof("Registering '%s' queue", conversionQueue)
+		pool.Job(conversionQueue, (*context).convert)
 
-	// Stop the pool
-	pool.Stop()
+		// Start processing jobs
+		log.Infof("Waiting to pick up jobs placed on any registered queue")
+		pool.Start()
+
+		// Wait for a signal to quit
+		signalChan := make(chan os.Signal, 1)
+		signal.Notify(signalChan, os.Interrupt, os.Kill)
+		<-signalChan
+
+		// Stop the pool
+		pool.Stop()
+	}
 }
