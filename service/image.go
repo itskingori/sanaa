@@ -19,7 +19,10 @@ package service
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/url"
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -61,11 +64,18 @@ func (r *imageRenderRequest) runConversion(c *Client, cj *ConversionJob) error {
 	}
 	log.Debugf("Saved changes to %s job", cj.Identifier)
 
+	outputDir, err := ioutil.TempDir("", cj.Identifier)
+	if err != nil {
+		return err
+	}
+	defer os.RemoveAll(outputDir)
+
 	fss := r.Target.Flags()
-	inputURL := r.Source.URL
 	format, _ := fss.GetFormat()
-	outputFile := fmt.Sprintf("%s.%s", "file", format)
-	outputLogs, gErr := image.Generate(&fss, inputURL, outputFile)
+	outputFilename := fmt.Sprintf("file.%s", format)
+	outputFilepath := filepath.Join(outputDir, outputFilename)
+	inputURL := r.Source.URL
+	outputLogs, gErr := image.Generate(&fss, inputURL, outputFilepath)
 
 	cj.Logs = strings.TrimRight(string(outputLogs), "\r\n")
 	cj.EndedAt = time.Now().UTC().Format(time.RFC3339)
@@ -73,7 +83,7 @@ func (r *imageRenderRequest) runConversion(c *Client, cj *ConversionJob) error {
 		cj.Status = "failed"
 		log.Errorf("Failed to process request %s", cj.Identifier)
 	} else {
-		cj.OutputFile = outputFile
+		cj.OutputFile = outputFilepath
 		cj.Status = "processed"
 		log.Infof("Completed processing of request %s", cj.Identifier)
 	}

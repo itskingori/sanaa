@@ -18,8 +18,10 @@
 package service
 
 import (
-	"fmt"
+	"io/ioutil"
 	"net/url"
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -61,10 +63,17 @@ func (r *pdfRenderRequest) runConversion(c *Client, cj *ConversionJob) error {
 	}
 	log.Debugf("Saved changes to %s job", cj.Identifier)
 
+	outputDir, err := ioutil.TempDir("", cj.Identifier)
+	if err != nil {
+		return err
+	}
+	defer os.RemoveAll(outputDir)
+
 	fss := r.Target.Flags()
+	outputFilename := "file.pdf"
+	outputFilepath := filepath.Join(outputDir, outputFilename)
 	inputURL := r.Source.URL
-	outputFile := fmt.Sprintf("%s", "file.pdf")
-	outputLogs, gErr := pdf.Generate(&fss, inputURL, outputFile)
+	outputLogs, gErr := pdf.Generate(&fss, inputURL, outputFilepath)
 
 	cj.Logs = strings.TrimRight(string(outputLogs), "\r\n")
 	cj.EndedAt = time.Now().UTC().Format(time.RFC3339)
@@ -72,7 +81,7 @@ func (r *pdfRenderRequest) runConversion(c *Client, cj *ConversionJob) error {
 		cj.Status = "failed"
 		log.Errorf("Failed to process request %s", cj.Identifier)
 	} else {
-		cj.OutputFile = outputFile
+		cj.OutputFile = outputFilepath
 		cj.Status = "processed"
 		log.Infof("Completed processing of request %s", cj.Identifier)
 	}
