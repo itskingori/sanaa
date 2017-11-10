@@ -54,7 +54,7 @@ func (r *imageRenderRequest) runConversion(c *Client, cj *ConversionJob) error {
 	log.Infof("Starting processing of request %s", cj.Identifier)
 	err := c.updateRequestJobDetails(cj)
 	if err != nil {
-		log.Error(err)
+		return err
 	}
 
 	// COVERT HERE!
@@ -62,7 +62,7 @@ func (r *imageRenderRequest) runConversion(c *Client, cj *ConversionJob) error {
 	cj.EndedAt = time.Now().String()
 	err = c.updateRequestJobDetails(cj)
 	if err != nil {
-		log.Error(err)
+		return err
 	}
 	log.Infof("Completed processing of request %s", cj.Identifier)
 
