@@ -150,9 +150,11 @@ func (c *Client) updateConversionJob(cj *ConversionJob) error {
 	key := jobKey(uid)
 	_, err = conn.Do("HMSET", redis.Args{}.Add(key).AddFlat(&job)...)
 	if err != nil {
-		log.Errorf("Failed to save job details: %s", err)
+		log.Errorf("Error saving changes to %s job", cj.Identifier)
 
 		return err
+	} else {
+		log.Debugf("Saved changes to %s job", cj.Identifier)
 	}
 
 	return nil

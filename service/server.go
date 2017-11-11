@@ -41,7 +41,7 @@ type source struct {
 type renderRequest interface {
 	save(c *Client) (ConversionJob, error)
 	sourceURL() (*url.URL, error)
-	runConversion(c *Client, cj *ConversionJob)
+	fulfill(c *Client, cj *ConversionJob, outputDir string) ([]byte, string, error)
 }
 
 type renderResponse struct {

@@ -19,21 +19,17 @@ package service
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/url"
-	"os"
 	"path/filepath"
-	"strings"
-	"time"
 
-	"github.com/itskingori/go-wkhtml/image"
+	"github.com/itskingori/go-wkhtml/wkhtmltox"
 
 	log "github.com/sirupsen/logrus"
 )
 
 type imageRenderRequest struct {
-	Source source        `json:"source"`
-	Target image.Options `json:"target"`
+	Source source                 `json:"source"`
+	Target wkhtmltox.ImageOptions `json:"target"`
 }
 
 func (r *imageRenderRequest) save(c *Client) (ConversionJob, error) {
@@ -54,43 +50,17 @@ func (r *imageRenderRequest) sourceURL() (*url.URL, error) {
 	return u, nil
 }
 
-func (r *imageRenderRequest) runConversion(c *Client, cj *ConversionJob) {
-	cj.StartedAt = time.Now().UTC().Format(time.RFC3339)
-	cj.Status = "processing"
-	log.Infof("Starting processing of request %s", cj.Identifier)
-	err := c.updateConversionJob(cj)
-	if err != nil {
-		log.Errorln(err)
-	}
-	log.Debugf("Saved changes to %s job", cj.Identifier)
+func (r *imageRenderRequest) fulfill(c *Client, cj *ConversionJob, outputDir string) ([]byte, string, error) {
+	var (
+		outputFile string
+		outputLogs []byte
+	)
 
-	outputDir, err := ioutil.TempDir("", cj.Identifier)
-	if err != nil {
-		log.Errorln(err)
-	}
-	defer os.RemoveAll(outputDir)
-
-	fss := r.Target.Flags()
-	format, _ := fss.GetFormat()
-	outputFilename := fmt.Sprintf("file.%s", format)
-	outputFilepath := filepath.Join(outputDir, outputFilename)
+	ifs := r.Target.FlagSet()
+	format, _ := ifs.GetFormat()
+	outputFile = filepath.Join(outputDir, fmt.Sprintf("file.%s", format))
 	inputURL := r.Source.URL
-	outputLogs, gErr := image.Generate(&fss, inputURL, outputFilepath)
+	outputLogs, err := ifs.Generate(inputURL, outputFile)
 
-	cj.Logs = strings.TrimRight(string(outputLogs), "\r\n")
-	cj.EndedAt = time.Now().UTC().Format(time.RFC3339)
-	if gErr != nil {
-		cj.Status = "failed"
-		log.Errorf("Failed to process request %s", cj.Identifier)
-	} else {
-		cj.OutputFile = outputFilepath
-		cj.Status = "processed"
-		log.Infof("Completed processing of request %s", cj.Identifier)
-	}
-
-	err = c.updateConversionJob(cj)
-	if err != nil {
-		log.Errorln(err)
-	}
-	log.Debugf("Saved changes to %s job", cj.Identifier)
+	return outputLogs, outputFile, err
 }

@@ -19,12 +19,14 @@ package service
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"os"
 	"os/signal"
+	"strings"
+	"time"
 
 	"github.com/gocraft/work"
-	"github.com/itskingori/go-wkhtml/image"
-	"github.com/itskingori/go-wkhtml/pdf"
+	"github.com/itskingori/go-wkhtml/wkhtmltox"
 	"github.com/spf13/viper"
 
 	log "github.com/sirupsen/logrus"
@@ -72,7 +74,53 @@ func (c *context) convert(job *work.Job) error {
 		return err
 	}
 
-	rR.runConversion(&cl, &cj)
+	log.Infof("Starting processing of request %s", cj.Identifier)
+
+	// Mark conversion job in processing state
+	cj.StartedAt = time.Now().UTC().Format(time.RFC3339)
+	cj.Status = "processing"
+
+	// Save changes to conversion job: it's in 'processing' state at this point
+	err = cl.updateConversionJob(&cj)
+	if err != nil {
+		log.Error(err)
+	}
+
+	// Prepare conversion working directory, this is where we'll save the
+	// resulting file before we upload it
+	outputDir, err := ioutil.TempDir("", cj.Identifier)
+	if err != nil {
+		log.Errorln(err)
+	} else {
+		log.Debugf("Prepared working directory for %s job", cj.Identifier)
+	}
+	defer os.RemoveAll(outputDir)
+
+	// Fulfill render request (perform actual conversion)
+	outputLogs, outputFile, gErr := rR.fulfill(&cl, &cj, outputDir)
+	if gErr != nil {
+		log.Errorf("Error fulfilling render request: %s", gErr)
+	}
+
+	// Update conversion job with the results and also update it's state to
+	// reflect as such
+	cj.Logs = strings.TrimRight(string(outputLogs), "\r\n")
+	cj.EndedAt = time.Now().UTC().Format(time.RFC3339)
+	if gErr != nil {
+		cj.Status = "failed"
+		log.Errorf("Failed to process request %s", cj.Identifier)
+	} else {
+		cj.OutputFile = outputFile
+		cj.Status = "succeeded"
+		log.Infof("Completed processing of request %s", cj.Identifier)
+	}
+
+	// Save changes to conversion job: it's either in 'failed' or 'succeeded'
+	// state at this point
+	err = cl.updateConversionJob(&cj)
+	if err != nil {
+		log.Error(err)
+	}
 
 	return nil
 }
@@ -83,14 +131,14 @@ func (c *Client) StartWorker() {
 	namespace := viper.GetString("redis.namespace")
 
 	// Check for wkhtmltoimage installation
-	_, version, erri := image.LookupConverterBinary()
+	_, version, erri := wkhtmltox.LookupConverter("wkhtmltoimage")
 	log.Infof("Using %s", version)
 	if erri != nil {
 		log.Errorln("Unable to lookup wkhtmltoimage, make sure it's installed correctly")
 	}
 
 	// Check for wkhtmltopdf installation
-	_, version, errp := pdf.LookupConverterBinary()
+	_, version, errp := wkhtmltox.LookupConverter("wkhtmltopdf")
 	log.Infof("Using %s", version)
 	if erri != nil {
 		log.Errorln("Unable to lookup wkhtmltopdf, make sure it's installed correctly")
