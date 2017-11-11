@@ -84,6 +84,8 @@ func (c *context) convert(job *work.Job) error {
 	err = cl.updateConversionJob(&cj)
 	if err != nil {
 		log.Error(err)
+
+		return err
 	}
 
 	// Prepare conversion working directory, this is where we'll save the
@@ -91,6 +93,8 @@ func (c *context) convert(job *work.Job) error {
 	outputDir, err := ioutil.TempDir("", cj.Identifier)
 	if err != nil {
 		log.Errorln(err)
+
+		return err
 	} else {
 		log.Debugf("Prepared working directory for %s job", cj.Identifier)
 	}
@@ -120,6 +124,8 @@ func (c *context) convert(job *work.Job) error {
 	err = cl.updateConversionJob(&cj)
 	if err != nil {
 		log.Error(err)
+
+		return err
 	}
 
 	return nil
