@@ -1,5 +1,7 @@
 # Sanaa
 
+[![Build Status](https://travis-ci.org/itskingori/sanaa.svg?branch=master)](https://travis-ci.org/itskingori/sanaa)
+
 A HTML to PDF/Image conversion microservice powered by `wkhtmltopdf`,
 `wkhtmltoimage` and `xvfb`.
 
