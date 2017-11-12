@@ -16,3 +16,5 @@ import:
   version: ^0.5.0
 - package: github.com/robfig/cron
   version: ^1.0.0
+- package: github.com/itskingori/go-wkhtml
+  version: ^0.1.0

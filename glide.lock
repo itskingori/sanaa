@@ -1,10 +1,10 @@
-hash: 2dfbae2c06615a9ecc924c13ecd92c375887572771d3b01f0f2bb1f5ce2a3202
-updated: 2017-10-23T07:01:48.573109-04:00
+hash: b0858fbd4dbaf78c9eb370e2a23d7036fb7d4b58b71c12184d724ef24733e5c0
+updated: 2017-11-12T02:16:01.320033+02:00
 imports:
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
 - name: github.com/garyburd/redigo
-  version: 34a326de1fea52965fa5ad664d3fc7163dd4b0a1
+  version: 47dc60e71eed504e3ef8e77ee3c6fe720f3be57f
   subpackages:
   - internal
   - redis
@@ -13,7 +13,7 @@ imports:
 - name: github.com/gorilla/context
   version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
 - name: github.com/gorilla/mux
-  version: 24fca303ac6da784b9e8269f724ddeb0b2eea5e7
+  version: 7f08801859139f86dfafd1c296e2cba9a80d292e
 - name: github.com/hashicorp/hcl
   version: 42e33e2d55a0ff1d6263f738896ea8c13571a8d0
   subpackages:
@@ -27,6 +27,10 @@ imports:
   - json/token
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
+- name: github.com/itskingori/go-wkhtml
+  version: 88a6032ed7abd449b44d7d40ee1c00cb2e2da525
+  subpackages:
+  - wkhtmltox
 - name: github.com/magiconair/properties
   version: 8d7837e64d3c1ee4e54a880c5a920ab4316fc90a
 - name: github.com/mitchellh/mapstructure
