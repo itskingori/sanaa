@@ -55,7 +55,8 @@ func (r *pdfRenderRequest) fulfill(c *Client, cj *ConversionJob, outputDir strin
 		outputLogs []byte
 	)
 
-	pfs := r.Target.FlagSet()
+	opts := r.Target
+	pfs := wkhtmltox.NewPDFFlagSetFromOptions(&opts)
 	outputFile = filepath.Join(outputDir, "file.pdf")
 	inputURL := r.Source.URL
 	outputLogs, err := pfs.Generate(inputURL, outputFile)

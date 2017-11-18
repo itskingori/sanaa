@@ -56,7 +56,8 @@ func (r *imageRenderRequest) fulfill(c *Client, cj *ConversionJob, outputDir str
 		outputLogs []byte
 	)
 
-	ifs := r.Target.FlagSet()
+	opts := r.Target
+	ifs := wkhtmltox.NewImageFlagSetFromOptions(&opts)
 	format, _ := ifs.GetFormat()
 	outputFile = filepath.Join(outputDir, fmt.Sprintf("file.%s", format))
 	inputURL := r.Source.URL

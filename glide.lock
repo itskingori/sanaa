@@ -1,5 +1,5 @@
-hash: b0858fbd4dbaf78c9eb370e2a23d7036fb7d4b58b71c12184d724ef24733e5c0
-updated: 2017-11-12T02:16:01.320033+02:00
+hash: ab0c6152654506ab93cbabe00d2382b48211fe8041e44a11a8308a6de65aeeff
+updated: 2017-11-18T14:01:18.917692+02:00
 imports:
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
@@ -28,7 +28,7 @@ imports:
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/itskingori/go-wkhtml
-  version: 88a6032ed7abd449b44d7d40ee1c00cb2e2da525
+  version: 27afacac5025dea7aa1fb566d0e9b07d0a1f145a
   subpackages:
   - wkhtmltox
 - name: github.com/magiconair/properties
