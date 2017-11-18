@@ -1,6 +1,10 @@
+SHELL := /bin/bash
+
 development_dependencies:
-	# install glide (assumes Mac OS)
 	brew install glide
+
+ci_dependencies:
+	curl "https://glide.sh/get" | sh
 
 testing_dependencies:
 	# install golint

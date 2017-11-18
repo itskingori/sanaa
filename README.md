@@ -60,7 +60,7 @@ For normal usage the above installation instruction should do.
 ### Building
 
 1. Fetch the code with `go get github.com/itskingori/sanaa`.
-1. Install the Go development tools via `make development_dependencies`.
+1. Install the Go development tools via `make development_dependencies` (assumes macOS).
 1. Install application dependencies via `make install` (they'll be placed in
    `./vendor`).
 1. Build and install the binary with `make build`.
