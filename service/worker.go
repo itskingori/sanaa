@@ -95,9 +95,9 @@ func (c *context) convert(job *work.Job) error {
 		log.Errorln(err)
 
 		return err
-	} else {
-		log.Debugf("Prepared working directory for %s job", cj.Identifier)
 	}
+	log.Debugf("Prepared working directory for %s job", cj.Identifier)
+
 	defer os.RemoveAll(outputDir)
 
 	// Fulfill render request (perform actual conversion)

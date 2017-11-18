@@ -153,9 +153,9 @@ func (c *Client) updateConversionJob(cj *ConversionJob) error {
 		log.Errorf("Error saving changes to %s job", cj.Identifier)
 
 		return err
-	} else {
-		log.Debugf("Saved changes to %s job", cj.Identifier)
 	}
+
+	log.Debugf("Saved changes to %s job", cj.Identifier)
 
 	return nil
 }
