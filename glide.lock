@@ -1,6 +1,32 @@
-hash: ab0c6152654506ab93cbabe00d2382b48211fe8041e44a11a8308a6de65aeeff
-updated: 2017-11-18T14:01:18.917692+02:00
+hash: 86a6927f792c32571cd44bc16ef2665db222774de33332942911152b62c5be3f
+updated: 2017-11-18T19:14:29.990504+02:00
 imports:
+- name: github.com/aws/aws-sdk-go
+  version: e4f7e38b704e3ed0acc4a7f8196b777696f6f1f3
+  subpackages:
+  - aws
+  - aws/awserr
+  - aws/awsutil
+  - aws/client
+  - aws/client/metadata
+  - aws/corehandlers
+  - aws/credentials
+  - aws/credentials/ec2rolecreds
+  - aws/credentials/endpointcreds
+  - aws/credentials/stscreds
+  - aws/defaults
+  - aws/ec2metadata
+  - aws/endpoints
+  - aws/request
+  - aws/session
+  - aws/signer/v4
+  - internal/shareddefaults
+  - private/protocol
+  - private/protocol/query
+  - private/protocol/query/queryutil
+  - private/protocol/rest
+  - private/protocol/xml/xmlutil
+  - service/sts
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
 - name: github.com/garyburd/redigo
@@ -8,6 +34,8 @@ imports:
   subpackages:
   - internal
   - redis
+- name: github.com/go-ini/ini
+  version: 7e7da451323b6766da368f8a1e8ec9a88a16b4a0
 - name: github.com/gocraft/work
   version: 67c8dc210ce647e8d8a4206c7f5856ea2390f290
 - name: github.com/gorilla/context
@@ -31,6 +59,8 @@ imports:
   version: 27afacac5025dea7aa1fb566d0e9b07d0a1f145a
   subpackages:
   - wkhtmltox
+- name: github.com/jmespath/go-jmespath
+  version: bd40a432e4c76585ef6b72d3fd96fb9b6dc7b68d
 - name: github.com/magiconair/properties
   version: 8d7837e64d3c1ee4e54a880c5a920ab4316fc90a
 - name: github.com/mitchellh/mapstructure
