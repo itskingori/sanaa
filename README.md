@@ -7,6 +7,12 @@ A HTML to PDF/Image conversion microservice powered by `wkhtmltopdf`,
 
 ## Usage
 
+```console
+$ sanaa server --verbose
+
+$ sanaa worker --s3-bucket="zappi.kingori-skunkworks" --s3-region="us-east-1" --verbose
+```
+
 ### Rendering Images
 
 Make a `POST` request to `/render/image`.
