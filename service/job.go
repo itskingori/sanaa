@@ -33,16 +33,18 @@ import (
 
 // ConversionJob is a mapping of a conversion job's attributes
 type ConversionJob struct {
-	Identifier  string `redis:"uuid"`
-	CreatedAt   string `redis:"created_at"`
-	StartedAt   string `redis:"started_at"`
-	EndedAt     string `redis:"ended_at"`
-	ExpiresIn   int    `redis:"expires_in"`
-	Status      string `redis:"status"`
-	Logs        string `redis:"logs"`
-	OutputFile  string `redis:"output_file"`
-	RequestType string `redis:"request_type"`
-	RequestData []byte `redis:"request_data"`
+	Identifier    string `redis:"uuid"`
+	CreatedAt     string `redis:"created_at"`
+	StartedAt     string `redis:"started_at"`
+	EndedAt       string `redis:"ended_at"`
+	ExpiresIn     int    `redis:"expires_in"`
+	Status        string `redis:"status"`
+	Logs          string `redis:"logs"`
+	OutputFile    string `redis:"output_file"`
+	StorageBucket string `redis:"storage_bucket"`
+	StorageKey    string `redis:"storage_key"`
+	RequestType   string `redis:"request_type"`
+	RequestData   []byte `redis:"request_data"`
 }
 
 func generateJobID(name string) uuid.UUID {

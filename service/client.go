@@ -20,6 +20,8 @@ package service
 import (
 	"fmt"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/garyburd/redigo/redis"
 	"github.com/gocraft/work"
 	"github.com/spf13/viper"
@@ -27,8 +29,9 @@ import (
 
 // Client is the application client
 type Client struct {
-	redisPool *redis.Pool
-	enqueuer  *work.Enqueuer
+	awsSession *session.Session
+	enqueuer   *work.Enqueuer
+	redisPool  *redis.Pool
 }
 
 // NewClient creates an initialized application client
@@ -46,8 +49,14 @@ func NewClient() Client {
 	}
 	enqueuer := work.NewEnqueuer(viper.GetString("redis.namespace"), redisPool)
 
+	region := "us-east-1"
+	sess := session.Must(session.NewSession(&aws.Config{
+		Region: aws.String(region),
+	}))
+
 	return Client{
-		redisPool: redisPool,
-		enqueuer:  enqueuer,
+		awsSession: sess,
+		enqueuer:   enqueuer,
+		redisPool:  redisPool,
 	}
 }
