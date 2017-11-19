@@ -94,7 +94,7 @@ func (c *Client) statusHandler(w http.ResponseWriter, r *http.Request) {
 	conn := c.redisPool.Get()
 	defer conn.Close()
 
-	cj, err := c.getConversionJob(uuidStr)
+	cj, err := c.fetchConversionJob(uuidStr)
 	if err != nil {
 		log.Error(err)
 	}

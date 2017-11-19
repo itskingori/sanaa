@@ -49,7 +49,7 @@ func NewClient() Client {
 	}
 	enqueuer := work.NewEnqueuer(viper.GetString("redis.namespace"), redisPool)
 
-	region := "us-east-1"
+	region := viper.GetString("worker.s3_region")
 	sess := session.Must(session.NewSession(&aws.Config{
 		Region: aws.String(region),
 	}))

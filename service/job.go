@@ -40,7 +40,6 @@ type ConversionJob struct {
 	ExpiresIn     int    `redis:"expires_in"`
 	Status        string `redis:"status"`
 	Logs          string `redis:"logs"`
-	OutputFile    string `redis:"output_file"`
 	StorageBucket string `redis:"storage_bucket"`
 	StorageKey    string `redis:"storage_key"`
 	RequestType   string `redis:"request_type"`
@@ -60,8 +59,35 @@ func jobKey(u uuid.UUID) string {
 	return fmt.Sprintf("%s:request:%s", viper.GetString("redis.namespace"), u)
 }
 
-func (c *Client) enqueueConversionJob(u uuid.UUID) error {
-	_, err := c.enqueuer.Enqueue(conversionQueue, work.Q{"uuid": u})
+func (cj *ConversionJob) markAsProcessing() {
+	cj.StartedAt = time.Now().UTC().Format(time.RFC3339)
+	cj.Status = "processing"
+
+	log.WithFields(log.Fields{
+		"uuid": cj.Identifier,
+	}).Info("Marked conversion job as 'processing'")
+}
+
+func (cj *ConversionJob) markAsFailed() {
+	cj.EndedAt = time.Now().UTC().Format(time.RFC3339)
+	cj.Status = "failed"
+
+	log.WithFields(log.Fields{
+		"uuid": cj.Identifier,
+	}).Info("Marked conversion job as 'failed'")
+}
+
+func (cj *ConversionJob) markAsSucceeded() {
+	cj.EndedAt = time.Now().UTC().Format(time.RFC3339)
+	cj.Status = "succeeded"
+
+	log.WithFields(log.Fields{
+		"uuid": cj.Identifier,
+	}).Info("Marked conversion job as 'succeeded'")
+}
+
+func (clt *Client) enqueueConversionJob(u uuid.UUID) error {
+	_, err := clt.enqueuer.Enqueue(conversionQueue, work.Q{"uuid": u})
 	if err != nil {
 		log.Fatal(err)
 		return err
@@ -70,7 +96,7 @@ func (c *Client) enqueueConversionJob(u uuid.UUID) error {
 	return nil
 }
 
-func (c *Client) createAndSaveConversionJob(rR renderRequest) (ConversionJob, error) {
+func (clt *Client) createAndSaveConversionJob(rR renderRequest) (ConversionJob, error) {
 	cj := ConversionJob{}
 	rt := viper.GetInt("server.request_ttl")
 
@@ -94,7 +120,7 @@ func (c *Client) createAndSaveConversionJob(rR renderRequest) (ConversionJob, er
 	cj.RequestType = reflect.TypeOf(rR).String()
 	cj.RequestData = serializedRequest
 
-	conn := c.redisPool.Get()
+	conn := clt.redisPool.Get()
 	defer conn.Close()
 
 	_, err = conn.Do("HMSET", redis.Args{}.Add(key).AddFlat(&cj)...)
@@ -107,7 +133,7 @@ func (c *Client) createAndSaveConversionJob(rR renderRequest) (ConversionJob, er
 		return cj, err
 	}
 
-	err = c.enqueueConversionJob(uid)
+	err = clt.enqueueConversionJob(uid)
 	if err != nil {
 		return cj, err
 	}
@@ -115,32 +141,48 @@ func (c *Client) createAndSaveConversionJob(rR renderRequest) (ConversionJob, er
 	return cj, nil
 }
 
-func (c *Client) getConversionJob(uuidStr string) (ConversionJob, error) {
-	var cj ConversionJob
-
-	conn := c.redisPool.Get()
+func (clt *Client) fetchConversionJob(jobID string) (ConversionJob, error) {
+	conn := clt.redisPool.Get()
 	defer conn.Close()
 
-	uid, err := uuid.FromString(uuidStr)
+	cj := ConversionJob{}
+
+	uid, err := uuid.FromString(jobID)
 	if err != nil {
+		log.WithFields(log.Fields{
+			"uuid": jobID,
+		}).Error("Unable to parse job identifier")
+
 		return cj, err
 	}
 
-	v, err := redis.Values(conn.Do("HGETALL", jobKey(uid)))
+	value, err := redis.Values(conn.Do("HGETALL", jobKey(uid)))
 	if err != nil {
+		log.WithFields(log.Fields{
+			"uuid": jobID,
+		}).Error("Unable to fetch values from redis")
+
 		return cj, err
 	}
 
-	err = redis.ScanStruct(v, &cj)
+	err = redis.ScanStruct(value, &cj)
 	if err != nil {
+		log.WithFields(log.Fields{
+			"uuid": jobID,
+		}).Error("Unable to unmarshall values to job")
+
 		return cj, err
 	}
+
+	log.WithFields(log.Fields{
+		"uuid": jobID,
+	}).Debug("Fetched conversion job details")
 
 	return cj, err
 }
 
-func (c *Client) updateConversionJob(cj *ConversionJob) error {
-	conn := c.redisPool.Get()
+func (clt *Client) updateConversionJob(cj *ConversionJob) error {
+	conn := clt.redisPool.Get()
 	defer conn.Close()
 
 	uid, err := uuid.FromString(cj.Identifier)
@@ -152,12 +194,16 @@ func (c *Client) updateConversionJob(cj *ConversionJob) error {
 	key := jobKey(uid)
 	_, err = conn.Do("HMSET", redis.Args{}.Add(key).AddFlat(&job)...)
 	if err != nil {
-		log.Errorf("Error saving changes to %s job", cj.Identifier)
+		log.WithFields(log.Fields{
+			"uuid": cj.Identifier,
+		}).Error("Error saving conversion job changes")
 
 		return err
 	}
 
-	log.Debugf("Saved changes to %s job", cj.Identifier)
+	log.WithFields(log.Fields{
+		"uuid": cj.Identifier,
+	}).Debug("Saved conversion job changes")
 
 	return nil
 }

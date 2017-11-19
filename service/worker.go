@@ -19,11 +19,12 @@ package service
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/gocraft/work"
 	"github.com/itskingori/go-wkhtml/wkhtmltox"
@@ -44,21 +45,34 @@ const (
 	MaxWorkerConcurrency = 10
 )
 
-type context struct {
+type workerContext struct {
 	client *Client
 }
 
-func (c *context) convert(job *work.Job) error {
+func (ctx *workerContext) convert(job *work.Job) error {
 	cl := NewClient()
 	conn := cl.redisPool.Get()
 	defer conn.Close()
 
-	uuidStr := job.ArgString("uuid")
-	cj, err := cl.getConversionJob(uuidStr)
+	// Extract job parameter i.e. UUID
+	jobUUID := job.ArgString("uuid")
+	log.WithFields(log.Fields{
+		"uuid": jobUUID,
+	}).Info("Picked up conversion job from queue")
+
+	// Fetch all the job details
+	cj, err := cl.fetchConversionJob(jobUUID)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"uuid": jobUUID,
+		}).Errorf("Error: %v", err)
+
+		// !!! //
+
+		return err
 	}
 
+	// Detect type of the conversion job
 	var rR renderRequest
 	switch cj.RequestType {
 	case "*service.imageRenderRequest":
@@ -66,24 +80,39 @@ func (c *context) convert(job *work.Job) error {
 	case "*service.pdfRenderRequest":
 		rR = &pdfRenderRequest{}
 	default:
-		log.Errorf("Invalid target type: %s", cj.RequestType)
+		log.WithFields(log.Fields{
+			"uuid": cj.Identifier,
+		}).Error("Invalid render target type, won't proceed")
+
+		// !!! //
+
+		return nil
 	}
 
+	// Extract request details from the conversion job
 	err = json.Unmarshal(cj.RequestData, &rR)
 	if err != nil {
+		log.WithFields(log.Fields{
+			"uuid": cj.Identifier,
+		}).Errorf("Error unmarshalling request data")
+
+		// !!! //
+
 		return err
 	}
+	log.WithFields(log.Fields{
+		"uuid": cj.Identifier,
+	}).Debug("Extracted request data from conversion job")
 
-	log.Infof("Starting processing of request %s", cj.Identifier)
-
-	// Mark conversion job in processing state
-	cj.StartedAt = time.Now().UTC().Format(time.RFC3339)
-	cj.Status = "processing"
-
-	// Save changes to conversion job: it's in 'processing' state at this point
+	// Mark conversion job in 'processing' state and save the changes
+	cj.markAsProcessing()
 	err = cl.updateConversionJob(&cj)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"uuid": cj.Identifier,
+		}).Errorf("Error: %v", err)
+
+		// !!! //
 
 		return err
 	}
@@ -92,38 +121,82 @@ func (c *context) convert(job *work.Job) error {
 	// resulting file before we upload it
 	outputDir, err := ioutil.TempDir("", cj.Identifier)
 	if err != nil {
-		log.Errorln(err)
+		log.WithFields(log.Fields{
+			"uuid": cj.Identifier,
+		}).Errorf("Error: %v", err)
+
+		// !!! //
 
 		return err
 	}
-	log.Debugf("Prepared working directory for %s job", cj.Identifier)
+	log.WithFields(log.Fields{
+		"uuid": cj.Identifier,
+	}).Debug("Prepared working directory for job")
 
+	// Make sure we remove any generated files after we're done
 	defer os.RemoveAll(outputDir)
 
 	// Fulfill render request (perform actual conversion)
-	outputLogs, outputFile, gErr := rR.fulfill(&cl, &cj, outputDir)
-	if gErr != nil {
-		log.Errorf("Error fulfilling render request: %s", gErr)
-	}
+	log.WithFields(log.Fields{
+		"uuid": cj.Identifier,
+	}).Info("Start conversion process")
+	outputLogs, outputFile, err := rR.fulfill(&cl, &cj, outputDir)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"uuid": cj.Identifier,
+		}).Errorf("Error: %v", err)
 
-	// Update conversion job with the results and also update it's state to
-	// reflect as such
+		// !!! //
+
+		return err
+	}
+	log.WithFields(log.Fields{
+		"uuid": cj.Identifier,
+	}).Info("Completed conversion process")
+
+	// Update conversion job with results
 	cj.Logs = strings.TrimRight(string(outputLogs), "\r\n")
-	cj.EndedAt = time.Now().UTC().Format(time.RFC3339)
-	if gErr != nil {
-		cj.Status = "failed"
-		log.Errorf("Failed to process request %s", cj.Identifier)
-	} else {
-		cj.OutputFile = outputFile
-		cj.Status = "succeeded"
-		log.Infof("Completed processing of request %s", cj.Identifier)
-	}
-
-	// Save changes to conversion job: it's either in 'failed' or 'succeeded'
-	// state at this point
+	log.WithFields(log.Fields{
+		"uuid": cj.Identifier,
+	}).Debug("Updated conversion job with logs")
 	err = cl.updateConversionJob(&cj)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"uuid": cj.Identifier,
+		}).Errorf("Error: %v", err)
+
+		// !!! //
+
+		return err
+	}
+
+	// Upload the generated file to S3
+	cj.StorageBucket = viper.GetString("worker.s3_bucket")
+	cj.StorageKey = fmt.Sprintf("%s/%s", cj.Identifier, filepath.Base(outputFile))
+	err = cl.storeFileS3(&cj, outputFile)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"uuid": cj.Identifier,
+		}).Errorf("Error: %v", err)
+
+		// !!! //
+
+		return err
+	}
+
+	// Update conversion job status and save the changes
+	if err != nil {
+		cj.markAsFailed()
+	} else {
+		cj.markAsSucceeded()
+	}
+	err = cl.updateConversionJob(&cj)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"uuid": cj.Identifier,
+		}).Errorf("Error: %v", err)
+
+		// !!! //
 
 		return err
 	}
@@ -154,11 +227,11 @@ func (c *Client) StartWorker() {
 		log.Errorln("Will not start workers due to errors")
 	} else {
 		log.Infof("Concurrency set to %d", concurrency)
-		pool := work.NewWorkerPool(context{}, concurrency, namespace, c.redisPool)
+		pool := work.NewWorkerPool(workerContext{}, concurrency, namespace, c.redisPool)
 
 		// Assign queues to jobs
 		log.Infof("Registering '%s' queue", conversionQueue)
-		pool.Job(conversionQueue, (*context).convert)
+		pool.Job(conversionQueue, (*workerContext).convert)
 
 		// Start processing jobs
 		log.Infof("Waiting to pick up jobs placed on any registered queue")
