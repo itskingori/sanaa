@@ -187,6 +187,10 @@ func (clt *Client) updateConversionJob(cj *ConversionJob) error {
 
 	uid, err := uuid.FromString(cj.Identifier)
 	if err != nil {
+		log.WithFields(log.Fields{
+			"uuid": cj.Identifier,
+		}).Error("Unable to parse job identifier")
+
 		return err
 	}
 
