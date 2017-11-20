@@ -70,11 +70,11 @@ func (cl *Client) storeFileS3(cj *ConversionJob, filePath string) error {
 			// by a context the CanceledErrorCode error code will be returned
 			log.WithFields(log.Fields{
 				"uuid": cj.Identifier,
-			}).Error("Upload cancelled due to timeout: %v", err)
+			}).Errorf("Upload cancelled due to timeout: %v", err)
 		} else {
 			log.WithFields(log.Fields{
 				"uuid": cj.Identifier,
-			}).Error("Failed to upload file: %v", err)
+			}).Errorf("Failed to upload file: %v", err)
 		}
 
 		return err
