@@ -8,9 +8,14 @@ A HTML to PDF/Image conversion microservice powered by `wkhtmltopdf`,
 ## Usage
 
 ```console
-$ sanaa server --verbose
+# Start the server (that will receive requests)
+$ sanaa server \
+  --verbose
 
-$ sanaa worker --s3-bucket="zappi.kingori-skunkworks" --s3-region="us-east-1" --verbose
+# Start the workers (that will process requests)
+$ sanaa worker \
+  --s3-bucket="my-bucket" \
+  --s3-region="us-east-1" --verbose
 ```
 
 ### Rendering Images
