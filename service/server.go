@@ -24,6 +24,7 @@ import (
 	"net/url"
 
 	"github.com/gorilla/mux"
+	"github.com/satori/go.uuid"
 	"github.com/spf13/viper"
 
 	log "github.com/sirupsen/logrus"
@@ -39,9 +40,14 @@ type source struct {
 }
 
 type renderRequest interface {
-	save(c *Client) (ConversionJob, error)
+	save(clt *Client) (ConversionJob, error)
 	sourceURL() (*url.URL, error)
-	fulfill(c *Client, cj *ConversionJob, outputDir string) ([]byte, string, error)
+	fulfill(clt *Client, cj *ConversionJob, outputDir string) ([]byte, string, error)
+}
+
+type errorResponse struct {
+	Identifier uuid.UUID `json:"uuid"`
+	Message    string    `json:"message"`
 }
 
 type renderResponse struct {
@@ -54,49 +60,110 @@ type renderResponse struct {
 	Logs       string `json:"logs"`
 }
 
-func (c *Client) renderHandler(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	target := params["target"]
+func requestBadRequestResponse(w *http.ResponseWriter, r *http.Request, ers errorResponse) {
+	log.WithFields(log.Fields{
+		"uuid": ers.Identifier.String(),
+	}).Error(ers.Message)
 
-	var rReq renderRequest
-	switch target {
-	case "image":
-		rReq = &imageRenderRequest{}
-	case "pdf":
-		rReq = &pdfRenderRequest{}
-	default:
-		log.Errorf("Invalid target: %s", target)
-	}
+	(*w).Header().Set("Content-Type", "application/json")
+	(*w).WriteHeader(http.StatusBadRequest)
+	json.NewEncoder((*w)).Encode(&ers)
 
-	err := json.NewDecoder(r.Body).Decode(rReq)
-	if err != nil {
-		log.Error(err)
-	}
-	log.Debugf("Received render %s request", target)
-
-	cj, err := rReq.save(c)
-	if err != nil {
-		log.Error(err)
-	}
-	log.Infof("Enqueued render %s job, uuid: %s", target, cj.Identifier)
-
-	rRes := cj.generateResponse()
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(&rRes)
+	log.WithFields(log.Fields{
+		"uuid": ers.Identifier.String(),
+	}).Errorf("%d %s", http.StatusBadRequest, "Bad Request")
 }
 
-func (c *Client) statusHandler(w http.ResponseWriter, r *http.Request) {
+func requestInternalServerErrorResponse(w *http.ResponseWriter, r *http.Request, ers errorResponse) {
+	log.WithFields(log.Fields{
+		"uuid": ers.Identifier.String(),
+	}).Error(ers.Message)
+
+	(*w).Header().Set("Content-Type", "application/json")
+	(*w).WriteHeader(http.StatusInternalServerError)
+	json.NewEncoder((*w)).Encode(&ers)
+
+	log.WithFields(log.Fields{
+		"uuid": ers.Identifier.String(),
+	}).Errorf("%d %s", http.StatusInternalServerError, "Internal Server Error")
+}
+
+func requestCreatedResponse(w *http.ResponseWriter, r *http.Request, rrs renderResponse) {
+	(*w).Header().Set("Content-Type", "application/json")
+	(*w).WriteHeader(http.StatusCreated)
+	json.NewEncoder((*w)).Encode(&rrs)
+
+	log.WithFields(log.Fields{
+		"uuid": rrs.Identifier,
+	}).Debugf("%d %s", http.StatusCreated, "Created")
+}
+
+func (clt *Client) renderHandler(w http.ResponseWriter, r *http.Request) {
+	var (
+		ers errorResponse
+		rrq renderRequest
+	)
+
+	params := mux.Vars(r)
+	target := params["target"]
+	rid := uuid.NewV4()
+
+	switch target {
+	case "image":
+		rrq = &imageRenderRequest{}
+	case "pdf":
+		rrq = &pdfRenderRequest{}
+	default:
+		ers = errorResponse{
+			Identifier: rid,
+			Message:    fmt.Sprintf("Invalid %s render request", target),
+		}
+		requestBadRequestResponse(&w, r, ers)
+
+		return
+	}
+
+	err := json.NewDecoder(r.Body).Decode(rrq)
+	if err != nil {
+		ers = errorResponse{
+			Identifier: rid,
+			Message:    fmt.Sprintf("Unable to unmarshal json to %s type", target),
+		}
+		requestBadRequestResponse(&w, r, ers)
+
+		return
+	}
+
+	cj, err := rrq.save(clt)
+	if err != nil {
+		ers = errorResponse{
+			Identifier: rid,
+			Message:    fmt.Sprintf("Unable to enqueue %s job", target),
+		}
+		requestInternalServerErrorResponse(&w, r, ers)
+
+		return
+	}
+	log.WithFields(log.Fields{
+		"uuid": cj.Identifier,
+	}).Infof("Enqueued render %s job", target)
+
+	rrs := cj.generateResponse()
+	requestCreatedResponse(&w, r, rrs)
+}
+
+func (clt *Client) statusHandler(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	uuidStr := params["uuid"]
 
-	conn := c.redisPool.Get()
+	conn := clt.redisPool.Get()
 	defer conn.Close()
 
-	cj, err := c.fetchConversionJob(uuidStr)
+	cj, err := clt.fetchConversionJob(uuidStr)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"uuid": uuidStr,
+		}).Errorf("Error: %v", err)
 	}
 
 	rRes := cj.generateResponse()
@@ -121,7 +188,7 @@ func (cj *ConversionJob) generateResponse() renderResponse {
 }
 
 // StartServer starts the application web server
-func (c *Client) StartServer() {
+func (clt *Client) StartServer() {
 	requestTTL := viper.GetInt("server.request_ttl")
 	log.Infof("Request TTL set to %d seconds", requestTTL)
 
@@ -131,10 +198,10 @@ func (c *Client) StartServer() {
 	log.Infof("Listening on http://%s", binding)
 
 	router := mux.NewRouter()
-	router.HandleFunc("/render/{target}", c.renderHandler).
+	router.HandleFunc("/render/{target}", clt.renderHandler).
 		Headers("Content-Type", "application/json").
 		Methods("POST")
-	router.HandleFunc("/status/{uuid}", c.statusHandler).
+	router.HandleFunc("/status/{uuid}", clt.statusHandler).
 		Headers("Content-Type", "application/json").
 		Methods("GET")
 
