@@ -46,7 +46,7 @@ const (
 )
 
 type workerContext struct {
-	client *Client
+	client Client
 }
 
 func (ctx *workerContext) convert(job *work.Job) error {
