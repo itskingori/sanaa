@@ -46,8 +46,8 @@ type renderRequest interface {
 }
 
 type errorResponse struct {
-	Identifier uuid.UUID `json:"uuid"`
-	Message    string    `json:"message"`
+	Identifier string `json:"uuid"`
+	Message    string `json:"message"`
 }
 
 type renderResponse struct {
@@ -62,7 +62,7 @@ type renderResponse struct {
 
 func requestBadRequestResponse(w *http.ResponseWriter, r *http.Request, ers errorResponse) {
 	log.WithFields(log.Fields{
-		"uuid": ers.Identifier.String(),
+		"uuid": ers.Identifier,
 	}).Error(ers.Message)
 
 	(*w).Header().Set("Content-Type", "application/json")
@@ -70,13 +70,13 @@ func requestBadRequestResponse(w *http.ResponseWriter, r *http.Request, ers erro
 	json.NewEncoder((*w)).Encode(&ers)
 
 	log.WithFields(log.Fields{
-		"uuid": ers.Identifier.String(),
+		"uuid": ers.Identifier,
 	}).Errorf("%d %s", http.StatusBadRequest, "Bad Request")
 }
 
 func requestInternalServerErrorResponse(w *http.ResponseWriter, r *http.Request, ers errorResponse) {
 	log.WithFields(log.Fields{
-		"uuid": ers.Identifier.String(),
+		"uuid": ers.Identifier,
 	}).Error(ers.Message)
 
 	(*w).Header().Set("Content-Type", "application/json")
@@ -84,7 +84,7 @@ func requestInternalServerErrorResponse(w *http.ResponseWriter, r *http.Request,
 	json.NewEncoder((*w)).Encode(&ers)
 
 	log.WithFields(log.Fields{
-		"uuid": ers.Identifier.String(),
+		"uuid": ers.Identifier,
 	}).Errorf("%d %s", http.StatusInternalServerError, "Internal Server Error")
 }
 
@@ -106,7 +106,7 @@ func (clt *Client) renderHandler(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 	target := params["target"]
-	rid := uuid.NewV4()
+	rid := uuid.NewV4().String()
 
 	switch target {
 	case "image":
