@@ -31,8 +31,8 @@ type pdfRenderRequest struct {
 	Target wkhtmltox.PDFOptions `json:"target"`
 }
 
-func (r *pdfRenderRequest) save(c *Client) (ConversionJob, error) {
-	cj, err := c.createAndSaveConversionJob(r)
+func (rr *pdfRenderRequest) save(riq string, c *Client) (ConversionJob, error) {
+	cj, err := c.createAndSaveConversionJob(riq, rr)
 	if err != nil {
 		log.Error(err)
 	}
@@ -40,8 +40,8 @@ func (r *pdfRenderRequest) save(c *Client) (ConversionJob, error) {
 	return cj, nil
 }
 
-func (r *pdfRenderRequest) sourceURL() (*url.URL, error) {
-	u, err := url.Parse(r.Source.URL)
+func (rr *pdfRenderRequest) sourceURL() (*url.URL, error) {
+	u, err := url.Parse(rr.Source.URL)
 	if err != nil {
 		log.Error(err)
 	}
@@ -49,16 +49,16 @@ func (r *pdfRenderRequest) sourceURL() (*url.URL, error) {
 	return u, nil
 }
 
-func (r *pdfRenderRequest) fulfill(c *Client, cj *ConversionJob, outputDir string) ([]byte, string, error) {
+func (rr *pdfRenderRequest) fulfill(c *Client, cj *ConversionJob, outputDir string) ([]byte, string, error) {
 	var (
 		outputFile string
 		outputLogs []byte
 	)
 
-	opts := r.Target
+	opts := rr.Target
 	pfs := wkhtmltox.NewPDFFlagSetFromOptions(&opts)
 	outputFile = filepath.Join(outputDir, "file.pdf")
-	inputURL := r.Source.URL
+	inputURL := rr.Source.URL
 	outputLogs, err := pfs.Generate(inputURL, outputFile)
 
 	return outputLogs, outputFile, err

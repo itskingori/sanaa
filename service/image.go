@@ -32,8 +32,8 @@ type imageRenderRequest struct {
 	Target wkhtmltox.ImageOptions `json:"target"`
 }
 
-func (r *imageRenderRequest) save(c *Client) (ConversionJob, error) {
-	cj, err := c.createAndSaveConversionJob(r)
+func (rr *imageRenderRequest) save(riq string, c *Client) (ConversionJob, error) {
+	cj, err := c.createAndSaveConversionJob(riq, rr)
 	if err != nil {
 		log.Error(err)
 	}
@@ -41,8 +41,8 @@ func (r *imageRenderRequest) save(c *Client) (ConversionJob, error) {
 	return cj, nil
 }
 
-func (r *imageRenderRequest) sourceURL() (*url.URL, error) {
-	u, err := url.Parse(r.Source.URL)
+func (rr *imageRenderRequest) sourceURL() (*url.URL, error) {
+	u, err := url.Parse(rr.Source.URL)
 	if err != nil {
 		log.Error(err)
 	}
@@ -50,17 +50,17 @@ func (r *imageRenderRequest) sourceURL() (*url.URL, error) {
 	return u, nil
 }
 
-func (r *imageRenderRequest) fulfill(c *Client, cj *ConversionJob, outputDir string) ([]byte, string, error) {
+func (rr *imageRenderRequest) fulfill(c *Client, cj *ConversionJob, outputDir string) ([]byte, string, error) {
 	var (
 		outputFile string
 		outputLogs []byte
 	)
 
-	opts := r.Target
+	opts := rr.Target
 	ifs := wkhtmltox.NewImageFlagSetFromOptions(&opts)
 	format, _ := ifs.GetFormat()
 	outputFile = filepath.Join(outputDir, fmt.Sprintf("file.%s", format))
-	inputURL := r.Source.URL
+	inputURL := rr.Source.URL
 	outputLogs, err := ifs.Generate(inputURL, outputFile)
 
 	return outputLogs, outputFile, err

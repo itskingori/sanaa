@@ -88,8 +88,8 @@ func (cj *ConversionJob) markAsSucceeded() {
 	}).Info("Marked conversion job as 'succeeded'")
 }
 
-func (clt *Client) enqueueConversionJob(u uuid.UUID) error {
-	_, err := clt.enqueuer.Enqueue(conversionQueue, work.Q{"uuid": u})
+func (clt *Client) enqueueConversionJob(riq string) error {
+	_, err := clt.enqueuer.Enqueue(conversionQueue, work.Q{"uuid": riq})
 	if err != nil {
 		log.Fatal(err)
 		return err
@@ -98,24 +98,17 @@ func (clt *Client) enqueueConversionJob(u uuid.UUID) error {
 	return nil
 }
 
-func (clt *Client) createAndSaveConversionJob(rR renderRequest) (ConversionJob, error) {
+func (clt *Client) createAndSaveConversionJob(rid string, rR renderRequest) (ConversionJob, error) {
 	cj := ConversionJob{}
 	rt := viper.GetInt("server.request_ttl")
-
-	su, err := rR.sourceURL()
-	if err != nil {
-		return cj, err
-	}
-
-	uid := generateJobID(su.Host)
-	key := generateJobKey(uid.String())
+	key := generateJobKey(rid)
 
 	serializedRequest, err := json.Marshal(rR)
 	if err != nil {
 		return cj, err
 	}
 
-	cj.Identifier = uid.String()
+	cj.Identifier = rid
 	cj.CreatedAt = time.Now().UTC().Format(time.RFC3339)
 	cj.ExpiresIn = rt
 	cj.Status = "pending"
@@ -135,7 +128,7 @@ func (clt *Client) createAndSaveConversionJob(rR renderRequest) (ConversionJob, 
 		return cj, err
 	}
 
-	err = clt.enqueueConversionJob(uid)
+	err = clt.enqueueConversionJob(rid)
 	if err != nil {
 		return cj, err
 	}

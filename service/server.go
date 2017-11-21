@@ -40,7 +40,7 @@ type source struct {
 }
 
 type renderRequest interface {
-	save(clt *Client) (ConversionJob, error)
+	save(riq string, clt *Client) (ConversionJob, error)
 	sourceURL() (*url.URL, error)
 	fulfill(clt *Client, cj *ConversionJob, outputDir string) ([]byte, string, error)
 }
@@ -158,7 +158,7 @@ func (clt *Client) renderHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cj, err := rrq.save(clt)
+	cj, err := rrq.save(rid, clt)
 	if err != nil {
 		ers = errorResponse{
 			Identifier: rid,
