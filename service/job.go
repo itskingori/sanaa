@@ -55,8 +55,10 @@ func generateJobID(name string) uuid.UUID {
 	return uuid.NewV5(uuid.NewV4(), name)
 }
 
-func jobKey(u uuid.UUID) string {
-	return fmt.Sprintf("%s:request:%s", viper.GetString("redis.namespace"), u)
+func generateJobKey(jid string) string {
+	key := fmt.Sprintf("%s:request:%s", viper.GetString("redis.namespace"), jid)
+
+	return key
 }
 
 func (cj *ConversionJob) markAsProcessing() {
@@ -106,7 +108,7 @@ func (clt *Client) createAndSaveConversionJob(rR renderRequest) (ConversionJob, 
 	}
 
 	uid := generateJobID(su.Host)
-	key := jobKey(uid)
+	key := generateJobKey(uid.String())
 
 	serializedRequest, err := json.Marshal(rR)
 	if err != nil {
@@ -141,44 +143,42 @@ func (clt *Client) createAndSaveConversionJob(rR renderRequest) (ConversionJob, 
 	return cj, nil
 }
 
-func (clt *Client) fetchConversionJob(jobID string) (ConversionJob, error) {
+func (clt *Client) fetchConversionJob(jid string) (ConversionJob, bool, error) {
 	conn := clt.redisPool.Get()
 	defer conn.Close()
 
 	cj := ConversionJob{}
+	found := false
 
-	uid, err := uuid.FromString(jobID)
+	value, err := redis.Values(conn.Do("HGETALL", generateJobKey(jid)))
 	if err != nil {
 		log.WithFields(log.Fields{
-			"uuid": jobID,
-		}).Error("Unable to parse job identifier")
-
-		return cj, err
-	}
-
-	value, err := redis.Values(conn.Do("HGETALL", jobKey(uid)))
-	if err != nil {
-		log.WithFields(log.Fields{
-			"uuid": jobID,
+			"uuid": jid,
 		}).Error("Unable to fetch values from redis")
 
-		return cj, err
+		return cj, found, err
+	}
+
+	if len(value) == 0 {
+
+		return cj, found, err
 	}
 
 	err = redis.ScanStruct(value, &cj)
 	if err != nil {
 		log.WithFields(log.Fields{
-			"uuid": jobID,
+			"uuid": jid,
 		}).Error("Unable to unmarshall values to job")
 
-		return cj, err
+		return cj, found, err
 	}
+	found = true
 
 	log.WithFields(log.Fields{
-		"uuid": jobID,
+		"uuid": jid,
 	}).Debug("Fetched conversion job details")
 
-	return cj, err
+	return cj, found, err
 }
 
 func (clt *Client) updateConversionJob(cj *ConversionJob) error {
@@ -195,7 +195,7 @@ func (clt *Client) updateConversionJob(cj *ConversionJob) error {
 	}
 
 	job := *cj
-	key := jobKey(uid)
+	key := generateJobKey(uid.String())
 	_, err = conn.Do("HMSET", redis.Args{}.Add(key).AddFlat(&job)...)
 	if err != nil {
 		log.WithFields(log.Fields{

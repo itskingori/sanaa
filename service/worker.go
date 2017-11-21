@@ -55,16 +55,16 @@ func (ctx *workerContext) convert(job *work.Job) error {
 	defer conn.Close()
 
 	// Extract job parameter i.e. UUID
-	jobUUID := job.ArgString("uuid")
+	jid := job.ArgString("uuid")
 	log.WithFields(log.Fields{
-		"uuid": jobUUID,
+		"uuid": jid,
 	}).Info("Picked up conversion job from queue")
 
 	// Fetch all the job details
-	cj, err := cl.fetchConversionJob(jobUUID)
+	cj, _, err := cl.fetchConversionJob(jid)
 	if err != nil {
 		log.WithFields(log.Fields{
-			"uuid": jobUUID,
+			"uuid": jid,
 		}).Errorf("Error: %v", err)
 
 		// !!! //

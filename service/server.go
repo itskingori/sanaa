@@ -196,11 +196,21 @@ func (clt *Client) statusHandler(w http.ResponseWriter, r *http.Request) {
 	conn := clt.redisPool.Get()
 	defer conn.Close()
 
-	cj, err := clt.fetchConversionJob(jid)
+	cj, found, err := clt.fetchConversionJob(jid)
 	if err != nil {
 		ers = errorResponse{
 			Identifier: jid,
-			Message:    fmt.Sprintf("Unable to find request on conversion queue"),
+			Message:    "Unable to fetch conversion job",
+		}
+		requestInternalServerErrorResponse(&w, r, ers)
+
+		return
+	}
+
+	if !found {
+		ers = errorResponse{
+			Identifier: jid,
+			Message:    "Request not found on conversion queue",
 		}
 		requestNotFoundResponse(&w, r, ers)
 
