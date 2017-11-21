@@ -46,15 +46,6 @@ type ConversionJob struct {
 	RequestData   []byte `redis:"request_data"`
 }
 
-func generateJobID(name string) uuid.UUID {
-	// Now we create our uuid using the random uuid and a namespace value which
-	// will be determined from the domain part of the source URL.
-	//
-	// This allow us to generate several UUIDs with a low probability of
-	// collision. See: https://tools.ietf.org/html/rfc4122#section-4.3
-	return uuid.NewV5(uuid.NewV4(), name)
-}
-
 func generateJobKey(jid string) string {
 	key := fmt.Sprintf("%s:request:%s", viper.GetString("redis.namespace"), jid)
 
