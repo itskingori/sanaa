@@ -88,6 +88,20 @@ func requestInternalServerErrorResponse(w *http.ResponseWriter, r *http.Request,
 	}).Errorf("%d %s", http.StatusInternalServerError, "Internal Server Error")
 }
 
+func requestNotFoundResponse(w *http.ResponseWriter, r *http.Request, ers errorResponse) {
+	log.WithFields(log.Fields{
+		"uuid": ers.Identifier,
+	}).Error(ers.Message)
+
+	(*w).Header().Set("Content-Type", "application/json")
+	(*w).WriteHeader(http.StatusNotFound)
+	json.NewEncoder((*w)).Encode(&ers)
+
+	log.WithFields(log.Fields{
+		"uuid": ers.Identifier,
+	}).Errorf("%d %s", http.StatusNotFound, "Not Found")
+}
+
 func requestCreatedResponse(w *http.ResponseWriter, r *http.Request, rrs renderResponse) {
 	(*w).Header().Set("Content-Type", "application/json")
 	(*w).WriteHeader(http.StatusCreated)
@@ -96,6 +110,16 @@ func requestCreatedResponse(w *http.ResponseWriter, r *http.Request, rrs renderR
 	log.WithFields(log.Fields{
 		"uuid": rrs.Identifier,
 	}).Debugf("%d %s", http.StatusCreated, "Created")
+}
+
+func requestOKResponse(w *http.ResponseWriter, r *http.Request, rrs renderResponse) {
+	(*w).Header().Set("Content-Type", "application/json")
+	(*w).WriteHeader(http.StatusOK)
+	json.NewEncoder((*w)).Encode(&rrs)
+
+	log.WithFields(log.Fields{
+		"uuid": rrs.Identifier,
+	}).Debugf("%d %s", http.StatusOK, "OK")
 }
 
 func (clt *Client) renderHandler(w http.ResponseWriter, r *http.Request) {
@@ -153,28 +177,42 @@ func (clt *Client) renderHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (clt *Client) statusHandler(w http.ResponseWriter, r *http.Request) {
+	var ers errorResponse
+
 	params := mux.Vars(r)
-	uuidStr := params["uuid"]
+	jid := params["uuid"]
+
+	_, err := uuid.FromString(params["uuid"])
+	if err != nil {
+		ers = errorResponse{
+			Identifier: jid,
+			Message:    "Invalid job identifier",
+		}
+		requestBadRequestResponse(&w, r, ers)
+
+		return
+	}
 
 	conn := clt.redisPool.Get()
 	defer conn.Close()
 
-	cj, err := clt.fetchConversionJob(uuidStr)
+	cj, err := clt.fetchConversionJob(jid)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"uuid": uuidStr,
-		}).Errorf("Error: %v", err)
+		ers = errorResponse{
+			Identifier: jid,
+			Message:    fmt.Sprintf("Unable to find request on conversion queue"),
+		}
+		requestNotFoundResponse(&w, r, ers)
+
+		return
 	}
 
-	rRes := cj.generateResponse()
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(&rRes)
+	rrs := cj.generateResponse()
+	requestOKResponse(&w, r, rrs)
 }
 
 func (cj *ConversionJob) generateResponse() renderResponse {
-	var rRes = renderResponse{
+	rrs := renderResponse{
 		Identifier: cj.Identifier,
 		CreatedAt:  cj.CreatedAt,
 		StartedAt:  cj.StartedAt,
@@ -184,7 +222,7 @@ func (cj *ConversionJob) generateResponse() renderResponse {
 		Logs:       cj.Logs,
 	}
 
-	return rRes
+	return rrs
 }
 
 // StartServer starts the application web server
