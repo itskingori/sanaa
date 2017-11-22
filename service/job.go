@@ -109,13 +109,25 @@ func (clt *Client) createAndSaveConversionJob(rid string, rR renderRequest) (Con
 	conn := clt.redisPool.Get()
 	defer conn.Close()
 
-	_, err = conn.Do("HMSET", redis.Args{}.Add(key).AddFlat(&cj)...)
+	conn.Send("HMSET", redis.Args{}.Add(key).AddFlat(&cj)...)
+	conn.Send("EXPIRE", key, rt)
+	conn.Flush()
+
+	_, err = conn.Receive()
 	if err != nil {
+		log.WithFields(log.Fields{
+			"uuid": rid,
+		}).Error("Error saving conversion job")
+
 		return cj, err
 	}
 
-	_, err = conn.Do("EXPIRE", key, rt)
+	_, err = conn.Receive()
 	if err != nil {
+		log.WithFields(log.Fields{
+			"uuid": rid,
+		}).Error("Error setting conversion job expiry")
+
 		return cj, err
 	}
 
