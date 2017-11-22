@@ -59,11 +59,7 @@ func init() {
 
 	// Add flags to workerCmd
 	workerCmd.PersistentFlags().Int("concurrency", 2, "number of conversion jobs that can be processed at a time, maximum is 10")
-	workerCmd.PersistentFlags().String("s3-bucket", "", "the name of the S3 bucket to use when storing rendered files")
-	workerCmd.PersistentFlags().String("s3-region", "", "the region of the S3 bucket which will be used to store rendered files")
 
 	// Bind workerCmd flags with viper configuration
 	viper.BindPFlag("worker.concurrency", workerCmd.PersistentFlags().Lookup("concurrency"))
-	viper.BindPFlag("worker.s3_bucket", workerCmd.PersistentFlags().Lookup("s3-bucket"))
-	viper.BindPFlag("worker.s3_region", workerCmd.PersistentFlags().Lookup("s3-region"))
 }

@@ -56,11 +56,15 @@ func init() {
 	RootCmd.PersistentFlags().String("redis-host", "127.0.0.1", "host of redis server")
 	RootCmd.PersistentFlags().Int("redis-port", 6379, "port of redis server")
 	RootCmd.PersistentFlags().String("redis-namespace", "sanaa", "namespace to use when storing data in redis server")
+	RootCmd.PersistentFlags().String("s3-bucket", "", "the name of the S3 bucket to use when storing rendered files")
+	RootCmd.PersistentFlags().String("s3-region", "", "the region of the S3 bucket which will be used to store rendered files")
 
 	// Bind RootCmd flags with viper configuration
 	viper.BindPFlag("redis.host", RootCmd.PersistentFlags().Lookup("redis-host"))
 	viper.BindPFlag("redis.port", RootCmd.PersistentFlags().Lookup("redis-port"))
 	viper.BindPFlag("redis.namespace", RootCmd.PersistentFlags().Lookup("redis-namespace"))
+	viper.BindPFlag("aws.s3_bucket", RootCmd.PersistentFlags().Lookup("s3-bucket"))
+	viper.BindPFlag("aws.s3_region", RootCmd.PersistentFlags().Lookup("s3-region"))
 }
 
 // initConfig applies initial configuration
