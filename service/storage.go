@@ -86,3 +86,23 @@ func (cl *Client) storeFileS3(cj *ConversionJob, filePath string) error {
 
 	return nil
 }
+
+func (cl *Client) getFileS3SignedURL(cj *ConversionJob, exp time.Duration) (string, error) {
+	svc := s3.New(cl.awsSession)
+
+	req, _ := svc.GetObjectRequest(&s3.GetObjectInput{
+		Bucket: &cj.StorageBucket,
+		Key:    &cj.StorageKey,
+	})
+
+	url, err := req.Presign(exp)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"uuid": cj.Identifier,
+		}).Error("Failed to pre-sign url")
+
+		return url, err
+	}
+
+	return url, nil
+}

@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/satori/go.uuid"
@@ -56,6 +57,7 @@ type renderResponse struct {
 	StartedAt  string `json:"started_at"`
 	EndedAt    string `json:"ended_at"`
 	ExpiresIn  int    `json:"expires_in"`
+	FileURL    string `json:"file_url"`
 	Status     string `json:"status"`
 	Logs       string `json:"logs"`
 }
@@ -172,7 +174,15 @@ func (clt *Client) renderHandler(w http.ResponseWriter, r *http.Request) {
 		"uuid": cj.Identifier,
 	}).Infof("Enqueued render %s job", target)
 
-	rrs := cj.generateResponse()
+	rrs, err := cj.generateRenderResponse(clt)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"uuid": cj.Identifier,
+		}).Error("Failed to generate render response")
+
+		return
+	}
+
 	requestCreatedResponse(&w, r, rrs)
 }
 
@@ -217,11 +227,19 @@ func (clt *Client) statusHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rrs := cj.generateResponse()
+	rrs, err := cj.generateRenderResponse(clt)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"uuid": cj.Identifier,
+		}).Error("Failed to generate render response")
+
+		return
+	}
+
 	requestOKResponse(&w, r, rrs)
 }
 
-func (cj *ConversionJob) generateResponse() renderResponse {
+func (cj *ConversionJob) generateRenderResponse(clt *Client) (renderResponse, error) {
 	rrs := renderResponse{
 		Identifier: cj.Identifier,
 		CreatedAt:  cj.CreatedAt,
@@ -232,7 +250,20 @@ func (cj *ConversionJob) generateResponse() renderResponse {
 		Logs:       cj.Logs,
 	}
 
-	return rrs
+	if cj.Status != "succeeded" {
+
+		return rrs, nil
+	}
+
+	timeToExpire := 5 * time.Minute
+	surl, err := clt.getFileS3SignedURL(cj, timeToExpire)
+	if err != nil {
+
+		return rrs, err
+	}
+	rrs.FileURL = surl
+
+	return rrs, nil
 }
 
 // StartServer starts the application web server
