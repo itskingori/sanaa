@@ -171,6 +171,7 @@ func (ctx *workerContext) convert(job *work.Job) error {
 	}
 
 	// Upload the generated file to S3
+	cj.StorageRegion = viper.GetString("worker.s3_region")
 	cj.StorageBucket = viper.GetString("worker.s3_bucket")
 	cj.StorageKey = fmt.Sprintf("%s/%s", cj.Identifier, filepath.Base(outputFile))
 	err = cl.storeFileS3(&cj, outputFile)

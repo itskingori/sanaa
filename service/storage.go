@@ -88,7 +88,8 @@ func (cl *Client) storeFileS3(cj *ConversionJob, filePath string) error {
 }
 
 func (cl *Client) getFileS3SignedURL(cj *ConversionJob, exp time.Duration) (string, error) {
-	svc := s3.New(cl.awsSession)
+	sess := cl.awsSession.Copy(&aws.Config{Region: aws.String(cj.StorageRegion)})
+	svc := s3.New(sess)
 
 	req, _ := svc.GetObjectRequest(&s3.GetObjectInput{
 		Bucket: &cj.StorageBucket,
