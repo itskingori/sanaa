@@ -48,7 +48,7 @@ var workerCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Info("Starting the worker")
 
-		client := service.NewClient("worker")
+		client := service.NewClient()
 		client.StartWorker()
 	},
 }

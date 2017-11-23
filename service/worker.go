@@ -50,7 +50,7 @@ type workerContext struct {
 }
 
 func (ctx *workerContext) convert(job *work.Job) error {
-	cl := NewClient("worker")
+	cl := NewClient()
 	conn := cl.redisPool.Get()
 	defer conn.Close()
 
