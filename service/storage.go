@@ -96,6 +96,10 @@ func (cl *Client) getFileS3SignedURL(cj *ConversionJob, exp time.Duration) (stri
 		Key:    &cj.StorageKey,
 	})
 
+	log.WithFields(log.Fields{
+		"uuid": cj.Identifier,
+	}).Debugln("Generating pre-signed url to rendered file")
+
 	url, err := req.Presign(exp)
 	if err != nil {
 		log.WithFields(log.Fields{
