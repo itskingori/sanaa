@@ -44,7 +44,7 @@ var serverCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Info("Starting the server")
 
-		client := service.NewClient()
+		client := service.NewClient("server")
 		client.StartServer()
 	},
 }
@@ -57,9 +57,11 @@ func init() {
 	serverCmd.PersistentFlags().String("binding-address", "0.0.0.0", "address to bind to and listen for requests")
 	serverCmd.PersistentFlags().Int("binding-port", 8080, "port to bind to and listen for requests")
 	serverCmd.PersistentFlags().Int("request-ttl", 86400, "persistence window of data in ephemeral storage, in seconds")
+	serverCmd.PersistentFlags().String("s3-region", "", "the region of the S3 bucket to used when storing rendered files")
 
 	// Bind serverCmd flags with viper configuration
 	viper.BindPFlag("server.binding_address", serverCmd.PersistentFlags().Lookup("binding-address"))
 	viper.BindPFlag("server.binding_port", serverCmd.PersistentFlags().Lookup("binding-port"))
 	viper.BindPFlag("server.request_ttl", serverCmd.PersistentFlags().Lookup("request-ttl"))
+	viper.BindPFlag("server.s3_region", serverCmd.PersistentFlags().Lookup("s3-region"))
 }

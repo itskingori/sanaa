@@ -25,6 +25,8 @@ import (
 	"github.com/garyburd/redigo/redis"
 	"github.com/gocraft/work"
 	"github.com/spf13/viper"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // Client is the application client
@@ -35,7 +37,7 @@ type Client struct {
 }
 
 // NewClient creates an initialized application client
-func NewClient() Client {
+func NewClient(kind string) Client {
 	redisPool := &redis.Pool{
 		MaxActive: 5,
 		MaxIdle:   5,
@@ -49,10 +51,19 @@ func NewClient() Client {
 	}
 	enqueuer := work.NewEnqueuer(viper.GetString("redis.namespace"), redisPool)
 
-	region := viper.GetString("aws.s3_region")
+	var region string
+	switch kind {
+	case "server":
+		region = viper.GetString("server.s3_region")
+	case "worker":
+		region = viper.GetString("worker.s3_region")
+	}
+
 	sess := session.Must(session.NewSession(&aws.Config{
 		Region: aws.String(region),
 	}))
+
+	log.Infof("Using %s region", region)
 
 	return Client{
 		awsSession: sess,
