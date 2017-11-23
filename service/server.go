@@ -69,7 +69,10 @@ func requestBadRequestResponse(w *http.ResponseWriter, r *http.Request, ers erro
 
 	(*w).Header().Set("Content-Type", "application/json")
 	(*w).WriteHeader(http.StatusBadRequest)
-	json.NewEncoder((*w)).Encode(&ers)
+
+	encoder := json.NewEncoder((*w))
+	encoder.SetEscapeHTML(false)
+	encoder.Encode(&ers)
 
 	log.WithFields(log.Fields{
 		"uuid": ers.Identifier,
@@ -83,7 +86,10 @@ func requestInternalServerErrorResponse(w *http.ResponseWriter, r *http.Request,
 
 	(*w).Header().Set("Content-Type", "application/json")
 	(*w).WriteHeader(http.StatusInternalServerError)
-	json.NewEncoder((*w)).Encode(&ers)
+
+	encoder := json.NewEncoder((*w))
+	encoder.SetEscapeHTML(false)
+	encoder.Encode(&ers)
 
 	log.WithFields(log.Fields{
 		"uuid": ers.Identifier,
@@ -97,7 +103,10 @@ func requestNotFoundResponse(w *http.ResponseWriter, r *http.Request, ers errorR
 
 	(*w).Header().Set("Content-Type", "application/json")
 	(*w).WriteHeader(http.StatusNotFound)
-	json.NewEncoder((*w)).Encode(&ers)
+
+	encoder := json.NewEncoder((*w))
+	encoder.SetEscapeHTML(false)
+	encoder.Encode(&ers)
 
 	log.WithFields(log.Fields{
 		"uuid": ers.Identifier,
@@ -107,7 +116,10 @@ func requestNotFoundResponse(w *http.ResponseWriter, r *http.Request, ers errorR
 func requestCreatedResponse(w *http.ResponseWriter, r *http.Request, rrs renderResponse) {
 	(*w).Header().Set("Content-Type", "application/json")
 	(*w).WriteHeader(http.StatusCreated)
-	json.NewEncoder((*w)).Encode(&rrs)
+
+	encoder := json.NewEncoder((*w))
+	encoder.SetEscapeHTML(false)
+	encoder.Encode(&rrs)
 
 	log.WithFields(log.Fields{
 		"uuid": rrs.Identifier,
@@ -117,7 +129,10 @@ func requestCreatedResponse(w *http.ResponseWriter, r *http.Request, rrs renderR
 func requestOKResponse(w *http.ResponseWriter, r *http.Request, rrs renderResponse) {
 	(*w).Header().Set("Content-Type", "application/json")
 	(*w).WriteHeader(http.StatusOK)
-	json.NewEncoder((*w)).Encode(&rrs)
+
+	encoder := json.NewEncoder((*w))
+	encoder.SetEscapeHTML(false)
+	encoder.Encode(&rrs)
 
 	log.WithFields(log.Fields{
 		"uuid": rrs.Identifier,
