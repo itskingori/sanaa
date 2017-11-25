@@ -1,0 +1,8 @@
+---
+language: go
+go:
+  - 1.9.x
+before_install:
+  - make ci_dependencies
+  - make install
+script: make test
