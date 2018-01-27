@@ -18,7 +18,10 @@ ldflags="-X ${package_path}/service.majorVersion=${major_version} \
          -X ${package_path}/service.minorVersion=${minor_version} \
          -X ${package_path}/service.patchVersion=${patch_version}"
 
-echo "Building binaries for targetted platforms"
+echo -e "Installing gox, Go's cross compilation tool"
+go get -v github.com/mitchellh/gox
+
+echo -e "Building binaries for targetted platforms"
 rm -rf ${binary_output_path}/*
 mkdir -p ${binary_output_path}
 gox \
