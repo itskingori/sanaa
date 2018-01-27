@@ -15,9 +15,9 @@ deploy:
     skip_cleanup: true
     file_glob: true
     file: binaries/*
+    prerelease: false
     on:
       condition: ${TRAVIS_TAG} =~ ^[0-9]+\.[0-9]+\.[0-9]+$
-      prerelease: false
       repo: itskingori/sanaa
       tags: true
   - provider: releases
@@ -26,8 +26,8 @@ deploy:
     skip_cleanup: true
     file_glob: true
     file: binaries/*
+    prerelease: true
     on:
       condition: ${TRAVIS_TAG} =~ ^[0-9]+\.[0-9]+\.[0-9]+-.+$
-      prerelease: true
       repo: itskingori/sanaa
       tags: true
