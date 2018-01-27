@@ -71,13 +71,15 @@ For normal usage the above installation instruction should do.
 ### Building
 
 1. Fetch the code with `go get github.com/itskingori/sanaa`.
-1. Install the Go development tools via `make development_dependencies` (assumes macOS).
+1. Install the Go development tools via `make dependencies` (assumes macOS).
 1. Install application dependencies via `make install` (they'll be placed in
-   `./vendor`).
+   `./vendor`). Requires [Glide package manager][glide].
 1. Build and install the binary with `make build`.
 1. Run the command e.g. `./sanaa help`.
 
 ### Testing
 
-1. Install the Go testing tools via `make testing_dependencies`.
+1. Install the Go testing tools via `make dependencies`.
 1. Run linter using `make lint` and test using `make test`.
+
+[glide]: https://github.com/Masterminds/glide

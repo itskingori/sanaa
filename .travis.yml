@@ -3,6 +3,6 @@ language: go
 go:
   - 1.9.x
 before_install:
-  - make ci_dependencies
+  - curl "https://glide.sh/get" | sh
   - make install
 script: make test
