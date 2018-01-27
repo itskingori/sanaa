@@ -3,9 +3,9 @@
 set -eu
 
 version="$1"
-major_version="$(echo ${version} | cut -d'.' -f1)"
-minor_version="$(echo ${version} | cut -d'.' -f2)"
-patch_version="$(echo ${version} | cut -d'.' -f3)"
+major_version="$(echo "${version}" | cut -d'.' -f1)"
+minor_version="$(echo "${version}" | cut -d'.' -f2)"
+patch_version="$(echo "${version}" | cut -d'.' -f3)"
 
 binary_output_path="binaries"
 package_path="github.com/itskingori/sanaa"
@@ -42,7 +42,7 @@ done
 echo -e "\nCalculating SHA256-sums:\n"
 cd ${binary_output_path}/
 sha265sum_file="sanaa-${version}-shasum256.txt"
-shasum -a 256 sanaa-${version}-* > "${sha265sum_file}"
+shasum -a 256 sanaa-"${version}"-* > "${sha265sum_file}"
 cd ../
 cat "${binary_output_path}/${sha265sum_file}"
 
