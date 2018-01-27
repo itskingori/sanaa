@@ -17,6 +17,7 @@
 vendor/
 
 # Built artefact
+/binaries/
 sanaa
 
 # Sanaa Files

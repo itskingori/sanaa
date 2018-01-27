@@ -7,6 +7,9 @@ dependencies:
 	# install gometalinter
 	go get -u github.com/alecthomas/gometalinter
 
+	# install gox
+	go get -v github.com/mitchellh/gox
+
 	# install all known linters:
 	gometalinter --install
 
