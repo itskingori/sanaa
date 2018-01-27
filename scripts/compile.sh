@@ -22,7 +22,7 @@ echo -e "Installing gox, Go's cross compilation tool"
 go get -v github.com/mitchellh/gox
 
 echo -e "Building binaries for targetted platforms"
-rm -rf ${binary_output_path}/*
+rm -rf "${binary_output_path:?}"/*
 mkdir -p ${binary_output_path}
 gox \
 -osarch="${target_platforms[*]}" \
@@ -36,7 +36,7 @@ for binary in ${binaries[*]}; do
   compressed_file="${uncompressed_file}.tar.gz"
   echo "--> ${uncompressed_file} ~> ${compressed_file}"
   tar -czf "${compressed_file}" "${uncompressed_file}"
-  rm -rf ${uncompressed_file}
+  rm -rf "${uncompressed_file:?}"
 done
 
 echo -e "\nCalculating SHA256-sums:\n"
