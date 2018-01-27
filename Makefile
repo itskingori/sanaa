@@ -1,17 +1,14 @@
 SHELL := /bin/bash
 
-development_dependencies:
-	brew install glide
-
-ci_dependencies:
-	curl "https://glide.sh/get" | sh
-
-testing_dependencies:
+dependencies:
 	# install golint
 	go get -u github.com/golang/lint/golint
 
 	# install gometalinter
 	go get -u github.com/alecthomas/gometalinter
+
+	# install gox
+	go get -v github.com/mitchellh/gox
 
 	# install all known linters:
 	gometalinter --install
