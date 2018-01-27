@@ -42,7 +42,7 @@ done
 echo -e "\nCalculating SHA256-sums:\n"
 cd ${binary_output_path}/
 sha265sum_file="sanaa-${version}-shasum256.txt"
-shasum -a 256 sanaa-0.0.0-* >> "${sha265sum_file}"
+shasum -a 256 sanaa-${version}-* > "${sha265sum_file}"
 cd ../
 cat "${binary_output_path}/${sha265sum_file}"
 
