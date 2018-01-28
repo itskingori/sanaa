@@ -84,8 +84,8 @@ For normal usage the above installation instruction should do.
 
 ### Releasing
 
-1. Create `git tag` and `git push --tags` to create a release.
-2. CI pipeline with detect the tag and create a [GitHub release here][releases].
+1. Create a tag (`git tag`) and push the tags to remote (`git push --tags`).
+2. CI pipeline will detect the tag and create a [GitHub release here][releases].
    To note:
    * Tags matching `x.y.z` will be marked as final releases.
    * Tags matching `x.y.z-*` will be marked as pre-releases.
