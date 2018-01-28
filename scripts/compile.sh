@@ -32,11 +32,14 @@ gox \
 echo -e "\nCompressing built binaries:\n"
 binaries=$(find "./${binary_output_path}" -name "*" -type f)
 for binary in ${binaries[*]}; do
-  uncompressed_file="${binary}"
-  compressed_file="${uncompressed_file}.tar.gz"
-  echo "--> ${uncompressed_file} ~> ${compressed_file}"
-  tar -czf "${compressed_file}" "${uncompressed_file}"
-  rm -rf "${uncompressed_file:?}"
+  uncompressed_filepath="${binary}"
+  uncompressed_filename=$(basename "${uncompressed_filepath}")
+  compressed_filepath="${uncompressed_filepath}.tar.gz"
+
+  echo "--> ${uncompressed_filepath} ~> ${compressed_filepath}"
+  tar -czf "${compressed_filepath}" -C "${binary_output_path}/" "${uncompressed_filename}"
+
+  rm -rf "${uncompressed_filepath:?}"
 done
 
 echo -e "\nCalculating SHA256-sums:\n"
