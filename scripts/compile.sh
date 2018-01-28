@@ -35,18 +35,16 @@ for binary in ${binaries[*]}; do
   uncompressed_filepath="${binary}"
   uncompressed_filename=$(basename "${uncompressed_filepath}")
   compressed_filepath="${uncompressed_filepath}.tar.gz"
+  compressed_filename=$(basename "${compressed_filepath}")
 
   echo "--> ${uncompressed_filepath} ~> ${compressed_filepath}"
   tar -czf "${compressed_filepath}" -C "${binary_output_path}/" "${uncompressed_filename}"
-
   rm -rf "${uncompressed_filepath:?}"
-done
 
-echo -e "\nCalculating SHA256-sums:\n"
-cd ${binary_output_path}/
-sha265sum_file="sanaa-${version}-shasum256.txt"
-shasum -a 256 sanaa-"${version}"-* > "${sha265sum_file}"
-cd ../
-cat "${binary_output_path}/${sha265sum_file}"
+  cd ${binary_output_path}/
+  shasum_256_file="${uncompressed_filename}-shasum-256.txt"
+  shasum -a 256 "${compressed_filename}" > "${shasum_256_file}"
+  cd ../
+done
 
 echo -e "\nDone!"
