@@ -32,18 +32,19 @@ gox \
 echo -e "\nCompressing built binaries:\n"
 binaries=$(find "./${binary_output_path}" -name "*" -type f)
 for binary in ${binaries[*]}; do
-  uncompressed_file="${binary}"
-  compressed_file="${uncompressed_file}.tar.gz"
-  echo "--> ${uncompressed_file} ~> ${compressed_file}"
-  tar -czf "${compressed_file}" "${uncompressed_file}"
-  rm -rf "${uncompressed_file:?}"
-done
+  uncompressed_filepath="${binary}"
+  uncompressed_filename=$(basename "${uncompressed_filepath}")
+  compressed_filepath="${uncompressed_filepath}.tar.gz"
+  compressed_filename=$(basename "${compressed_filepath}")
 
-echo -e "\nCalculating SHA256-sums:\n"
-cd ${binary_output_path}/
-sha265sum_file="sanaa-${version}-shasum256.txt"
-shasum -a 256 sanaa-"${version}"-* > "${sha265sum_file}"
-cd ../
-cat "${binary_output_path}/${sha265sum_file}"
+  echo "--> ${uncompressed_filepath} ~> ${compressed_filepath}"
+  tar -czf "${compressed_filepath}" -C "${binary_output_path}/" "${uncompressed_filename}"
+  rm -rf "${uncompressed_filepath:?}"
+
+  cd ${binary_output_path}/
+  shasum_256_file="${uncompressed_filename}-shasum-256.txt"
+  shasum -a 256 "${compressed_filename}" > "${shasum_256_file}"
+  cd ../
+done
 
 echo -e "\nDone!"
