@@ -23,6 +23,12 @@ instructions should do.
 1. Install the Go testing tools via `make dependencies`.
 1. Run linter using `make lint` and test using `make test`.
 
+### Documentation
+
+The home page is built using [Jekyll][jekyll] (a fun and easy to use static site
+generator) and it is [hosted on GitHub Pages][github-page]. The code is in the
+`docs/` folder if you want to have a peek.
+
 ### Releasing
 
 1. Create a tag (`git tag`) and push the tags to remote (`git push --tags`).
@@ -44,7 +50,9 @@ software including (via compiler) GPL-licensed code must also be made available
 under the GPL along with build & install instructions.
 
 [contributing]: https://raw.githubusercontent.com/itskingori/sanaa/master/LICENSE
+[github-page]: https://pages.github.com/
 [glide]: https://github.com/Masterminds/glide
+[jekyll]: http://jekyllrb.com/
 [personal-site]: http://kingori.co/
 [license]: https://raw.githubusercontent.com/itskingori/sanaa/master/LICENSE
 [releases]: https://github.com/itskingori/sanaa/releases
