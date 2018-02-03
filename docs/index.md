@@ -5,12 +5,18 @@ layout: default
 
 ## Installation
 
-Sanaa comes in a single binary. All you need to do is download the binary [from
-the releases page][releases] to any location in your `$PATH` and you're good to
-go. Shasum-256 files are provided if you want to validate your download.
+Sanaa is a single Go binary. All you need to do is download the binary [from the
+releases page][releases] to any location in your `$PATH` and you're good to go.
 
-Also note that `wkhtmltoimage` and `wkhtmltopdf` are expected to be available in
-your `$PATH` for sanaa to be able to autodetect them.
+If using Docker, there's the `kingori/sanaa` [image on Docker Hub][dockerhub].
+For examples and more information, checkout out [the docker image's
+repository][dockerrepo].
+
+## Dependencies
+
+Just make sure that `wkhtmltoimage` and `wkhtmltopdf`  are available in your
+`$PATH` for sanaa to be able to autodetect them.
+
 
 ## Development
 
@@ -59,6 +65,8 @@ software including (via compiler) GPL-licensed code must also be made available
 under the GPL along with build & install instructions.
 
 [contributing]: https://raw.githubusercontent.com/itskingori/sanaa/master/LICENSE
+[dockerhub]: https://hub.docker.com/r/kingori/sanaa
+[dockerrepo]: https://github.com/itskingori/docker-sanaa
 [github-page]: https://pages.github.com/
 [glide]: https://github.com/Masterminds/glide
 [jekyll]: http://jekyllrb.com/
