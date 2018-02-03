@@ -3,6 +3,15 @@ title: Get
 layout: default
 ---
 
+## Installation
+
+Sanaa comes in a single binary. All you need to do is download the binary [from
+the releases page][releases] to any location in your `$PATH` and you're good to
+go. Shasum-256 files are provided if you want to validate your download.
+
+Also note that `wkhtmltoimage` and `wkhtmltopdf` are expected to be available in
+your `$PATH` for sanaa to be able to autodetect them.
+
 ## Development
 
 Below instructions are only necessary if you intend to work on the source code
