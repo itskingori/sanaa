@@ -15,7 +15,8 @@ repository][dockerrepo].
 ## Dependencies
 
 Just make sure that `wkhtmltoimage` and `wkhtmltopdf`  are available in your
-`$PATH` for sanaa to be able to autodetect them.
+`$PATH` for sanaa to be able to autodetect them. Get [downloads
+here][wkhtmltopdf].
 
 ## Usage
 
@@ -143,3 +144,4 @@ under the GPL along with build & install instructions.
 [personal-site]: http://kingori.co/
 [license]: https://raw.githubusercontent.com/itskingori/sanaa/master/LICENSE
 [releases]: https://github.com/itskingori/sanaa/releases
+[wkhtmltopdf]: https://wkhtmltopdf.org/downloads.html
