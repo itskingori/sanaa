@@ -34,8 +34,7 @@ var verbose bool
 var RootCmd = &cobra.Command{
 	Use:   "sanaa",
 	Short: "A HTML to PDF/Image conversion microservice",
-	Long: `A HTML to PDF/Image conversion microservice powered by wkhtmltopdf,
-wkhtmltoimage and xvfb.`,
+	Long:  `A HTML to PDF/Image conversion microservice powered by wkhtmltopdf and wkhtmltoimage.`,
 }
 
 // Execute adds all child commands to the root command sets flags appropriately.

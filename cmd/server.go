@@ -56,7 +56,7 @@ func init() {
 	// Add flags to serverCmd
 	serverCmd.PersistentFlags().String("binding-address", "0.0.0.0", "address to bind to and listen for requests")
 	serverCmd.PersistentFlags().Int("binding-port", 8080, "port to bind to and listen for requests")
-	serverCmd.PersistentFlags().Int("request-ttl", 86400, "persistence window of data in ephemeral storage, in seconds")
+	serverCmd.PersistentFlags().Int("request-ttl", 86400, "how long to keep requests and their data, in seconds")
 
 	// Bind serverCmd flags with viper configuration
 	viper.BindPFlag("server.binding_address", serverCmd.PersistentFlags().Lookup("binding-address"))
