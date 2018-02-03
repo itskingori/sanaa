@@ -34,5 +34,15 @@ For normal usage the above instructions should do.
    * Compressed binary with a shasum 256 file will be uploaded as attachments to
      the release.
 
+## License
+
+[King'ori J. Maina][personal-site] © 2018. Under the [GNU General Public License
+v3.0 bundled therein][license], you may copy, distribute and modify the software
+as long as you track changes/dates in source files. Any modifications to or
+software including (via compiler) GPL-licensed code must also be made available
+under the GPL along with build & install instructions.
+
 [glide]: https://github.com/Masterminds/glide
+[personal-site]: http://kingori.co/
+[license]: https://raw.githubusercontent.com/itskingori/sanaa/master/LICENSE
 [releases]: https://github.com/itskingori/sanaa/releases
