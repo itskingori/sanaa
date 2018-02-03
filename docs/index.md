@@ -17,6 +17,76 @@ repository][dockerrepo].
 Just make sure that `wkhtmltoimage` and `wkhtmltopdf`  are available in your
 `$PATH` for sanaa to be able to autodetect them.
 
+## Usage
+
+### Getting Started
+
+Start the server (that will receive requests):
+
+```console
+$ sanaa server --verbose
+INFO[0000] Starting the server
+INFO[0000] Request TTL set to 86400 seconds
+INFO[0000] Listening on http://0.0.0.0:8080
+```
+
+Start the worker (that will process requests):
+
+```console
+$ sanaa worker --s3-bucket=example-bucket-name --verbose
+INFO[0000] Starting the worker
+INFO[0000] Using wkhtmltoimage 0.12.4 (with patched qt)
+INFO[0001] Using wkhtmltopdf 0.12.4 (with patched qt)
+INFO[0001] Concurrency set to 2
+INFO[0001] Registering 'convert' queue
+INFO[0001] Waiting to pick up jobs placed on any registered queue
+```
+
+### Rendering Images
+
+Make a `POST` request to `/render/image`.
+
+```http
+POST /render/image HTTP/1.1
+Content-Type: application/json
+Host: 127.0.0.1:8080
+
+{
+    "target": {
+        "format": "png",
+        "height": 480,
+        "weight": 640
+    },
+    "source": {
+        "url": "https://google.com"
+    }
+}
+```
+
+### Rendering PDFs
+
+Make a `POST` request to `/render/pdf`.
+
+```http
+POST /render/pdf HTTP/1.1
+Content-Type: application/json
+Host: 127.0.0.1:8080
+
+{
+    "target": {
+        "margin_top": 10,
+        "margin_bottom": 10,
+        "margin_left": 10,
+        "margin_right": 10,
+        "page_height": 210,
+        "page_width": 300
+    },
+    "source": {
+        "url": "https://google.com"
+    }
+}
+```
+
 
 ## Development
 
