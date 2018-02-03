@@ -5,8 +5,9 @@ layout: default
 
 ## Development
 
-Below instructions are only necessary if you intend to work on the source code.
-For normal usage the above instructions should do.
+Below instructions are only necessary if you intend to work on the source code
+(find [contributing guidelines][contributing] here). For normal usage the above
+instructions should do.
 
 ### Building
 
@@ -42,6 +43,7 @@ as long as you track changes/dates in source files. Any modifications to or
 software including (via compiler) GPL-licensed code must also be made available
 under the GPL along with build & install instructions.
 
+[contributing]: https://raw.githubusercontent.com/itskingori/sanaa/master/LICENSE
 [glide]: https://github.com/Masterminds/glide
 [personal-site]: http://kingori.co/
 [license]: https://raw.githubusercontent.com/itskingori/sanaa/master/LICENSE
