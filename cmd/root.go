@@ -33,8 +33,8 @@ var verbose bool
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use:   "sanaa",
-	Short: "A HTML to PDF/Image conversion microservice",
-	Long:  `A HTML to PDF/Image conversion microservice powered by wkhtmltopdf and wkhtmltoimage.`,
+	Short: "A HTML to PDF/Image conversion HTTP API",
+	Long:  `A HTML to PDF/Image conversion HTTP API powered by wkhtmltopdf and wkhtmltoimage.`,
 }
 
 // Execute adds all child commands to the root command sets flags appropriately.
