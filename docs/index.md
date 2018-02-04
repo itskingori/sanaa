@@ -5,12 +5,88 @@ layout: default
 
 ## Installation
 
-Sanaa comes in a single binary. All you need to do is download the binary [from
-the releases page][releases] to any location in your `$PATH` and you're good to
-go. Shasum-256 files are provided if you want to validate your download.
+Sanaa is a single Go binary. All you need to do is download the binary [from the
+releases page][releases] to any location in your `$PATH` and you're good to go.
 
-Also note that `wkhtmltoimage` and `wkhtmltopdf` are expected to be available in
-your `$PATH` for sanaa to be able to autodetect them.
+If using Docker, there's the `kingori/sanaa` [image on Docker Hub][dockerhub].
+For examples and more information, checkout out [the docker image's
+repository][dockerrepo].
+
+## Dependencies
+
+Just make sure that `wkhtmltoimage` and `wkhtmltopdf`  are available in your
+`$PATH` for sanaa to be able to autodetect them.
+
+## Usage
+
+### Getting Started
+
+Start the server (that will receive requests):
+
+```console
+$ sanaa server --verbose
+INFO[0000] Starting the server
+INFO[0000] Request TTL set to 86400 seconds
+INFO[0000] Listening on http://0.0.0.0:8080
+```
+
+Start the worker (that will process requests):
+
+```console
+$ sanaa worker --s3-bucket=example-bucket-name --verbose
+INFO[0000] Starting the worker
+INFO[0000] Using wkhtmltoimage 0.12.4 (with patched qt)
+INFO[0001] Using wkhtmltopdf 0.12.4 (with patched qt)
+INFO[0001] Concurrency set to 2
+INFO[0001] Registering 'convert' queue
+INFO[0001] Waiting to pick up jobs placed on any registered queue
+```
+
+### Rendering Images
+
+Make a `POST` request to `/render/image`.
+
+```http
+POST /render/image HTTP/1.1
+Content-Type: application/json
+Host: 127.0.0.1:8080
+
+{
+    "target": {
+        "format": "png",
+        "height": 480,
+        "weight": 640
+    },
+    "source": {
+        "url": "https://google.com"
+    }
+}
+```
+
+### Rendering PDFs
+
+Make a `POST` request to `/render/pdf`.
+
+```http
+POST /render/pdf HTTP/1.1
+Content-Type: application/json
+Host: 127.0.0.1:8080
+
+{
+    "target": {
+        "margin_top": 10,
+        "margin_bottom": 10,
+        "margin_left": 10,
+        "margin_right": 10,
+        "page_height": 210,
+        "page_width": 300
+    },
+    "source": {
+        "url": "https://google.com"
+    }
+}
+```
+
 
 ## Development
 
@@ -59,6 +135,8 @@ software including (via compiler) GPL-licensed code must also be made available
 under the GPL along with build & install instructions.
 
 [contributing]: https://raw.githubusercontent.com/itskingori/sanaa/master/LICENSE
+[dockerhub]: https://hub.docker.com/r/kingori/sanaa
+[dockerrepo]: https://github.com/itskingori/docker-sanaa
 [github-page]: https://pages.github.com/
 [glide]: https://github.com/Masterminds/glide
 [jekyll]: http://jekyllrb.com/
