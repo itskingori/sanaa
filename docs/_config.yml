@@ -1,6 +1,6 @@
 name: Sanaa
 description: >-
-  A HTML to PDF/Image conversion HTTP API powered by wkhtmltopdf and wkhtmltoimage
+  A HTML to PDF/Image conversion service available over a HTTP API and powered by wkhtmltopdf and wkhtmltoimage
 highlighter: rouge
 baseurl: /sanaa
 relative_permalinks: false
