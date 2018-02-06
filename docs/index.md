@@ -183,7 +183,7 @@ circumstances, then you have to provide the source code under this license. And
 this still applies if you run the modified program on a server and let other
 users communicate with it there.
 
-[contributing]: https://raw.githubusercontent.com/itskingori/sanaa/master/LICENSE
+[contributing]: https://github.com/itskingori/sanaa/blob/master/CONTRIBUTING.md
 [dockerhub]: https://hub.docker.com/r/kingori/sanaa
 [dockerrepo]: https://github.com/itskingori/docker-sanaa
 [github-page]: https://pages.github.com/
