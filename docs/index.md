@@ -176,11 +176,12 @@ generator) and it is [hosted on GitHub Pages][github-page]. The code is in the
 
 ## License
 
-[King'ori J. Maina][personal-site] © 2018. Under the [GNU General Public License
-v3.0 bundled therein][license], you may copy, distribute and modify the software
-as long as you track changes/dates in source files. Any modifications to or
-software including (via compiler) GPL-licensed code must also be made available
-under the GPL along with build & install instructions.
+[King'ori J. Maina][personal-site] © 2018. The [GNU Affero General Public
+License v3.0 bundled therein][license], essentially says, if you make a
+derivative work of this, and distribute it to others under certain
+circumstances, then you have to provide the source code under this license. And
+this still applies if you run the modified program on a server and let other
+users communicate with it there.
 
 [contributing]: https://raw.githubusercontent.com/itskingori/sanaa/master/LICENSE
 [dockerhub]: https://hub.docker.com/r/kingori/sanaa
