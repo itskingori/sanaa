@@ -43,48 +43,94 @@ INFO[0001] Registering 'convert' queue
 INFO[0001] Waiting to pick up jobs placed on any registered queue
 ```
 
-### Rendering Images
+### Basic Usage
 
-Make a `POST` request to `/render/image`.
+#### Rendering Images & PDFs
+
+For images, make a `POST` request to `/render/image`:
 
 ```http
 POST /render/image HTTP/1.1
 Content-Type: application/json
 Host: 127.0.0.1:8080
+Connection: close
+Content-Length: 172
 
 {
     "target": {
         "format": "png",
-        "height": 480,
-        "weight": 640
+        "height": 1080,
+        "width": 1920
     },
     "source": {
-        "url": "https://google.com"
+        "url": "https://en.wikipedia.org/wiki/Kenya"
     }
 }
 ```
 
-### Rendering PDFs
-
-Make a `POST` request to `/render/pdf`.
+For PDFs, make a `POST` request to `/render/pdf`:
 
 ```http
 POST /render/pdf HTTP/1.1
 Content-Type: application/json
 Host: 127.0.0.1:8080
+Connection: close
+Content-Length: 127
 
 {
     "target": {
-        "margin_top": 10,
-        "margin_bottom": 10,
-        "margin_left": 10,
-        "margin_right": 10,
-        "page_height": 210,
-        "page_width": 300
+        "page_size": "A4"
     },
     "source": {
-        "url": "https://google.com"
+        "url": "https://en.wikipedia.org/wiki/Kenya"
     }
+}
+```
+
+If a render request was successful, expect a `201 Created` HTTP response
+indicating that the server has acknowledged the request:
+
+```http
+HTTP/1.1 201 Created
+Content-Type: application/json
+Date: Tue, 06 Feb 2018 05:19:09 GMT
+Content-Length: 176
+Connection: close
+
+{
+  "uuid": "640882bd-9441-48fb-8686-27286f399004",
+  "created_at": "2018-02-06T05:19:09Z",
+  "started_at": "",
+  "ended_at": "",
+  "expires_in": 86400,
+  "file_url": "",
+  "status": "pending",
+  "logs": ""
+}
+```
+
+In case of failure, expect an appropriate response as well. For example:
+
+1. `400 Bad Request` - unable to unmarshall the request JSON, or you've
+   requested for a render type apart from the supported types i.e. `image` or
+   `pdf`.
+2. `500 Internal Server Error` - unable to enqueue the job for the workers to
+   pick up e.g. if redis is down.
+
+For each case, the body of the response should include a message explaining the
+reason for failure. For example, if you send a bad JSON body during an image
+render request, the response would be something like this:
+
+```http
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
+Date: Tue, 06 Feb 2018 07:26:44 GMT
+Content-Length: 91
+Connection: close
+
+{
+  "uuid": "536d3847-64b8-497a-8d8a-ac541dfa9c9e",
+  "message": "Unable to unmarshal json to image type"
 }
 ```
 
