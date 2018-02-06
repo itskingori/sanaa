@@ -5,8 +5,9 @@ layout: default
 
 ## Installation
 
-Sanaa is a single Go binary. All you need to do is download the binary [from the
-releases page][releases] to any location in your `$PATH` and you're good to go.
+Sanaa is a single Go binary. All you need to do is download the binary for your
+platform [from the releases page][releases] to any location in your `$PATH` and
+you're good to go.
 
 If using Docker, there's the `kingori/sanaa` [image on Docker Hub][dockerhub].
 For examples and more information, checkout out [the docker image's
