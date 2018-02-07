@@ -112,15 +112,74 @@ Connection: close
 
 In case of failure, expect an appropriate response as well. For example:
 
-1. `400 Bad Request` - unable to unmarshall the request JSON, or you've
+1. `400 Bad Request` - if unable to unmarshall the request JSON, or if you've
    requested for a render type apart from the supported types i.e. `image` or
    `pdf`.
-2. `500 Internal Server Error` - unable to enqueue the job for the workers to
+2. `500 Internal Server Error` - if unable to enqueue the job for the workers to
    pick up e.g. if redis is down.
 
-For each case, the body of the response should include a message explaining the
-reason for failure. For example, if you send a bad JSON body during an image
-render request, the response would be something like this:
+#### Checking Render Request Status
+
+Each render request that has been enqueued is assigned a UUID (found in `uuid`
+attribute of the response to a render request). Pass the UUID to the
+`/status/{uuid}` endpoint via `GET` to get an update on the status of the
+conversion job:
+
+```http
+GET /status/4c815816-1bfe-4790-b8d1-ee06c98b7d6d HTTP/1.1
+Content-Type: application/json
+Host: 127.0.0.1:8080
+Connection: close
+
+```
+
+The status endpoint will return a `200 OK` HTTP response with details of the
+conversion job. An example of one that's still in processing:
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Tue, 06 Feb 2018 06:33:07 GMT
+Connection: close
+Transfer-Encoding: chunked
+
+{
+  "uuid": "4c815816-1bfe-4790-b8d1-ee06c98b7d6d",
+  "created_at": "2018-02-06T06:32:42Z",
+  "started_at": "2018-02-06T06:32:45Z",
+  "ended_at": "",
+  "expires_in": 86400,
+  "file_url": "",
+  "status": "processing",
+  "logs": "Loading page (1/2)\n[>                                                           ] 0%\r[======>                                                     ] 10%\r[==========>                                                 ] 17%\r[============>                                               ] 21%\r[=============>                                              ] 23%\r[===============>                                            ] 26%\r[=================>                                          ] 29%\r[=================>                                          ] 29%\r[=================>                                          ] 29%\r[==================>                                         ] 31%\r[====================>                                       ] 34%\r[======================>                                     ] 37%\r[=======================>                                    ] 39%\r[==========================>                                 ] 44%\r[============================>                               ] 47%\r[==============================>                             ] 50%\r[===============================>                            ] 52%\r[================================>                           ] 54%\r[=================================>                          ] 56%\r[==================================>                         "
+}
+```
+
+Notably, several fields reflect the `processing` state of the conversion job:
+
+1. `status` is set to `processing`,
+2. `started_at` has been set to the time the processing started,
+3. `ended_at` is still empty (obviously) and
+4. `logs` has been populated with some output from the processing.
+
+In case of failure, expect to recieve responses that communicate the problem.
+For example:
+
+1. `404 Not Found` - may happen if you render request has expired (based on TTL)
+   or if there's no job found matching the UUID set.
+2. `400 Bad Request` - if your identifier is not a valid UUID.
+3. `500 Internal Server Error` - if the server is unable to fulfill your request
+   i.e. if redis is down.
+
+#### Attributes Of Response Objects
+
+The `/render/{type}` and `/status/{uuid}` endpoints either return an object
+representing an error or a conversion job.
+
+For errors, the response body is simple and self-explanatory. It includes the
+`uuid` of the request and a `message` explaining the error. For example, if you
+send a bad JSON body during an image render request, the response would be
+something like this:
 
 ```http
 HTTP/1.1 500 Internal Server Error
@@ -135,15 +194,8 @@ Connection: close
 }
 ```
 
-#### Response Object Structure
-
-The `/render/{type}` and `/status/{uuid}` endpoints either return an object
-representing an error or a conversion job.
-
-The former is simple and self-explanatory. It includes the `uuid` of the request
-and a `message` explaining the error. The latter is a bit more detailed and
-might have some attributes in the JSON object that might not be obvious, these
-are:
+For render requests, the returned object represents a conversion job which has
+the following attributes:
 
 | Attribute     |  Description |
 |---------------|--------------|
