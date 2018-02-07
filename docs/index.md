@@ -5,12 +5,15 @@ layout: default
 
 ## Synopsis
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
+The objective of the project is to provide a HTTP API around `wkhtmltoimage` and
+`wkhtmltopdf`. There's been no attempt to modify those two binaries. Sanaa
+pretty much translates options passed in as JSON to flags, runs the command,
+fetches the result and translates that results back to JSON which is served back
+as a response.
+
+The architecture of the project takes a server/worker architecture. This was
+deemed ideal as it works well with scaling. You can scale the server part based
+on incoming requests and the worker part based on jobs on the queue.
 
 ## Installation
 
