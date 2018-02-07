@@ -12,4 +12,4 @@
 
 [branch]: http://git-scm.com/book/en/Git-Branching-Branching-Workflows#Topic-Branches
 [fork]: https://help.github.com/articles/fork-a-repo/
-[pr]: https://help.github.com/articles/using-pull-requests
+[pr]: https://help.github.com/articles/about-pull-requests/

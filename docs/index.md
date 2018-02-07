@@ -3,10 +3,23 @@ title: Get
 layout: default
 ---
 
+## Synopsis
+
+The objective of the project is to provide a HTTP API around `wkhtmltoimage` and
+`wkhtmltopdf`. There's been no attempt to modify those two binaries. Sanaa
+pretty much translates options passed in as JSON to flags, runs the command,
+fetches the result and translates that results back to JSON which is served back
+as a response.
+
+The architecture of the project takes a server/worker architecture. This was
+deemed ideal as it works well with scaling. You can scale the server part based
+on incoming requests and the worker part based on jobs on the queue.
+
 ## Installation
 
-Sanaa is a single Go binary. All you need to do is download the binary [from the
-releases page][releases] to any location in your `$PATH` and you're good to go.
+Sanaa is a single Go binary. All you need to do is download the binary for your
+platform [from the releases page][releases] to any location in your `$PATH` and
+you're good to go.
 
 If using Docker, there's the `kingori/sanaa` [image on Docker Hub][dockerhub].
 For examples and more information, checkout out [the docker image's
@@ -15,7 +28,40 @@ repository][dockerrepo].
 ## Dependencies
 
 Just make sure that `wkhtmltoimage` and `wkhtmltopdf`  are available in your
-`$PATH` for sanaa to be able to autodetect them.
+`$PATH` for sanaa to be able to autodetect them. Get [downloads
+here][wkhtmltopdf].
+
+## Configuration
+
+Most configuration is done via flags, see `sanaa --help`. But there's AWS
+specific configuration, which are mostly secrets, that don't seem appropriate to
+set via flags. These should be set via one of the alternative methods.
+
+Sanaa requires AWS credentials with permissions that give it access to the S3
+bucket it will use to store the results of rendering. These credentials will be
+sourced automatically from the following locations (in order of priority, first
+at the top):
+
+1. Environment Credentials - via environment variables:
+
+   ```bash
+   export AWS_ACCESS_KEY_ID=SOME_KEY
+   export AWS_SECRET_ACCESS_KEY=SOME_SECRET
+   export AWS_REGION=us-east-1
+   ```
+
+2. Shared Credentials file - via `~/.aws/credentials`:
+
+   ```text
+   [default]
+   aws_access_key_id = <SOME_KEY>
+   aws_secret_access_key = <SOME_SECRET>
+   aws_region = us-east-1
+   ```
+
+3. EC2 Instance Role Credentials - assigns credentials to application if it's
+   running on an EC2 instance that's been given an EC2 Instance Role. This
+   removes the need to manage credential files in production.
 
 ## Usage
 
@@ -42,51 +88,169 @@ INFO[0001] Registering 'convert' queue
 INFO[0001] Waiting to pick up jobs placed on any registered queue
 ```
 
-### Rendering Images
+### Basic Usage
 
-Make a `POST` request to `/render/image`.
+#### Rendering Images & PDFs
+
+For images, make a `POST` request to `/render/image`:
 
 ```http
 POST /render/image HTTP/1.1
 Content-Type: application/json
 Host: 127.0.0.1:8080
+Connection: close
+Content-Length: 172
 
 {
     "target": {
         "format": "png",
-        "height": 480,
-        "weight": 640
+        "height": 1080,
+        "width": 1920
     },
     "source": {
-        "url": "https://google.com"
+        "url": "https://en.wikipedia.org/wiki/Kenya"
     }
 }
 ```
 
-### Rendering PDFs
-
-Make a `POST` request to `/render/pdf`.
+For PDFs, make a `POST` request to `/render/pdf`:
 
 ```http
 POST /render/pdf HTTP/1.1
 Content-Type: application/json
 Host: 127.0.0.1:8080
+Connection: close
+Content-Length: 127
 
 {
     "target": {
-        "margin_top": 10,
-        "margin_bottom": 10,
-        "margin_left": 10,
-        "margin_right": 10,
-        "page_height": 210,
-        "page_width": 300
+        "page_size": "A4"
     },
     "source": {
-        "url": "https://google.com"
+        "url": "https://en.wikipedia.org/wiki/Kenya"
     }
 }
 ```
 
+If a render request was successful, expect a `201 Created` HTTP response
+indicating that the server has acknowledged the request:
+
+```http
+HTTP/1.1 201 Created
+Content-Type: application/json
+Date: Tue, 06 Feb 2018 05:19:09 GMT
+Content-Length: 176
+Connection: close
+
+{
+  "uuid": "640882bd-9441-48fb-8686-27286f399004",
+  "created_at": "2018-02-06T05:19:09Z",
+  "started_at": "",
+  "ended_at": "",
+  "expires_in": 86400,
+  "file_url": "",
+  "status": "pending",
+  "logs": ""
+}
+```
+
+In case of failure, expect an appropriate response as well. For example:
+
+1. `400 Bad Request` - if unable to unmarshall the request JSON, or if you've
+   requested for a render type apart from the supported types i.e. `image` or
+   `pdf`.
+2. `500 Internal Server Error` - if unable to enqueue the job for the workers to
+   pick up e.g. if redis is down.
+
+#### Checking Render Request Status
+
+Each render request that has been enqueued is assigned a UUID (found in `uuid`
+attribute of the response to a render request). Pass the UUID to the
+`/status/{uuid}` endpoint via `GET` to get an update on the status of the
+conversion job:
+
+```http
+GET /status/4c815816-1bfe-4790-b8d1-ee06c98b7d6d HTTP/1.1
+Content-Type: application/json
+Host: 127.0.0.1:8080
+Connection: close
+
+```
+
+The status endpoint will return a `200 OK` HTTP response with details of the
+conversion job. An example of one that's still in processing:
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Tue, 06 Feb 2018 06:33:07 GMT
+Connection: close
+Transfer-Encoding: chunked
+
+{
+  "uuid": "4c815816-1bfe-4790-b8d1-ee06c98b7d6d",
+  "created_at": "2018-02-06T06:32:42Z",
+  "started_at": "2018-02-06T06:32:45Z",
+  "ended_at": "",
+  "expires_in": 86400,
+  "file_url": "",
+  "status": "processing",
+  "logs": "Loading page (1/2)\n[>                                                           ] 0%\r[======>                                                     ] 10%\r[==========>                                                 ] 17%\r[============>                                               ] 21%\r[=============>                                              ] 23%\r[===============>                                            ] 26%\r[=================>                                          ] 29%\r[=================>                                          ] 29%\r[=================>                                          ] 29%\r[==================>                                         ] 31%\r[====================>                                       ] 34%\r[======================>                                     ] 37%\r[=======================>                                    ] 39%\r[==========================>                                 ] 44%\r[============================>                               ] 47%\r[==============================>                             ] 50%\r[===============================>                            ] 52%\r[================================>                           ] 54%\r[=================================>                          ] 56%\r[==================================>                         "
+}
+```
+
+Notably, several fields reflect the `processing` state of the conversion job:
+
+1. `status` is set to `processing`,
+2. `started_at` has been set to the time the processing started,
+3. `ended_at` is still empty (obviously) and
+4. `logs` has been populated with some output from the processing.
+
+In case of failure, expect to recieve responses that communicate the problem.
+For example:
+
+1. `404 Not Found` - may happen if you render request has expired (based on TTL)
+   or if there's no job found matching the UUID set.
+2. `400 Bad Request` - if your identifier is not a valid UUID.
+3. `500 Internal Server Error` - if the server is unable to fulfill your request
+   i.e. if redis is down.
+
+#### Attributes Of Response Objects
+
+The `/render/{type}` and `/status/{uuid}` endpoints either return an object
+representing an error or a conversion job.
+
+For errors, the response body is simple and self-explanatory. It includes the
+`uuid` of the request and a `message` explaining the error. For example, if you
+send a bad JSON body during an image render request, the response would be
+something like this:
+
+```http
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
+Date: Tue, 06 Feb 2018 07:26:44 GMT
+Content-Length: 91
+Connection: close
+
+{
+  "uuid": "536d3847-64b8-497a-8d8a-ac541dfa9c9e",
+  "message": "Unable to unmarshal json to image type"
+}
+```
+
+For render requests, the returned object represents a conversion job which has
+the following attributes:
+
+| Attribute     |  Description |
+|---------------|--------------|
+| `uuid`        | Unique identifier of the request |
+| `created_at`  | When the request was initiated |
+| `started_at`  | When the request was picked by a worker for processing |
+| `ended_at`    | When a worker completed processing the request after picking it up |
+| `expires_in`  | How long to persist the request and any of it's data |
+| `file_url`    | URL to fetch the artefact generated by the request after processing |
+| `status`      | Status of the job i.e. `pending`, `processing`, `failed`, `succeeded` |
+| `logs`        | Output of processing by the worker, useful when debugging |
 
 ## Development
 
@@ -128,13 +292,14 @@ generator) and it is [hosted on GitHub Pages][github-page]. The code is in the
 
 ## License
 
-[King'ori J. Maina][personal-site] © 2018. Under the [GNU General Public License
-v3.0 bundled therein][license], you may copy, distribute and modify the software
-as long as you track changes/dates in source files. Any modifications to or
-software including (via compiler) GPL-licensed code must also be made available
-under the GPL along with build & install instructions.
+[King'ori J. Maina][personal-site] © 2018. The [GNU Affero General Public
+License v3.0 bundled therein][license], essentially says, if you make a
+derivative work of this, and distribute it to others under certain
+circumstances, then you have to provide the source code under this license. And
+this still applies if you run the modified program on a server and let other
+users communicate with it there.
 
-[contributing]: https://raw.githubusercontent.com/itskingori/sanaa/master/LICENSE
+[contributing]: https://github.com/itskingori/sanaa/blob/master/CONTRIBUTING.md
 [dockerhub]: https://hub.docker.com/r/kingori/sanaa
 [dockerrepo]: https://github.com/itskingori/docker-sanaa
 [github-page]: https://pages.github.com/
@@ -143,3 +308,4 @@ under the GPL along with build & install instructions.
 [personal-site]: http://kingori.co/
 [license]: https://raw.githubusercontent.com/itskingori/sanaa/master/LICENSE
 [releases]: https://github.com/itskingori/sanaa/releases
+[wkhtmltopdf]: https://wkhtmltopdf.org/downloads.html
