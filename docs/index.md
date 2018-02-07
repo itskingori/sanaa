@@ -3,6 +3,15 @@ title: Get
 layout: default
 ---
 
+## Synopsis
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
 ## Installation
 
 Sanaa is a single Go binary. All you need to do is download the binary for your
@@ -18,6 +27,38 @@ repository][dockerrepo].
 Just make sure that `wkhtmltoimage` and `wkhtmltopdf`  are available in your
 `$PATH` for sanaa to be able to autodetect them. Get [downloads
 here][wkhtmltopdf].
+
+## Configuration
+
+Most configuration is done via flags, see `sanaa --help`. But there's AWS
+specific configuration, which are mostly secrets, that don't seem appropriate to
+set via flags. These should be set via one of the alternative methods.
+
+Sanaa requires AWS credentials with permissions that give it access to the S3
+bucket it will use to store the results of rendering. These credentials will be
+sourced automatically from the following locations (in order of priority, first
+at the top):
+
+1. Environment Credentials - via environment variables:
+
+   ```bash
+   export AWS_ACCESS_KEY_ID=SOME_KEY
+   export AWS_SECRET_ACCESS_KEY=SOME_SECRET
+   export AWS_REGION=us-east-1
+   ```
+
+2. Shared Credentials file - via `~/.aws/credentials`:
+
+   ```text
+   [default]
+   aws_access_key_id = <SOME_KEY>
+   aws_secret_access_key = <SOME_SECRET>
+   aws_region = us-east-1
+   ```
+
+3. EC2 Instance Role Credentials - assigns credentials to application if it's
+   running on an EC2 instance that's been given an EC2 Instance Role. This
+   removes the need to manage credential files in production.
 
 ## Usage
 
