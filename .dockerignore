@@ -1,0 +1,6 @@
+*
+!Gopkg.lock
+!Gopkg.toml
+!main.go
+!cmd/
+!service/
