@@ -263,7 +263,7 @@ instructions should do.
 1. Fetch the code with `go get github.com/itskingori/sanaa`.
 1. Install the Go development tools via `make dependencies`.
 1. Install application dependencies via `make install` (they'll be placed in
-   `./vendor`). Requires [Glide package manager][glide].
+   `./vendor`). Requires [Dep package manager][dep].
 1. Build and install the binary with `make build`.
 1. Run the command e.g. `./sanaa help`.
 
@@ -300,10 +300,10 @@ this still applies if you run the modified program on a server and let other
 users communicate with it there.
 
 [contributing]: https://github.com/itskingori/sanaa/blob/master/CONTRIBUTING.md
+[dep]: https://golang.github.io/dep/
 [dockerhub]: https://hub.docker.com/r/kingori/sanaa
 [dockerrepo]: https://github.com/itskingori/docker-sanaa
 [github-page]: https://pages.github.com/
-[glide]: https://github.com/Masterminds/glide
 [jekyll]: http://jekyllrb.com/
 [personal-site]: http://kingori.co/
 [license]: https://raw.githubusercontent.com/itskingori/sanaa/master/LICENSE
