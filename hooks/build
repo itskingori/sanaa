@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "Build hook running"
+docker build --build-arg SANAA_VERSION="${SOURCE_BRANCH}" -t "${IMAGE_NAME}" .

@@ -22,8 +22,6 @@ platform [from the releases page][releases] to any location in your `$PATH` and
 you're good to go.
 
 If using Docker 🐳, there's the `kingori/sanaa` [image on Docker Hub][dockerhub].
-For examples and more information, checkout out [the docker image's
-repository][dockerrepo].
 
 ## Dependencies 🖇️
 
@@ -289,6 +287,8 @@ generator) and it is [hosted on GitHub Pages][github-page]. The code is in the
      normal tags.
    * Compressed binary with a shasum 256 file will be uploaded as attachments to
      the release.
+3. Trigger will start a build on Docker Hub to publish two Docker images:
+   `kingori/sanaa:latest` and `kingori/sanaa:x.y.z`.
 
 ## License 📜
 
@@ -302,7 +302,6 @@ users communicate with it there.
 [contributing]: https://github.com/itskingori/sanaa/blob/master/CONTRIBUTING.md
 [dep]: https://golang.github.io/dep/
 [dockerhub]: https://hub.docker.com/r/kingori/sanaa
-[dockerrepo]: https://github.com/itskingori/docker-sanaa
 [github-page]: https://pages.github.com/
 [jekyll]: http://jekyllrb.com/
 [personal-site]: http://kingori.co/
