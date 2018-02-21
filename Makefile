@@ -14,7 +14,7 @@ dependencies:
 	gometalinter --install
 
 install:
-	glide install --strip-vendor
+	dep ensure
 
 build:
 	go build
