@@ -3,7 +3,7 @@ title: Get
 layout: default
 ---
 
-## Synopsis
+## Synopsis 🔍
 
 The objective of the project is to provide a HTTP API around `wkhtmltoimage` and
 `wkhtmltopdf`. There's been no attempt to modify those two binaries. Sanaa
@@ -15,23 +15,23 @@ The architecture of the project takes a server/worker architecture. This was
 deemed ideal as it works well with scaling. You can scale the server part based
 on incoming requests and the worker part based on jobs on the queue.
 
-## Installation
+## Installation ⬇️
 
 Sanaa is a single Go binary. All you need to do is download the binary for your
 platform [from the releases page][releases] to any location in your `$PATH` and
 you're good to go.
 
-If using Docker, there's the `kingori/sanaa` [image on Docker Hub][dockerhub].
+If using Docker 🐳, there's the `kingori/sanaa` [image on Docker Hub][dockerhub].
 For examples and more information, checkout out [the docker image's
 repository][dockerrepo].
 
-## Dependencies
+## Dependencies 🖇️
 
 Just make sure that `wkhtmltoimage` and `wkhtmltopdf`  are available in your
 `$PATH` for sanaa to be able to autodetect them. Get [downloads
 here][wkhtmltopdf].
 
-## Configuration
+## Configuration 🎛️
 
 Most configuration is done via flags, see `sanaa --help`. But there's AWS
 specific configuration, which are mostly secrets, that don't seem appropriate to
@@ -63,7 +63,7 @@ at the top):
    running on an EC2 instance that's been given an EC2 Instance Role. This
    removes the need to manage credential files in production.
 
-## Usage
+## Usage 💻
 
 ### Getting Started
 
@@ -252,7 +252,7 @@ the following attributes:
 | `status`      | Status of the job i.e. `pending`, `processing`, `failed`, `succeeded` |
 | `logs`        | Output of processing by the worker, useful when debugging |
 
-## Development
+## Development ⚒️
 
 Below instructions are only necessary if you intend to work on the source code
 (find [contributing guidelines][contributing] here). For normal usage the above
@@ -263,7 +263,7 @@ instructions should do.
 1. Fetch the code with `go get github.com/itskingori/sanaa`.
 1. Install the Go development tools via `make dependencies`.
 1. Install application dependencies via `make install` (they'll be placed in
-   `./vendor`). Requires [Dep package manager][dep].
+   `./vendor`). Requires [golang/dep][dep] package manager.
 1. Build and install the binary with `make build`.
 1. Run the command e.g. `./sanaa help`.
 
@@ -290,7 +290,7 @@ generator) and it is [hosted on GitHub Pages][github-page]. The code is in the
    * Compressed binary with a shasum 256 file will be uploaded as attachments to
      the release.
 
-## License
+## License 📜
 
 [King'ori J. Maina][personal-site] © 2018. The [GNU Affero General Public
 License v3.0 bundled therein][license], essentially says, if you make a
