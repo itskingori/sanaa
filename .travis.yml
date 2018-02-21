@@ -34,3 +34,8 @@ deploy:
       condition: ${TRAVIS_TAG} =~ ^[0-9]+\.[0-9]+\.[0-9]+-.+$
       repo: itskingori/sanaa
       tags: true
+after_deploy:
+  - "./scripts/trigger.sh ${TRAVIS_TAG}"
+env:
+  global:
+    - secure: QU8cQO//Q15fPApmjmO47OZ6l84KqcFj9V6flGerOEVXvZoPhspE2JbLyit2lhlIsgcC0ljHWviXvjH3DxRmSnlZo9/PlIC+aAQ+g4cqOIgY+o4uEA/opRiXqHIv+ctPvdg5JlRuF8RxFgNX8iRR2lu52btwby4G/oaqI3Dm+G5/NVR3cuIjXc18MciPP50oyiMlScTP28pYKFM+oPxDGrCVOC/Lmwhf3qMGMD+TsdlYtlgMA+gbN/dtZHwqpplhq9yKFdWVF202OnpsFdedOZrjd7NTayiOdYAnwc6DC2JtJk9k3IMfS4uFSAnfhYnVLPoHWNMEfJIKWJR934LQ0ieckEhOJQoW5DeXJ/a9qG8wVtur0PShyNj/Z9v8mj7KTHiGF0gxaW0m5nmrYIT5mZHE97c1Sh3fHt31Fv+tCjaYorCrF4uvNpLff1AfDoy9ZMJJDm/NYX6e5Oc7JIPd/9/eW4oIJn5jmd6Xue6Rs/+O+jrB2KcQOCRIterKSD/JpusrUSS5M+yQVA+/roxEyiOVd0RknWIp8GLIzcWQd5rZM1MoChRstBMzB33Xft3B7q0ufvnsVeReOOtPMHtBk0TJC3yTUNmOtEOnMjf1l2KCSYTvex85jmkhISOrVRn1xfRbGHZPNK2US+EkaxTHii1evfg9YT5DR1T3hmACMP8=
