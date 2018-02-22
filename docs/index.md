@@ -251,6 +251,57 @@ the following attributes:
 | `status`      | Status of the job i.e. `pending`, `processing`, `failed`, `succeeded` |
 | `logs`        | Output of processing by the worker, useful when debugging |
 
+### Advanced Usage
+
+#### Health Endpoints
+
+The server component has two health endpoints available:
+
+* `/health/live` -  liveness endpoint, indicates that the server is up.
+* `/health/ready` - readiness endpoint, indicates that server is ready to
+  receive requests.
+
+Pass the `?full=1` query parameter to expose the details of the check in the
+JSON response. These are omitted by default for performance.
+
+Also note that both endpoints return the appropriate response conveying the
+health of the service. To demonstrate this, make a request to the readiness
+endpoint:
+
+```http
+GET /health/ready?full=1 HTTP/1.1
+Host: 127.0.0.1:8080
+Connection: close
+```
+
+If redis is up, you should get a `200 OK` HTTP response:
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Thu, 22 Feb 2018 19:54:41 GMT
+Content-Length: 37
+Connection: close
+
+{
+    "redis-tcp-connection": "OK"
+}
+```
+
+If redis is down, you should get a `503 Service Unavailable` HTTP response:
+
+```http
+HTTP/1.1 503 Service Unavailable
+Content-Type: application/json; charset=utf-8
+Date: Thu, 22 Feb 2018 20:00:27 GMT
+Content-Length: 87
+Connection: close
+
+{
+    "redis-tcp-connection": "dial tcp 127.0.0.1:6379: connect: connection refused"
+}
+```
+
 ## Development ⚒️
 
 Below instructions are only necessary if you intend to work on the source code
