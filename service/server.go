@@ -303,6 +303,12 @@ func (clt *Client) StartServer() {
 
 	health := healthcheck.NewHandler()
 
+	redis_address := viper.GetString("redis.host")
+	redis_port := viper.GetInt("redis.port")
+	redis_host := fmt.Sprintf("%s:%d", redis_address, redis_port)
+	redis_tcp_check := healthcheck.TCPDialCheck(redis_host, 50*time.Millisecond)
+	health.AddReadinessCheck("redis-tcp-connection", redis_tcp_check)
+
 	router := mux.NewRouter()
 	router.HandleFunc("/health/live", health.LiveEndpoint).
 		Methods("GET")
