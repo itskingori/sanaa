@@ -23,6 +23,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/heptiolabs/healthcheck"
 	"github.com/satori/go.uuid"
 	"github.com/spf13/viper"
 
@@ -305,7 +306,13 @@ func (clt *Client) StartServer() {
 	binding := fmt.Sprintf("%s:%d", binding_address, binding_port)
 	log.Infof("Listening on http://%s", binding)
 
+	health := healthcheck.NewHandler()
+
 	router := mux.NewRouter()
+	router.HandleFunc("/health/live", health.LiveEndpoint).
+		Methods("GET")
+	router.HandleFunc("/health/ready", health.ReadyEndpoint).
+		Methods("GET")
 	router.HandleFunc("/render/{target}", clt.renderHandler).
 		Headers("Content-Type", "application/json").
 		Methods("POST")
