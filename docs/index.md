@@ -22,7 +22,8 @@ platform [from the releases page][releases] to any location in your `$PATH` and
 you're good to go.
 
 If using Docker 🐳, there's the `kingori/sanaa` image [on Docker Hub][dockerhub].
-Check out the `examples/` folder for a docker-compose config.
+Find [docker-compose][example1] and [kubernetes][example2] examples in the
+`examples/` folder.
 
 ## Dependencies 🖇️
 
@@ -354,6 +355,8 @@ users communicate with it there.
 [contributing]: https://github.com/itskingori/sanaa/blob/master/CONTRIBUTING.md
 [dep]: https://golang.github.io/dep/
 [dockerhub]: https://hub.docker.com/r/kingori/sanaa
+[example1]: https://github.com/itskingori/sanaa/tree/master/examples/docker-compose
+[example2]: https://github.com/itskingori/sanaa/tree/master/examples/kubernetes
 [github-page]: https://pages.github.com/
 [jekyll]: http://jekyllrb.com/
 [personal-site]: http://kingori.co/
