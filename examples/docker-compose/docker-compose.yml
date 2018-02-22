@@ -1,0 +1,54 @@
+---
+version: '2.2'
+services:
+  server:
+    image: kingori/sanaa:0.1.0-alpha
+    command:
+      - server
+      - --binding-port=80
+      - --redis-host=redis
+      - --request-ttl=300
+      - --verbose
+    environment: &environment_variables
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+    ports:
+      - 80
+    links:
+      - redis
+    depends_on:
+      redis:
+        condition: service_started
+    networks:
+      - local
+  worker:
+    image: kingori/sanaa:0.1.0-alpha
+    command:
+      - worker
+      - --concurrency=10
+      - --redis-host=redis
+      - --s3-bucket=sanaa-output-bucket
+      - --verbose
+    environment: *environment_variables
+    links:
+      - redis
+    depends_on:
+      redis:
+        condition: service_started
+    networks:
+      - local
+  redis:
+    image: redis:4.0.8-alpine
+    volumes:
+      - redis_data:/data
+    expose:
+      - 6379
+    networks:
+      - local
+
+volumes:
+  redis_data:
+    driver: local
+
+networks:
+  local:
