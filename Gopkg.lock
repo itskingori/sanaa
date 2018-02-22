@@ -34,6 +34,12 @@
   version = "v1.12.30"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/beorn7/perks"
+  packages = ["quantile"]
+  revision = "4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9"
+
+[[projects]]
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
   revision = "4da3e2cfbabc9f751898f250b49f2439785783a1"
@@ -58,6 +64,12 @@
   packages = ["."]
   revision = "67c8dc210ce647e8d8a4206c7f5856ea2390f290"
   version = "v0.5.0"
+
+[[projects]]
+  name = "github.com/golang/protobuf"
+  packages = ["proto"]
+  revision = "925541529c1fa6821df4e44ce2723319eb2be768"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
@@ -87,6 +99,12 @@
   revision = "42e33e2d55a0ff1d6263f738896ea8c13571a8d0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/heptiolabs/healthcheck"
+  packages = ["."]
+  revision = "da5fdee475fb09de87c5d4a50da233b7d28767b1"
+
+[[projects]]
   name = "github.com/inconshreveable/mousetrap"
   packages = ["."]
   revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
@@ -109,6 +127,12 @@
   revision = "8d7837e64d3c1ee4e54a880c5a920ab4316fc90a"
 
 [[projects]]
+  name = "github.com/matttproud/golang_protobuf_extensions"
+  packages = ["pbutil"]
+  revision = "3247c84500bff8d9fb6d579d800f20b3e091582c"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
   revision = "d0303fe809921458f417bcf828397a65db30a7e4"
@@ -117,6 +141,39 @@
   name = "github.com/pelletier/go-toml"
   packages = ["."]
   revision = "2009e44b6f182e34d8ce081ac2767622937ea3d4"
+
+[[projects]]
+  name = "github.com/prometheus/client_golang"
+  packages = ["prometheus"]
+  revision = "c5b7fccd204277076155f10851dad72b76a49317"
+  version = "v0.8.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/prometheus/client_model"
+  packages = ["go"]
+  revision = "99fa1f4be8e564e8a6b613da7fa6f46c9edafc6c"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/prometheus/common"
+  packages = [
+    "expfmt",
+    "internal/bitbucket.org/ww/goautoneg",
+    "model"
+  ]
+  revision = "89604d197083d4781071d3c65855d24ecfb0a563"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/prometheus/procfs"
+  packages = [
+    ".",
+    "internal/util",
+    "nfs",
+    "xfs"
+  ]
+  revision = "282c8707aa210456a825798969cc27edda34992a"
 
 [[projects]]
   name = "github.com/robfig/cron"
@@ -204,6 +261,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8da7c5cb8a35284f3500c91e0863a111f95eae43d1431ddff2f3adae4e4b347f"
+  inputs-digest = "4dc1364845ab208498c11e4eac99ae7ad7b404301a87e15d3393426791258016"
   solver-name = "gps-cdcl"
   solver-version = 1
