@@ -300,9 +300,9 @@ func (clt *Client) StartServer() {
 	requestTTL := viper.GetInt("server.request_ttl")
 	log.Infof("Request TTL set to %d seconds", requestTTL)
 
-	address := viper.GetString("server.binding_address")
-	port := viper.GetInt("server.binding_port")
-	binding := fmt.Sprintf("%s:%d", address, port)
+	binding_address := viper.GetString("server.binding_address")
+	binding_port := viper.GetInt("server.binding_port")
+	binding := fmt.Sprintf("%s:%d", binding_address, binding_port)
 	log.Infof("Listening on http://%s", binding)
 
 	router := mux.NewRouter()
