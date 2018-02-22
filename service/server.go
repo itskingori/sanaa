@@ -301,11 +301,6 @@ func (clt *Client) StartServer() {
 	requestTTL := viper.GetInt("server.request_ttl")
 	log.Infof("Request TTL set to %d seconds", requestTTL)
 
-	binding_address := viper.GetString("server.binding_address")
-	binding_port := viper.GetInt("server.binding_port")
-	binding := fmt.Sprintf("%s:%d", binding_address, binding_port)
-	log.Infof("Listening on http://%s", binding)
-
 	health := healthcheck.NewHandler()
 
 	router := mux.NewRouter()
@@ -320,6 +315,11 @@ func (clt *Client) StartServer() {
 		Headers("Content-Type", "application/json").
 		Methods("GET")
 
+	binding_address := viper.GetString("server.binding_address")
+	binding_port := viper.GetInt("server.binding_port")
+	binding := fmt.Sprintf("%s:%d", binding_address, binding_port)
+
+	log.Infof("Listening on http://%s", binding)
 	http.Handle("/", router)
 	http.ListenAndServe(binding, nil)
 }
