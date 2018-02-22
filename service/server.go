@@ -23,6 +23,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/heptiolabs/healthcheck"
 	"github.com/satori/go.uuid"
 	"github.com/spf13/viper"
 
@@ -300,12 +301,19 @@ func (clt *Client) StartServer() {
 	requestTTL := viper.GetInt("server.request_ttl")
 	log.Infof("Request TTL set to %d seconds", requestTTL)
 
-	address := viper.GetString("server.binding_address")
-	port := viper.GetInt("server.binding_port")
-	binding := fmt.Sprintf("%s:%d", address, port)
-	log.Infof("Listening on http://%s", binding)
+	health := healthcheck.NewHandler()
+
+	redisAddress := viper.GetString("redis.host")
+	redisPort := viper.GetInt("redis.port")
+	redisHost := fmt.Sprintf("%s:%d", redisAddress, redisPort)
+	redisTCPCheck := healthcheck.TCPDialCheck(redisHost, 50*time.Millisecond)
+	health.AddReadinessCheck("redis-tcp-connection", redisTCPCheck)
 
 	router := mux.NewRouter()
+	router.HandleFunc("/health/live", health.LiveEndpoint).
+		Methods("GET")
+	router.HandleFunc("/health/ready", health.ReadyEndpoint).
+		Methods("GET")
 	router.HandleFunc("/render/{target}", clt.renderHandler).
 		Headers("Content-Type", "application/json").
 		Methods("POST")
@@ -313,6 +321,11 @@ func (clt *Client) StartServer() {
 		Headers("Content-Type", "application/json").
 		Methods("GET")
 
+	bindingAddress := viper.GetString("server.binding_address")
+	bindingPort := viper.GetInt("server.binding_port")
+	binding := fmt.Sprintf("%s:%d", bindingAddress, bindingPort)
+
+	log.Infof("Listening on http://%s", binding)
 	http.Handle("/", router)
 	http.ListenAndServe(binding, nil)
 }

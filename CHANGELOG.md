@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.0
+
+* Add `/health/live` (liveness) and `/health/ready` (readiness) health endpoints
+  on the server component.
+
 ## 0.1.0
 
 * First prototype of the idea with basic features i.e. server and worker
