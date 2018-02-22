@@ -1,0 +1,99 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sanaa-redis
+  namespace: default
+  labels:
+    app: sanaa
+    role: redis
+data:
+  redis.conf: |-
+    # Allow all connections
+    bind 0.0.0.0
+
+    # 64 MiB
+    maxmemory 67108864
+
+    # Evict least recently used keys first
+    maxmemory-policy volatile-lru
+
+    # Disconnect clients that are idle for > 300 seconds
+    timeout 300
+
+    # Disable persistence
+    save ""
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sanaa-redis
+  namespace: default
+  labels:
+    app: sanaa
+    role: redis
+spec:
+  selector:
+    app: sanaa
+    role: redis
+  ports:
+    - port: 6379
+      targetPort: 6379
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sanaa-redis
+  namespace: default
+  labels:
+    app: sanaa
+    role: redis
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: sanaa-redis
+  namespace: default
+  labels:
+    app: sanaa
+    role: redis
+spec:
+  serviceName: sanaa-redis
+  replicas: 1
+  template:
+    metadata:
+      namespace: default
+      labels:
+        app: sanaa
+        role: redis
+    spec:
+      serviceAccountName: sanaa-redis
+      containers:
+        - name: redis
+          image: redis:4.0.8-alpine
+          args:
+            - /etc/redis/redis.conf
+          ports:
+            - containerPort: 6379
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - redis-cli ping | grep -i pong
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "5Mi"
+              cpu: "3m"
+            limits:
+              memory: "50Mi"
+              cpu: "5m"
+          volumeMounts:
+            - name: redis-configuration
+              mountPath: /etc/redis
+      volumes:
+        - name: redis-configuration
+          configMap:
+            name: sanaa-redis
