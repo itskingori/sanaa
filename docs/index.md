@@ -21,7 +21,8 @@ Sanaa is a single Go binary. All you need to do is download the binary for your
 platform [from the releases page][releases] to any location in your `$PATH` and
 you're good to go.
 
-If using Docker 🐳, there's the `kingori/sanaa` [image on Docker Hub][dockerhub].
+If using Docker 🐳, there's the `kingori/sanaa` image [on Docker Hub][dockerhub].
+Check out the `examples/` folder for a docker-compose config.
 
 ## Dependencies 🖇️
 
