@@ -303,11 +303,11 @@ func (clt *Client) StartServer() {
 
 	health := healthcheck.NewHandler()
 
-	redis_address := viper.GetString("redis.host")
-	redis_port := viper.GetInt("redis.port")
-	redis_host := fmt.Sprintf("%s:%d", redis_address, redis_port)
-	redis_tcp_check := healthcheck.TCPDialCheck(redis_host, 50*time.Millisecond)
-	health.AddReadinessCheck("redis-tcp-connection", redis_tcp_check)
+	redisAddress := viper.GetString("redis.host")
+	redisPort := viper.GetInt("redis.port")
+	redisHost := fmt.Sprintf("%s:%d", redisAddress, redisPort)
+	redisTCPCheck := healthcheck.TCPDialCheck(redisHost, 50*time.Millisecond)
+	health.AddReadinessCheck("redis-tcp-connection", redisTCPCheck)
 
 	router := mux.NewRouter()
 	router.HandleFunc("/health/live", health.LiveEndpoint).
@@ -321,9 +321,9 @@ func (clt *Client) StartServer() {
 		Headers("Content-Type", "application/json").
 		Methods("GET")
 
-	binding_address := viper.GetString("server.binding_address")
-	binding_port := viper.GetInt("server.binding_port")
-	binding := fmt.Sprintf("%s:%d", binding_address, binding_port)
+	bindingAddress := viper.GetString("server.binding_address")
+	bindingPort := viper.GetInt("server.binding_port")
+	binding := fmt.Sprintf("%s:%d", bindingAddress, bindingPort)
 
 	log.Infof("Listening on http://%s", binding)
 	http.Handle("/", router)
