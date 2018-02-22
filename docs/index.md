@@ -34,12 +34,12 @@ here][wkhtmltopdf].
 
 Most configuration is done via flags, see `sanaa --help`. But there's AWS
 specific configuration, which are mostly secrets, that don't seem appropriate to
-set via flags. These should be set via one of the alternative methods.
+set via flags.
 
-Sanaa requires AWS credentials with permissions that give it access to the S3
-bucket it will use to store the results of rendering. These credentials will be
-sourced automatically from the following locations (in order of priority, first
-at the top):
+For example, Sanaa requires AWS credentials with permissions that give it access
+to the S3 bucket it will use to store the results of rendering. These
+credentials will be sourced automatically from the following locations (in order
+of priority, first at the top):
 
 1. Environment Credentials - via environment variables:
 
