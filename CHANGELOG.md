@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0
+
+* Configure sanaa to run as non-root user in Dockerfile.
+
 ## 0.2.0
 
 * Add `/health/live` (liveness) and `/health/ready` (readiness) health endpoints
