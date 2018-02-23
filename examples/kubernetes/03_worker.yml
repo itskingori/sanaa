@@ -32,7 +32,7 @@ spec:
       serviceAccountName: sanaa-worker
       containers:
         - name: worker
-          image: kingori/sanaa:0.2.0
+          image: kingori/sanaa:0.3.0
           args:
             - worker
             - --concurrency=10
