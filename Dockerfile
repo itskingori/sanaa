@@ -20,4 +20,10 @@ RUN wget --progress="dot:mega" "https://github.com/itskingori/sanaa/releases/dow
     chmod +x "/usr/local/bin/sanaa" && \
     rm -f ${SANAA_PACKAGE}*
 
+# create app user
+ARG APP_USER="sanaa"
+RUN groupadd -g 9999 "${APP_USER}" && \
+    useradd --system --create-home -u 9999 -g 9999 "${APP_USER}"
+
+USER "${APP_USER}"
 ENTRYPOINT ["sanaa"]
