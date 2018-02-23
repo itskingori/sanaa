@@ -48,7 +48,7 @@ spec:
       serviceAccountName: sanaa-server
       containers:
         - name: server
-          image: kingori/sanaa:0.2.0
+          image: kingori/sanaa:0.3.0
           args:
             - server
             - --binding-port=80
