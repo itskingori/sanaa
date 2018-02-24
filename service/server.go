@@ -52,14 +52,14 @@ type errorResponse struct {
 }
 
 type renderResponse struct {
-	Identifier string `json:"uuid"`
-	CreatedAt  string `json:"created_at"`
-	StartedAt  string `json:"started_at"`
-	EndedAt    string `json:"ended_at"`
-	ExpiresIn  int    `json:"expires_in"`
-	FileURL    string `json:"file_url"`
-	Status     string `json:"status"`
-	Logs       string `json:"logs"`
+	Identifier string   `json:"uuid"`
+	CreatedAt  string   `json:"created_at"`
+	StartedAt  string   `json:"started_at"`
+	EndedAt    string   `json:"ended_at"`
+	ExpiresIn  int      `json:"expires_in"`
+	FileURL    string   `json:"file_url"`
+	Status     string   `json:"status"`
+	Logs       []string `json:"logs"`
 }
 
 func requestBadRequestResponse(w *http.ResponseWriter, r *http.Request, ers errorResponse) {
@@ -274,8 +274,12 @@ func (cj *ConversionJob) generateRenderResponse(clt *Client) (renderResponse, er
 		EndedAt:    cj.EndedAt,
 		ExpiresIn:  cj.ExpiresIn,
 		Status:     cj.Status,
-		Logs:       string(cj.Logs),
 	}
+
+	logs := string(cj.Logs)
+	logs = strings.TrimSpace(logs)
+	logs = strings.Replace(logs, "\r", "\n", -1)
+	rrs.Logs = strings.Split(logs, "\n")
 
 	if cj.Status != "succeeded" {
 
