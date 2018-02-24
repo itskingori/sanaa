@@ -38,14 +38,13 @@ spec:
             - --concurrency=10
             - --redis-host=sanaa-redis.default.svc.cluster.local
             - --s3-bucket=sanaa-output-bucket
+            - --s3-region=us-east-1
             - --verbose
           env:
             - name: AWS_ACCESS_KEY_ID
               value: "some-key"
             - name: AWS_SECRET_ACCESS_KEY
               value: "some-secret"
-            - name: AWS_REGION
-              value: "some-region"
           resources:
             requests:
               cpu: 10m

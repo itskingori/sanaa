@@ -63,8 +63,6 @@ spec:
               value: "some-key"
             - name: AWS_SECRET_ACCESS_KEY
               value: "some-secret"
-            - name: AWS_REGION
-              value: "some-region"
           livenessProbe:
             httpGet:
               path: /health/live

@@ -28,6 +28,7 @@ services:
       - --concurrency=10
       - --redis-host=redis
       - --s3-bucket=sanaa-output-bucket
+      - --s3-region=us-east-1
       - --verbose
     environment: *environment_variables
     links:
