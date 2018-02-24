@@ -41,6 +41,12 @@ var workerCmd = &cobra.Command{
 			return fmt.Errorf("set concurrency is %d, yet the maximum is %d", cv, service.MaxWorkerConcurrency)
 		}
 
+		sbv, _ := cmd.Flags().GetString("s3-bucket")
+
+		if sbv == "" {
+			return fmt.Errorf("S3 bucket name cannot be empty, set --s3-bucket")
+		}
+
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
