@@ -281,6 +281,11 @@ func (cj *ConversionJob) generateRenderResponse(clt *Client) (renderResponse, er
 	logs = strings.Replace(logs, "\r", "\n", -1)
 	rrs.Logs = strings.Split(logs, "\n")
 
+	for i, entry := range rrs.Logs {
+		rrs.Logs[i] = strings.TrimSpace(entry)
+		fmt.Println(rrs.Logs[i])
+	}
+
 	if cj.Status != "succeeded" {
 
 		return rrs, nil
