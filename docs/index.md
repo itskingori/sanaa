@@ -150,7 +150,9 @@ Connection: close
   "expires_in": 86400,
   "file_url": "",
   "status": "pending",
-  "logs": ""
+  "logs": [
+    ""
+  ]
 }
 ```
 
@@ -183,19 +185,25 @@ conversion job. An example of one that's still in processing:
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
-Date: Tue, 06 Feb 2018 06:33:07 GMT
+Date: Sat, 24 Feb 2018 00:41:31 GMT
 Connection: close
 Transfer-Encoding: chunked
 
 {
-  "uuid": "4c815816-1bfe-4790-b8d1-ee06c98b7d6d",
-  "created_at": "2018-02-06T06:32:42Z",
-  "started_at": "2018-02-06T06:32:45Z",
-  "ended_at": "",
+  "uuid": "21835d4a-5dfc-41a4-a798-21980baa43c9",
+  "created_at": "2018-02-24T00:40:32Z",
+  "started_at": "2018-02-24T00:40:36Z",
+  "ended_at": "2018-02-24T00:40:57Z",
   "expires_in": 86400,
-  "file_url": "",
-  "status": "processing",
-  "logs": "Loading page (1/2)\n[>                                                           ] 0%\r[======>                                                     ] 10%\r[==========>                                                 ] 17%\r[============>                                               ] 21%\r[=============>                                              ] 23%\r[===============>                                            ] 26%\r[=================>                                          ] 29%\r[=================>                                          ] 29%\r[=================>                                          ] 29%\r[==================>                                         ] 31%\r[====================>                                       ] 34%\r[======================>                                     ] 37%\r[=======================>                                    ] 39%\r[==========================>                                 ] 44%\r[============================>                               ] 47%\r[==============================>                             ] 50%\r[===============================>                            ] 52%\r[================================>                           ] 54%\r[=================================>                          ] 56%\r[==================================>                         "
+  "file_url": "https://s3.amazonaws.com/example-bucket-name/21835d4a-5dfc-41a4-a798-21980baa43c9/file.png?signed-url-signature",
+  "status": "succeeded",
+  "logs": [
+    "Loading page (1/2)",
+    "...",
+    "Rendering (2/2)",
+    "...",
+    "Done"
+  ]
 }
 ```
 

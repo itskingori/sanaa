@@ -37,7 +37,7 @@ type ConversionJob struct {
 	EndedAt       string `redis:"ended_at"`
 	ExpiresIn     int    `redis:"expires_in"`
 	Status        string `redis:"status"`
-	Logs          string `redis:"logs"`
+	Logs          []byte `redis:"logs"`
 	StorageRegion string `redis:"storage_region"`
 	StorageBucket string `redis:"storage_bucket"`
 	StorageKey    string `redis:"storage_key"`

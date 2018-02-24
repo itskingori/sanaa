@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.0
+
+* Improve output of logs by presenting them as an array. Each log line will be
+  an entry in the array and all the newlines are handled to improve the output.
+
 ## 0.3.0
 
 * Configure sanaa to run as non-root user in Dockerfile.
