@@ -22,7 +22,6 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
-	"strings"
 
 	"github.com/gocraft/work"
 	"github.com/itskingori/go-wkhtml/wkhtmltox"
@@ -153,7 +152,7 @@ func (ctx *workerContext) convert(job *work.Job) error {
 	}).Info("Completed conversion process")
 
 	// Update conversion job with results
-	cj.Logs = strings.TrimRight(string(outputLogs), "\r\n")
+	cj.Logs = outputLogs
 	log.WithFields(log.Fields{
 		"uuid": cj.Identifier,
 	}).Debug("Updated conversion job with logs")

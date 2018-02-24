@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -273,7 +274,7 @@ func (cj *ConversionJob) generateRenderResponse(clt *Client) (renderResponse, er
 		EndedAt:    cj.EndedAt,
 		ExpiresIn:  cj.ExpiresIn,
 		Status:     cj.Status,
-		Logs:       cj.Logs,
+		Logs:       string(cj.Logs),
 	}
 
 	if cj.Status != "succeeded" {
