@@ -41,6 +41,12 @@ var workerCmd = &cobra.Command{
 			return fmt.Errorf("set concurrency is %d, yet the maximum is %d", cv, service.MaxWorkerConcurrency)
 		}
 
+		sbv, _ := cmd.Flags().GetString("s3-bucket")
+
+		if sbv == "" {
+			return fmt.Errorf("S3 bucket name cannot be empty, set --s3-bucket")
+		}
+
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
@@ -58,11 +64,10 @@ func init() {
 	// Add flags to workerCmd
 	workerCmd.PersistentFlags().Int("concurrency", 2, "number of conversion jobs that can be processed at a time, maximum is 10")
 	workerCmd.PersistentFlags().String("s3-bucket", "", "the name of the S3 bucket to use when storing rendered files ")
+	workerCmd.PersistentFlags().String("s3-region", "us-east-1", "the region of the S3 bucket used to store rendered files")
 
 	// Bind workerCmd flags with viper configuration
 	viper.BindPFlag("worker.concurrency", workerCmd.PersistentFlags().Lookup("concurrency"))
 	viper.BindPFlag("worker.s3_bucket", workerCmd.PersistentFlags().Lookup("s3-bucket"))
-
-	// Flag defaults
-	viper.SetDefault("worker.s3_region", "us-east-1")
+	viper.BindPFlag("worker.s3_region", workerCmd.PersistentFlags().Lookup("s3-region"))
 }

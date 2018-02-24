@@ -47,7 +47,6 @@ of priority, first at the top):
    ```bash
    export AWS_ACCESS_KEY_ID=SOME_KEY
    export AWS_SECRET_ACCESS_KEY=SOME_SECRET
-   export AWS_REGION=us-east-1
    ```
 
 2. Shared Credentials file - via `~/.aws/credentials`:
@@ -56,7 +55,6 @@ of priority, first at the top):
    [default]
    aws_access_key_id = <SOME_KEY>
    aws_secret_access_key = <SOME_SECRET>
-   aws_region = us-east-1
    ```
 
 3. EC2 Instance Role Credentials - assigns credentials to application if it's
