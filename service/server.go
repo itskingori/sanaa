@@ -191,13 +191,11 @@ func (clt *Client) renderHandler(w http.ResponseWriter, r *http.Request) {
 
 	rrs, err := cj.generateRenderResponse(clt)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"uuid": cj.Identifier,
-		}).Error("Failed to generate render response")
-
-		log.WithFields(log.Fields{
-			"uuid": cj.Identifier,
-		}).Error(err)
+		ers = errorResponse{
+			Identifier: cj.Identifier,
+			Message:    "Failed to generate render response",
+		}
+		requestInternalServerErrorResponse(&w, r, ers)
 
 		return
 	}
@@ -248,13 +246,11 @@ func (clt *Client) statusHandler(w http.ResponseWriter, r *http.Request) {
 
 	rrs, err := cj.generateRenderResponse(clt)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"uuid": cj.Identifier,
-		}).Error("Failed to generate render response")
-
-		log.WithFields(log.Fields{
-			"uuid": cj.Identifier,
-		}).Error(err)
+		ers = errorResponse{
+			Identifier: cj.Identifier,
+			Message:    "Failed to generate render response",
+		}
+		requestInternalServerErrorResponse(&w, r, ers)
 
 		return
 	}
@@ -297,6 +293,9 @@ func (cj *ConversionJob) generateRenderResponse(clt *Client) (renderResponse, er
 	timeToExpire := 5 * time.Minute
 	surl, err := clt.getFileS3SignedURL(cj, timeToExpire)
 	if err != nil {
+		log.WithFields(log.Fields{
+			"uuid": cj.Identifier,
+		}).Error(err)
 
 		return rrs, err
 	}
