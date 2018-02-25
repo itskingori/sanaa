@@ -45,6 +45,8 @@ func (rr *imageRenderRequest) sourceURL() (*url.URL, error) {
 	u, err := url.Parse(rr.Source.URL)
 	if err != nil {
 		log.Error(err)
+
+		return u, err
 	}
 
 	return u, nil
@@ -62,6 +64,11 @@ func (rr *imageRenderRequest) fulfill(c *Client, cj *ConversionJob, outputDir st
 	outputFile = filepath.Join(outputDir, fmt.Sprintf("file.%s", format))
 	inputURL := rr.Source.URL
 	outputLogs, err := ifs.Generate(inputURL, outputFile)
+	if err != nil {
+		log.Error(err)
 
-	return outputLogs, outputFile, err
+		return outputLogs, outputFile, err
+	}
+
+	return outputLogs, outputFile, nil
 }
