@@ -40,6 +40,10 @@ const (
 	// MaxWorkerConcurrency is the maximum number of concurrent jobs the worker
 	// should process
 	MaxWorkerConcurrency = 10
+
+	// MinWorkerMaxRetries is minimum number that can be set for the worker's
+	// maximum-retries
+	MinWorkerMaxRetries = 0
 )
 
 type workerContext struct {
@@ -187,6 +191,7 @@ func (ctx *workerContext) convert(job *work.Job) error {
 // StartWorker starts the application background worker
 func (c *Client) StartWorker() {
 	concurrency := viper.GetSizeInBytes("worker.concurrency")
+	maxRetries := viper.GetSizeInBytes("worker.max-retries")
 	namespace := viper.GetString("redis.namespace")
 
 	// Check for wkhtmltoimage installation
@@ -207,11 +212,16 @@ func (c *Client) StartWorker() {
 		log.Errorln("Will not start workers due to errors")
 	} else {
 		log.Infof("Concurrency set to %d", concurrency)
+		log.Infof("Maximum retries set to %d", maxRetries)
 		pool := work.NewWorkerPool(workerContext{}, concurrency, namespace, c.redisPool)
+
+		// Set job options
+		maxFails := maxRetries + 1
+		jobOptions := work.JobOptions{MaxFails: maxFails}
 
 		// Assign jobs to queue
 		log.Infof("Registering '%s' queue", conversionQueue)
-		pool.Job(conversionQueue, (*workerContext).convert)
+		pool.JobWithOptions(conversionQueue, jobOptions, (*workerContext).convert)
 
 		// Start processing jobs
 		log.Infof("Waiting to pick up jobs placed on any registered queue")
