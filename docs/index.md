@@ -8,12 +8,25 @@ layout: default
 The objective of the project is to provide a HTTP API around `wkhtmltoimage` and
 `wkhtmltopdf`. There's been no attempt to modify those two binaries. Sanaa
 pretty much translates options passed in as JSON to flags, runs the command,
-fetches the result and translates that results back to JSON which is served back
-as a response.
+fetches the result/command-out and translates those results back to JSON which
+are served back as a response. The resulting file is uploaded to an S3 bucket
+and the response contains the link to download the file.
 
-The architecture of the project takes a server/worker architecture. This was
-deemed ideal as it works well with scaling. You can scale the server part based
-on incoming requests and the worker part based on jobs on the queue.
+That pretty much is it! 💪
+
+## Features 🎉
+
+* Server and worker components that are scalable separately. You can scale the
+  server part based on incoming requests and the worker part based on jobs on
+  the queue.
+* Simple HTTP API with providing render request and status checking endpoints.
+* Liveness and readiness endpoints for proper health checks.
+* Cleans up after itself. Render requests (in redis) and their resulting files
+  (in S3) expire after configurable TTL is exceeded.
+* Configurable max retries on failure with built-in exponential backoff.
+* Metrics endpoint that can be scrapped for internal state i.e. no. of jobs on
+  the processing, retry and dead queues.
+* Proper logging with unique id of each job attached for easy debugging.
 
 ## Installation ⬇️
 
@@ -313,8 +326,9 @@ Connection: close
 ## Development ⚒️
 
 Below instructions are only necessary if you intend to work on the source code
-(find [contributing guidelines][contributing] here). For normal usage the above
-instructions should do.
+(find [contributing guidelines here][contributing], [plan here][plan] and the
+[milestones here][milestones]). For normal usage the above instructions should
+do.
 
 ### Building
 
@@ -366,6 +380,8 @@ users communicate with it there.
 [example2]: https://github.com/itskingori/sanaa/tree/master/examples/kubernetes
 [github-page]: https://pages.github.com/
 [jekyll]: http://jekyllrb.com/
+[milestones]: https://github.com/itskingori/sanaa/milestones
+[plan]: https://github.com/itskingori/sanaa/projects
 [personal-site]: http://kingori.co/
 [license]: https://raw.githubusercontent.com/itskingori/sanaa/master/LICENSE
 [releases]: https://github.com/itskingori/sanaa/releases
