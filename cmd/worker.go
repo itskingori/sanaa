@@ -31,20 +31,22 @@ var workerCmd = &cobra.Command{
 	Short: "Start the application background worker",
 	Long:  `Start the application background worker to process enqeueud jobs.`,
 	Args: func(cmd *cobra.Command, args []string) error {
-		cv, _ := cmd.Flags().GetInt("concurrency")
+		err := validateConcurrency(cmd)
+		if err != nil {
 
-		if cv < service.MinWorkerConcurrency {
-			return fmt.Errorf("set concurrency is %d, yet the minimum is %d", cv, service.MinWorkerConcurrency)
+			return err
 		}
 
-		if cv > service.MaxWorkerConcurrency {
-			return fmt.Errorf("set concurrency is %d, yet the maximum is %d", cv, service.MaxWorkerConcurrency)
+		err = validateMaxRetries(cmd)
+		if err != nil {
+
+			return err
 		}
 
-		sbv, _ := cmd.Flags().GetString("s3-bucket")
+		err = validateS3Bucket(cmd)
+		if err != nil {
 
-		if sbv == "" {
-			return fmt.Errorf("S3 bucket name cannot be empty, set --s3-bucket")
+			return err
 		}
 
 		return nil
@@ -63,11 +65,50 @@ func init() {
 
 	// Add flags to workerCmd
 	workerCmd.PersistentFlags().Int("concurrency", 2, "number of conversion jobs that can be processed at a time, maximum is 10")
+	workerCmd.PersistentFlags().Int("max-retries", 1, "maximum number of times to retry a job on failure")
 	workerCmd.PersistentFlags().String("s3-bucket", "", "the name of the S3 bucket to use when storing rendered files ")
 	workerCmd.PersistentFlags().String("s3-region", "us-east-1", "the region of the S3 bucket used to store rendered files")
 
 	// Bind workerCmd flags with viper configuration
 	viper.BindPFlag("worker.concurrency", workerCmd.PersistentFlags().Lookup("concurrency"))
+	viper.BindPFlag("worker.max-retries", workerCmd.PersistentFlags().Lookup("max-retries"))
 	viper.BindPFlag("worker.s3_bucket", workerCmd.PersistentFlags().Lookup("s3-bucket"))
 	viper.BindPFlag("worker.s3_region", workerCmd.PersistentFlags().Lookup("s3-region"))
+}
+
+// validateConcurrency validates the concurrency flag
+func validateConcurrency(cmd *cobra.Command) error {
+	cv, _ := cmd.Flags().GetInt("concurrency")
+
+	if cv < service.MinWorkerConcurrency {
+		return fmt.Errorf("set concurrency is %d, yet the minimum is %d", cv, service.MinWorkerConcurrency)
+	}
+
+	if cv > service.MaxWorkerConcurrency {
+		return fmt.Errorf("set concurrency is %d, yet the maximum is %d", cv, service.MaxWorkerConcurrency)
+	}
+
+	return nil
+}
+
+// validateMaxRetries validates the max-retries flag
+func validateMaxRetries(cmd *cobra.Command) error {
+	mrv, _ := cmd.Flags().GetInt("max-retries")
+
+	if mrv < service.MinWorkerMaxRetries {
+		return fmt.Errorf("set max-retries is %d, yet the minimum is %d", mrv, service.MinWorkerMaxRetries)
+	}
+
+	return nil
+}
+
+// validateS3Bucket validates the s3-bucket flag
+func validateS3Bucket(cmd *cobra.Command) error {
+	sbv, _ := cmd.Flags().GetString("s3-bucket")
+
+	if sbv == "" {
+		return fmt.Errorf("S3 bucket name cannot be empty, set --s3-bucket")
+	}
+
+	return nil
 }
