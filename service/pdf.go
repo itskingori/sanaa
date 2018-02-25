@@ -44,6 +44,8 @@ func (rr *pdfRenderRequest) sourceURL() (*url.URL, error) {
 	u, err := url.Parse(rr.Source.URL)
 	if err != nil {
 		log.Error(err)
+
+		return u, err
 	}
 
 	return u, nil
@@ -60,6 +62,11 @@ func (rr *pdfRenderRequest) fulfill(c *Client, cj *ConversionJob, outputDir stri
 	outputFile = filepath.Join(outputDir, "file.pdf")
 	inputURL := rr.Source.URL
 	outputLogs, err := pfs.Generate(inputURL, outputFile)
+	if err != nil {
+		log.Error(err)
 
-	return outputLogs, outputFile, err
+		return outputLogs, outputFile, err
+	}
+
+	return outputLogs, outputFile, nil
 }

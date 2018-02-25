@@ -82,6 +82,7 @@ func (clt *Client) enqueueConversionJob(riq string) error {
 	_, err := clt.enqueuer.Enqueue(conversionQueue, work.Q{"uuid": riq})
 	if err != nil {
 		log.Fatal(err)
+
 		return err
 	}
 
@@ -173,7 +174,7 @@ func (clt *Client) fetchConversionJob(jid string) (ConversionJob, bool, error) {
 		"uuid": jid,
 	}).Debug("Fetched conversion job details")
 
-	return cj, found, err
+	return cj, found, nil
 }
 
 func (clt *Client) updateConversionJob(cj *ConversionJob) error {
