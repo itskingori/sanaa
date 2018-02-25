@@ -31,10 +31,10 @@ var serverCmd = &cobra.Command{
 	Short: "Start the application web server",
 	Long:  `Start the application web server listening on the configured binding address and port.`,
 	Args: func(cmd *cobra.Command, args []string) error {
-		rt, _ := cmd.Flags().GetInt("request-ttl")
+		err := validateRequestTTL(cmd)
+		if err != nil {
 
-		if rt < service.MinRequestTTL {
-			return fmt.Errorf("set request-ttl is %d, yet the minimum is %d", rt, service.MinRequestTTL)
+			return err
 		}
 
 		return nil
@@ -60,4 +60,15 @@ func init() {
 	viper.BindPFlag("server.binding_address", serverCmd.PersistentFlags().Lookup("binding-address"))
 	viper.BindPFlag("server.binding_port", serverCmd.PersistentFlags().Lookup("binding-port"))
 	viper.BindPFlag("server.request_ttl", serverCmd.PersistentFlags().Lookup("request-ttl"))
+}
+
+// validateRequestTTL validates the request-ttl flag
+func validateRequestTTL(cmd *cobra.Command) error {
+	rt, _ := cmd.Flags().GetInt("request-ttl")
+
+	if rt < service.MinRequestTTL {
+		return fmt.Errorf("set request-ttl is %d, yet the minimum is %d", rt, service.MinRequestTTL)
+	}
+
+	return nil
 }
