@@ -326,8 +326,9 @@ Connection: close
 ## Development ⚒️
 
 Below instructions are only necessary if you intend to work on the source code
-(find [contributing guidelines][contributing] here). For normal usage the above
-instructions should do.
+(find [contributing guidelines here][contributing], [plan here][plan] and the
+[milestones here][milestones]). For normal usage the above instructions should
+do.
 
 ### Building
 
@@ -379,6 +380,8 @@ users communicate with it there.
 [example2]: https://github.com/itskingori/sanaa/tree/master/examples/kubernetes
 [github-page]: https://pages.github.com/
 [jekyll]: http://jekyllrb.com/
+[milestones]: https://github.com/itskingori/sanaa/milestones
+[plan]: https://github.com/itskingori/sanaa/projects
 [personal-site]: http://kingori.co/
 [license]: https://raw.githubusercontent.com/itskingori/sanaa/master/LICENSE
 [releases]: https://github.com/itskingori/sanaa/releases
