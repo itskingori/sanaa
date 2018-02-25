@@ -82,6 +82,7 @@ INFO[0000] Starting the worker
 INFO[0000] Using wkhtmltoimage 0.12.4 (with patched qt)
 INFO[0001] Using wkhtmltopdf 0.12.4 (with patched qt)
 INFO[0001] Concurrency set to 2
+INFO[0001] Maximum retries set to 1
 INFO[0001] Registering 'convert' queue
 INFO[0001] Waiting to pick up jobs placed on any registered queue
 ```
