@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.5.0
+
+* Add validation for worker `--s3-bucket` flag.
+* Add configuration of region of the S3 bucket via a `--s3-region` flag on the
+  worker.
+* Fix issue with server component not returning the appropriate response if
+  unable to enqueue a job i.e. if redis is down. Previously it would return a
+  `201 Created` instead of a `500 Internal Server Error`.
+* Fix issue where some methods would not return an error correctly which could
+  possibly affect other components that rely on the returned error to apply the
+  right logic.
+* Fix issue with the `/status` endpoint where it would return with a `200 OK`
+  even if there was an issue generating the pre-signed URL to the rendered file.
+
 ## 0.4.0
 
 * Improve output of logs by presenting them as an array. Each log line will be
