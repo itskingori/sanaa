@@ -64,8 +64,6 @@ func (ctx *workerContext) convert(job *work.Job) error {
 			"uuid": jid,
 		}).Errorf("Error: %v", err)
 
-		// !!! //
-
 		return err
 	}
 
@@ -81,8 +79,6 @@ func (ctx *workerContext) convert(job *work.Job) error {
 			"uuid": cj.Identifier,
 		}).Error("Invalid render target type, won't proceed")
 
-		// !!! //
-
 		return nil
 	}
 
@@ -92,8 +88,6 @@ func (ctx *workerContext) convert(job *work.Job) error {
 		log.WithFields(log.Fields{
 			"uuid": cj.Identifier,
 		}).Errorf("Error unmarshalling request data")
-
-		// !!! //
 
 		return err
 	}
@@ -109,8 +103,6 @@ func (ctx *workerContext) convert(job *work.Job) error {
 			"uuid": cj.Identifier,
 		}).Errorf("Error: %v", err)
 
-		// !!! //
-
 		return err
 	}
 
@@ -121,8 +113,6 @@ func (ctx *workerContext) convert(job *work.Job) error {
 		log.WithFields(log.Fields{
 			"uuid": cj.Identifier,
 		}).Errorf("Error: %v", err)
-
-		// !!! //
 
 		return err
 	}
@@ -143,8 +133,6 @@ func (ctx *workerContext) convert(job *work.Job) error {
 			"uuid": cj.Identifier,
 		}).Errorf("Error: %v", err)
 
-		// !!! //
-
 		return err
 	}
 	log.WithFields(log.Fields{
@@ -162,8 +150,6 @@ func (ctx *workerContext) convert(job *work.Job) error {
 			"uuid": cj.Identifier,
 		}).Errorf("Error: %v", err)
 
-		// !!! //
-
 		return err
 	}
 
@@ -176,8 +162,6 @@ func (ctx *workerContext) convert(job *work.Job) error {
 		log.WithFields(log.Fields{
 			"uuid": cj.Identifier,
 		}).Errorf("Error: %v", err)
-
-		// !!! //
 
 		return err
 	}
@@ -193,8 +177,6 @@ func (ctx *workerContext) convert(job *work.Job) error {
 		log.WithFields(log.Fields{
 			"uuid": cj.Identifier,
 		}).Errorf("Error: %v", err)
-
-		// !!! //
 
 		return err
 	}
