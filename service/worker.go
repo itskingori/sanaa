@@ -209,7 +209,7 @@ func (c *Client) StartWorker() {
 		log.Infof("Concurrency set to %d", concurrency)
 		pool := work.NewWorkerPool(workerContext{}, concurrency, namespace, c.redisPool)
 
-		// Assign queues to jobs
+		// Assign jobs to queue
 		log.Infof("Registering '%s' queue", conversionQueue)
 		pool.Job(conversionQueue, (*workerContext).convert)
 
