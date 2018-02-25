@@ -14,6 +14,20 @@ and the response contains the link to download the file.
 
 That pretty much is it! 💪
 
+## Features 🎉
+
+* Server and worker components that are scalable separately. You can scale the
+  server part based on incoming requests and the worker part based on jobs on
+  the queue.
+* Simple HTTP API with providing render request and status checking endpoints.
+* Liveness and readiness endpoints for proper health checks.
+* Cleans up after itself. Render requests (in redis) and their resulting files
+  (in S3) expire after configurable TTL is exceeded.
+* Configurable max retries on failure with built-in exponential backoff.
+* Metrics endpoint that can be scrapped for internal state i.e. no. of jobs on
+  the processing, retry and dead queues.
+* Proper logging with unique id of each job attached for easy debugging.
+
 ## Installation ⬇️
 
 Sanaa is a single Go binary. All you need to do is download the binary for your
