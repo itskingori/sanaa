@@ -33,6 +33,8 @@ func (rr *pdfRenderRequest) save(riq string, c *Client) (ConversionJob, error) {
 	cj, err := c.createAndSaveConversionJob(riq, rr)
 	if err != nil {
 		log.Error(err)
+
+		return cj, err
 	}
 
 	return cj, nil
