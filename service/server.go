@@ -191,9 +191,11 @@ func (clt *Client) renderHandler(w http.ResponseWriter, r *http.Request) {
 
 	rrs, err := cj.generateRenderResponse(clt)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"uuid": cj.Identifier,
-		}).Error("Failed to generate render response")
+		ers = errorResponse{
+			Identifier: cj.Identifier,
+			Message:    "Failed to generate render response",
+		}
+		requestInternalServerErrorResponse(&w, r, ers)
 
 		return
 	}
@@ -244,9 +246,11 @@ func (clt *Client) statusHandler(w http.ResponseWriter, r *http.Request) {
 
 	rrs, err := cj.generateRenderResponse(clt)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"uuid": cj.Identifier,
-		}).Error("Failed to generate render response")
+		ers = errorResponse{
+			Identifier: cj.Identifier,
+			Message:    "Failed to generate render response",
+		}
+		requestInternalServerErrorResponse(&w, r, ers)
 
 		return
 	}
