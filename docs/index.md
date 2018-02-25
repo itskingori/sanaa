@@ -8,12 +8,11 @@ layout: default
 The objective of the project is to provide a HTTP API around `wkhtmltoimage` and
 `wkhtmltopdf`. There's been no attempt to modify those two binaries. Sanaa
 pretty much translates options passed in as JSON to flags, runs the command,
-fetches the result and translates that results back to JSON which is served back
-as a response.
+fetches the result/command-out and translates those results back to JSON which
+are served back as a response. The resulting file is uploaded to an S3 bucket
+and the response contains the link to download the file.
 
-The architecture of the project takes a server/worker architecture. This was
-deemed ideal as it works well with scaling. You can scale the server part based
-on incoming requests and the worker part based on jobs on the queue.
+That pretty much is it! 💪
 
 ## Installation ⬇️
 
