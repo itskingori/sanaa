@@ -104,7 +104,8 @@ INFO[0001] Waiting to pick up jobs placed on any registered queue
 
 #### Rendering Images & PDFs
 
-For images, make a `POST` request to `/render/image`:
+For images ([see reference](/api-reference/image/)), make a `POST` request to
+`/render/image`:
 
 ```http
 POST /render/image HTTP/1.1
@@ -125,7 +126,8 @@ Content-Length: 172
 }
 ```
 
-For PDFs, make a `POST` request to `/render/pdf`:
+For PDFs ([see reference](/api-reference/pdf/)), make a `POST` request to
+`/render/pdf`:
 
 ```http
 POST /render/pdf HTTP/1.1
