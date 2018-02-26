@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.0
+
+* Add worker failure `--max-retries` configuration option.
+
 ## 0.5.0
 
 * Add validation for worker `--s3-bucket` flag.
