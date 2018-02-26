@@ -113,8 +113,8 @@
 [[projects]]
   name = "github.com/itskingori/go-wkhtml"
   packages = ["wkhtmltox"]
-  revision = "27afacac5025dea7aa1fb566d0e9b07d0a1f145a"
-  version = "1.0.0-rc1"
+  revision = "aa8c15cb0496f39f69a7e453d1299b93ac4f2f0e"
+  version = "1.0.0"
 
 [[projects]]
   name = "github.com/jmespath/go-jmespath"

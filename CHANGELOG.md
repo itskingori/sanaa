@@ -3,6 +3,7 @@
 ## 0.6.0
 
 * Add worker failure `--max-retries` configuration option.
+* Upgrade `github.com/itskingori/go-wkhtml` to v1.0.0.
 
 ## 0.5.0
 
