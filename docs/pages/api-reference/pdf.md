@@ -6,6 +6,8 @@ permalink: /api-reference/pdf/
 
 # {{ page.title }}
 
+------------------
+
 ## Target
 
 | Key                             | Type               | Mapped Flag             |

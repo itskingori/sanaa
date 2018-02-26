@@ -6,6 +6,8 @@ permalink: /api-reference/image/
 
 # {{ page.title }}
 
+------------------
+
 ## Target
 
 | Key                           | Type              | Mapped Flag             |
