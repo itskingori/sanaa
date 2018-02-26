@@ -40,6 +40,14 @@ permalink: /api-reference/image/
 | `width`                       | `int`             | `--width` |
 | `zoom`                        | `float`           | `--zoom` |
 
-[1,2] - The `[]object` type means that it's an array of object. In this case,
-object has name and value attributes which are both strings i.e. is `{ name:
-string, value: string}`.
+## Source
+
+| Key         | Type          | Description   |
+|-------------|---------------|---------------|
+| `url`       | `string`      | URL to use as a source for the render |
+
+Footnotes:
+
+* [1,2] - The `[]object` type means that it's an array of object. In this case,
+  object has name and value attributes which are both strings i.e. is `{ name:
+  string, value: string}`.
