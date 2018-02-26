@@ -25,8 +25,6 @@ That pretty much is it! 💪
 * Cleans up after itself. Render requests (in redis) and their resulting files
   (in S3) expire after configurable TTL is exceeded.
 * Configurable max retries on failure with built-in exponential backoff.
-* Metrics endpoint that can be scrapped for internal state i.e. no. of jobs on
-  the processing, retry and dead queues.
 * Proper logging with unique id of each job attached for easy debugging and
   filtering.
 
