@@ -104,7 +104,7 @@ INFO[0001] Waiting to pick up jobs placed on any registered queue
 
 #### Rendering Images & PDFs
 
-For images ([see reference](/api-reference/image/)), make a `POST` request to
+For images ([see reference][api-ref-image]), make a `POST` request to
 `/render/image`:
 
 ```http
@@ -126,8 +126,7 @@ Content-Length: 172
 }
 ```
 
-For PDFs ([see reference](/api-reference/pdf/)), make a `POST` request to
-`/render/pdf`:
+For PDFs ([see reference][api-ref-pdf]), make a `POST` request to `/render/pdf`:
 
 ```http
 POST /render/pdf HTTP/1.1
@@ -388,3 +387,6 @@ users communicate with it there.
 [license]: https://raw.githubusercontent.com/itskingori/sanaa/master/LICENSE
 [releases]: https://github.com/itskingori/sanaa/releases
 [wkhtmltopdf]: https://wkhtmltopdf.org/downloads.html
+
+[api-ref-image]: {{ site.baseurl }}/api-reference/image/
+[api-ref-pdf]: {{ site.baseurl }}/api-reference/pdf/
