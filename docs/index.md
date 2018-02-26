@@ -5,12 +5,13 @@ layout: default
 
 ## Synopsis 🔍
 
-The objective of the project is to provide a HTTP API around `wkhtmltoimage` and
-`wkhtmltopdf`. There's been no attempt to modify those two binaries. Sanaa
-pretty much translates options passed in as JSON to flags, runs the command,
-fetches the result/command-out and translates those results back to JSON which
-are served back as a response. The resulting file is uploaded to an S3 bucket
-and the response contains the link to download the file.
+Sanaa provides a HTTP API around `wkhtmltoimage` and `wkhtmltopdf`. There's been
+no attempt to modify those two binaries.
+
+It pretty much translates options passed in as JSON to flags, runs the command,
+fetches the command-output and translates those results into a JSON response.
+The generated file should have been uploaded to an S3 bucket and the API
+response should contain a signed link to it.
 
 That pretty much is it! 💪
 
@@ -19,14 +20,13 @@ That pretty much is it! 💪
 * Server and worker components that are scalable separately. You can scale the
   server part based on incoming requests and the worker part based on jobs on
   the queue.
-* Simple HTTP API with providing render request and status checking endpoints.
+* Simple HTTP API with render request and status checking endpoints.
 * Liveness and readiness endpoints for proper health checks.
 * Cleans up after itself. Render requests (in redis) and their resulting files
   (in S3) expire after configurable TTL is exceeded.
 * Configurable max retries on failure with built-in exponential backoff.
-* Metrics endpoint that can be scrapped for internal state i.e. no. of jobs on
-  the processing, retry and dead queues.
-* Proper logging with unique id of each job attached for easy debugging.
+* Proper logging with unique id of each job attached for easy debugging and
+  filtering.
 
 ## Installation ⬇️
 

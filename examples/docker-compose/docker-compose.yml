@@ -2,7 +2,7 @@
 version: '2.2'
 services:
   server:
-    image: kingori/sanaa:0.5.0
+    image: kingori/sanaa:0.6.0
     command:
       - server
       - --binding-port=80
@@ -22,7 +22,7 @@ services:
     networks:
       - local
   worker:
-    image: kingori/sanaa:0.5.0
+    image: kingori/sanaa:0.6.0
     command:
       - worker
       - --concurrency=10
