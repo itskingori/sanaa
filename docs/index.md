@@ -201,7 +201,7 @@ Connection: close
 ```
 
 The status endpoint will return a `200 OK` HTTP response with details of the
-conversion job. An example of one that's still in processing:
+conversion job. An example of one that's succeeded:
 
 ```http
 HTTP/1.1 200 OK
@@ -228,12 +228,13 @@ Transfer-Encoding: chunked
 }
 ```
 
-Notably, several fields reflect the `processing` state of the conversion job:
+Notably, several fields reflect the state of the conversion job:
 
-1. `status` is set to `processing`,
+1. `status` is set to `succeeded`,
 2. `started_at` has been set to the time the processing started,
-3. `ended_at` is still empty (obviously) and
-4. `logs` has been populated with some output from the processing.
+3. `ended_at` has been set to the time the processing ended. It should be empty
+   if the it's still in processing state,
+4. `logs` has been populated with output from the processing.
 
 In case of failure, expect to recieve responses that communicate the problem.
 For example:
@@ -336,24 +337,24 @@ Connection: close
 
 ## Development ⚒️
 
-Below instructions are only necessary if you intend to work on the source code
-(find [contributing guidelines here][contributing], [plan here][plan] and the
-[milestones here][milestones]). For normal usage the above instructions should
-do.
+For normal usage the above instructions should do. Below instructions are only
+necessary if you intend to work on the source code (find [contributing
+guidelines here][contributing], [plan here][plan] and the [milestones
+here][milestones]).
 
 ### Building
 
-1. Fetch the code with `go get github.com/itskingori/sanaa`.
-1. Install the Go development tools via `make dependencies`.
-1. Install application dependencies via `make install` (they'll be placed in
+1. Fetch the code with `go get -v github.com/itskingori/sanaa`.
+2. Install the Go development tools via `make dependencies`.
+3. Install application dependencies via `make install` (they'll be placed in
    `./vendor`). Requires [golang/dep][dep] package manager.
-1. Build and install the binary with `make build`.
-1. Run the command e.g. `./sanaa help`.
+4. Build and install the binary with `make build`.
+5. Run the command e.g. `./sanaa help` as a basic test.
 
 ### Testing
 
 1. Install the Go testing tools via `make dependencies`.
-1. Run linter using `make lint` and test using `make test`.
+2. Run linter using `make lint` and test using `make test`.
 
 ### Documentation
 
@@ -364,16 +365,16 @@ generator) and it is [hosted on GitHub Pages][github-page]. The code is in the
 ### Releasing
 
 1. Create a tag (`git tag`) and push the tags to remote (`git push --tags`).
-2. CI pipeline will detect the tag and create a [GitHub release here][releases].
-   To note:
+2. CI pipeline ([on Travis CI][travis-ci]) will detect the tag and create a
+   [GitHub release here][releases]. To note:
    * Tags matching `x.y.z` will be marked as final releases.
    * Tags matching `x.y.z-*` will be marked as pre-releases.
    * Tags not matching either of the above, will be ignored and assumed to be
      normal tags.
-   * Compressed binary with a shasum 256 file will be uploaded as attachments to
-     the release.
-3. Trigger will start a build on Docker Hub to publish two Docker images:
-   `kingori/sanaa:latest` and `kingori/sanaa:x.y.z`.
+   * Compressed binary with a shasum 256 text file will be uploaded as
+     attachments to the release.
+3. Trigger will start a build on Docker Hub to publish two Docker images (right
+   after GitHub release): `kingori/sanaa:latest` and `kingori/sanaa:x.y.z`.
 
 ## FAQ
 
@@ -417,6 +418,7 @@ users communicate with it there.
 [personal-site]: http://kingori.co/
 [rfc3339]: https://www.ietf.org/rfc/rfc3339.txt
 [swahili]: https://en.wikipedia.org/wiki/Swahili_language
+[travis-ci]: https://travis-ci.org/itskingori/sanaa
 [license]: https://raw.githubusercontent.com/itskingori/sanaa/master/LICENSE
 [releases]: https://github.com/itskingori/sanaa/releases
 [wkhtmltopdf]: https://wkhtmltopdf.org/downloads.html
