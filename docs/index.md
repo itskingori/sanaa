@@ -349,7 +349,7 @@ here][milestones]).
 1. Install application dependencies via `make install` (they'll be placed in
    `./vendor`). Requires [golang/dep][dep] package manager.
 1. Build and install the binary with `make build`.
-1. Run the command e.g. `./sanaa help`.
+1. Run the command e.g. `./sanaa help` as a basic test.
 
 ### Testing
 
