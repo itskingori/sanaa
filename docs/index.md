@@ -6,14 +6,19 @@ layout: default
 ## Synopsis 🔍
 
 Sanaa provides a HTTP API around `wkhtmltoimage` and `wkhtmltopdf`. There's been
-no attempt to modify those two binaries.
+no attempt to modify those two binaries. It's [BYO][byo]-wkhtmltoX.
 
-It pretty much translates options passed in as JSON to flags, runs the command,
-fetches the command-output and translates those results into a JSON response.
-The generated file should have been uploaded to an S3 bucket and the API
-response should contain a signed link to it.
+It translates options passed in as JSON to flags, runs the command, fetches the
+command-output/generated-file and translates those results into a JSON response.
+The generated file should have been uploaded to an S3 bucket (by that point) and
+the API response should contain a signed link to it.
 
-That pretty much is it! 💪
+The current implementation assumes that Sanaa's _**role is purely to render what
+you ask it to and provide you with a means to fetch it**_. This emphasis on a
+single-responsibility made for a simple design. So, it's left up to you to use
+the result as you wish.
+
+That pretty much is it 💪 ... in a nutshell! 🥜🐚
 
 ## Features 🎉
 
@@ -25,8 +30,8 @@ That pretty much is it! 💪
 * Cleans up after itself. Render requests (in redis) and their resulting files
   (in S3) expire after configurable TTL is exceeded.
 * Configurable max retries on failure with built-in exponential backoff.
-* Proper logging with unique id of each job attached for easy debugging and
-  filtering.
+* Proper logging with unique id of each job on each line (where appropriate)
+  makes it easy for filtering logs and therefore quick debugging.
 
 ## Installation ⬇️
 
@@ -40,8 +45,8 @@ Find [docker-compose][example1] and [kubernetes][example2] examples in the
 
 ## Dependencies 🖇️
 
-Just make sure that `wkhtmltoimage` and `wkhtmltopdf`  are available in your
-`$PATH` for sanaa to be able to autodetect them. Get [downloads
+Just make sure that `wkhtmltoimage` and `wkhtmltopdf` binaries are available in
+your `$PATH` for sanaa to be able to autodetect them. Fetch [downloads from
 here][wkhtmltopdf].
 
 ## Configuration 🎛️
@@ -50,10 +55,13 @@ Most configuration is done via flags, see `sanaa --help`. But there's AWS
 specific configuration, which are mostly secrets, that don't seem appropriate to
 set via flags.
 
-For example, Sanaa requires AWS credentials with permissions that give it access
-to the S3 bucket it will use to store the results of rendering. These
-credentials will be sourced automatically from the following locations (in order
-of priority, first at the top):
+For example, Sanaa requires AWS credentials with permissions. The worker
+requires upload access to the S3 bucket it will use to store the results of
+rendering and the server will require access to generate signed URLs to download
+from the same bucket.
+
+These credentials will be sourced automatically from the following locations (in
+order of priority, first at the top):
 
 1. Environment Credentials - via environment variables:
 
@@ -273,6 +281,8 @@ the following attributes:
 | `status`      | Status of the job i.e. `pending`, `processing`, `failed`, `succeeded` |
 | `logs`        | Output of processing by the worker, useful when debugging |
 
+Timestamp fields are [RFC3339][rfc3339] and always in UTC.
+
 ### Advanced Usage
 
 #### Health Endpoints
@@ -365,6 +375,23 @@ generator) and it is [hosted on GitHub Pages][github-page]. The code is in the
 3. Trigger will start a build on Docker Hub to publish two Docker images:
    `kingori/sanaa:latest` and `kingori/sanaa:x.y.z`.
 
+## FAQ
+
+**What does _Sanaa_ mean?**
+
+It's the [Swahili][swahili] word for _"art"_ or more specifically a _"work of
+beauty"_. I'm [Kenyan][kenya] so my bias to Swahili is obvious. 🤷
+
+**How Can I Help?**
+
+Write tests (or show me how to). I'm fairly new to Go and I'm of the opinion
+that writing tests for a service like this is non-trivial. So far testing has
+been manual but I plan to read on it and write some when I get time (as an
+exercise in continuous learning).
+
+Give feedback. Feel free to submit via [raising an issue][issue-new] or even
+comment on [the open issues][issue-list].
+
 ## License 📜
 
 [King'ori J. Maina][personal-site] © 2018. The [GNU Affero General Public
@@ -374,16 +401,22 @@ circumstances, then you have to provide the source code under this license. And
 this still applies if you run the modified program on a server and let other
 users communicate with it there.
 
+[byo]: https://www.urbandictionary.com/define.php?term=BYO
 [contributing]: https://github.com/itskingori/sanaa/blob/master/CONTRIBUTING.md
 [dep]: https://golang.github.io/dep/
 [dockerhub]: https://hub.docker.com/r/kingori/sanaa
 [example1]: https://github.com/itskingori/sanaa/tree/master/examples/docker-compose
 [example2]: https://github.com/itskingori/sanaa/tree/master/examples/kubernetes
 [github-page]: https://pages.github.com/
+[issue-list]: https://github.com/itskingori/sanaa/issues
+[issue-new]: https://github.com/itskingori/sanaa/issues/new
 [jekyll]: http://jekyllrb.com/
+[kenya]: https://en.wikipedia.org/wiki/Kenya
 [milestones]: https://github.com/itskingori/sanaa/milestones
 [plan]: https://github.com/itskingori/sanaa/projects
 [personal-site]: http://kingori.co/
+[rfc3339]: https://www.ietf.org/rfc/rfc3339.txt
+[swahili]: https://en.wikipedia.org/wiki/Swahili_language
 [license]: https://raw.githubusercontent.com/itskingori/sanaa/master/LICENSE
 [releases]: https://github.com/itskingori/sanaa/releases
 [wkhtmltopdf]: https://wkhtmltopdf.org/downloads.html

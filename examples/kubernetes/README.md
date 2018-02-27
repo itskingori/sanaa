@@ -1,3 +1,9 @@
+```
+$ kubectl apply -f 01_redis.yml
+$ kubectl apply -f 02_server.yml
+$ kubectl apply -f 03_worker.yml
+```
+
 ```console
 $ kubectl get configmaps,serviceaccounts,services,statefulsets,deployments,pods -l app=sanaa -n default
 NAME             DATA      AGE
