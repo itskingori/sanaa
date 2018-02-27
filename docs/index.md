@@ -344,7 +344,7 @@ here][milestones]).
 
 ### Building
 
-1. Fetch the code with `go get github.com/itskingori/sanaa`.
+1. Fetch the code with `go get -v github.com/itskingori/sanaa`.
 1. Install the Go development tools via `make dependencies`.
 1. Install application dependencies via `make install` (they'll be placed in
    `./vendor`). Requires [golang/dep][dep] package manager.
