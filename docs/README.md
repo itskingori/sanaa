@@ -1,7 +1,7 @@
-Homepage built on [Jekyll][1].
+Sanaa project homepage built on [Jekyll][1]. To use:
 
-Use `make server` to start the docs server (which starts it in a way that
-matches the GitHub Pages build server). Changes to files are reflected in real-
-time.
+1. `make install` - installs dependencies.
+2. `make server` - runs Jekyll in a way that matches the GitHub Pages build server.
+3. `make test` - runs tests i.e. check if we can successfully build via jekyll build.
 
 [1]: http://jekyllrb.com/

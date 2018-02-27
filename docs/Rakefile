@@ -1,0 +1,8 @@
+require 'html-proofer'
+
+task :test do
+  HTMLProofer.check_directory('./_site',
+    alt_ignore: [/.*/],
+    disable_external: true,
+    assume_extension: true).run
+end
