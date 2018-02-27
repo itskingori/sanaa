@@ -370,6 +370,22 @@ generator) and it is [hosted on GitHub Pages][github-page]. The code is in the
 3. Trigger will start a build on Docker Hub to publish two Docker images:
    `kingori/sanaa:latest` and `kingori/sanaa:x.y.z`.
 
+## FAQ
+
+**What does _Sanaa_ mean?**
+
+It's the Swahili word for _"art"_ or more specifically a _"work of beauty"_. I'm
+[Kenyan][kenya] so my bias to Swahili is obvious. 🤷
+
+**How Can I Help?**
+
+Write tests (or show me how to). I'm fairly new to Go and I'm of the opinion
+that writing tests for a service like this is non-trivial. So far testing has
+been manual but I plan to read on it and write some when I get time.
+
+Give feedback. Feel free to submit via [raising an issue on GitHub][issue-new]
+or even comment on [the open issues][issue-list].
+
 ## License 📜
 
 [King'ori J. Maina][personal-site] © 2018. The [GNU Affero General Public
@@ -386,7 +402,10 @@ users communicate with it there.
 [example1]: https://github.com/itskingori/sanaa/tree/master/examples/docker-compose
 [example2]: https://github.com/itskingori/sanaa/tree/master/examples/kubernetes
 [github-page]: https://pages.github.com/
+[issue-list]: https://github.com/itskingori/sanaa/issues
+[issue-new]: https://github.com/itskingori/sanaa/issues/new
 [jekyll]: http://jekyllrb.com/
+[kenya]: https://en.wikipedia.org/wiki/Kenya
 [milestones]: https://github.com/itskingori/sanaa/milestones
 [plan]: https://github.com/itskingori/sanaa/projects
 [personal-site]: http://kingori.co/
