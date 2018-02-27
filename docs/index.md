@@ -278,6 +278,8 @@ the following attributes:
 | `status`      | Status of the job i.e. `pending`, `processing`, `failed`, `succeeded` |
 | `logs`        | Output of processing by the worker, useful when debugging |
 
+Timestamp fields are [RFC3339][rfc3339] and always in UTC.
+
 ### Advanced Usage
 
 #### Health Endpoints
@@ -409,6 +411,7 @@ users communicate with it there.
 [milestones]: https://github.com/itskingori/sanaa/milestones
 [plan]: https://github.com/itskingori/sanaa/projects
 [personal-site]: http://kingori.co/
+[rfc3339]: https://www.ietf.org/rfc/rfc3339.txt
 [license]: https://raw.githubusercontent.com/itskingori/sanaa/master/LICENSE
 [releases]: https://github.com/itskingori/sanaa/releases
 [wkhtmltopdf]: https://wkhtmltopdf.org/downloads.html
