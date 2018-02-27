@@ -13,8 +13,8 @@ command-output/generated-file and translates those results into a JSON response.
 The generated file should have been uploaded to an S3 bucket (by that point) and
 the API response should contain a signed link to it.
 
-The current implementation assumes that Sanaa's _**role is purely to render what
-you ask it to and provide you with a means to fetch it**_. This emphasis on a
+The current implementation assumes that Sanaa's role is purely to render what
+you ask it to and provide you with a means to fetch it. This emphasis on a
 single-responsibility made for a simple design. So, it's left up to you to use
 the result as you wish.
 
