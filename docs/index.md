@@ -345,16 +345,16 @@ here][milestones]).
 ### Building
 
 1. Fetch the code with `go get -v github.com/itskingori/sanaa`.
-1. Install the Go development tools via `make dependencies`.
-1. Install application dependencies via `make install` (they'll be placed in
+2. Install the Go development tools via `make dependencies`.
+3. Install application dependencies via `make install` (they'll be placed in
    `./vendor`). Requires [golang/dep][dep] package manager.
-1. Build and install the binary with `make build`.
-1. Run the command e.g. `./sanaa help` as a basic test.
+4. Build and install the binary with `make build`.
+5. Run the command e.g. `./sanaa help` as a basic test.
 
 ### Testing
 
 1. Install the Go testing tools via `make dependencies`.
-1. Run linter using `make lint` and test using `make test`.
+2. Run linter using `make lint` and test using `make test`.
 
 ### Documentation
 
