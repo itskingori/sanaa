@@ -371,8 +371,8 @@ generator) and it is [hosted on GitHub Pages][github-page]. The code is in the
    * Tags matching `x.y.z-*` will be marked as pre-releases.
    * Tags not matching either of the above, will be ignored and assumed to be
      normal tags.
-   * Compressed binary with a shasum 256 file will be uploaded as attachments to
-     the release.
+   * Compressed binary with a shasum 256 text file will be uploaded as
+     attachments to the release.
 3. Trigger will start a build on Docker Hub to publish two Docker images (right
    after GitHub release): `kingori/sanaa:latest` and `kingori/sanaa:x.y.z`.
 
