@@ -337,10 +337,10 @@ Connection: close
 
 ## Development ⚒️
 
-Below instructions are only necessary if you intend to work on the source code
-(find [contributing guidelines here][contributing], [plan here][plan] and the
-[milestones here][milestones]). For normal usage the above instructions should
-do.
+For normal usage the above instructions should do. Below instructions are only
+necessary if you intend to work on the source code (find [contributing
+guidelines here][contributing], [plan here][plan] and the [milestones
+here][milestones]).
 
 ### Building
 
