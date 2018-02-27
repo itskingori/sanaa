@@ -365,8 +365,8 @@ generator) and it is [hosted on GitHub Pages][github-page]. The code is in the
 ### Releasing
 
 1. Create a tag (`git tag`) and push the tags to remote (`git push --tags`).
-2. CI pipeline (i.e. Travis CI) will detect the tag and create a [GitHub release
-   here][releases]. To note:
+2. CI pipeline ([on Travis CI][travis-ci]) will detect the tag and create a
+   [GitHub release here][releases]. To note:
    * Tags matching `x.y.z` will be marked as final releases.
    * Tags matching `x.y.z-*` will be marked as pre-releases.
    * Tags not matching either of the above, will be ignored and assumed to be
@@ -418,6 +418,7 @@ users communicate with it there.
 [personal-site]: http://kingori.co/
 [rfc3339]: https://www.ietf.org/rfc/rfc3339.txt
 [swahili]: https://en.wikipedia.org/wiki/Swahili_language
+[travis-ci]: https://travis-ci.org/itskingori/sanaa
 [license]: https://raw.githubusercontent.com/itskingori/sanaa/master/LICENSE
 [releases]: https://github.com/itskingori/sanaa/releases
 [wkhtmltopdf]: https://wkhtmltopdf.org/downloads.html
