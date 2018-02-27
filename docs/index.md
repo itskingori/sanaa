@@ -30,8 +30,8 @@ That pretty much is it 💪 ... in a nutshell! 🥜🐚
 * Cleans up after itself. Render requests (in redis) and their resulting files
   (in S3) expire after configurable TTL is exceeded.
 * Configurable max retries on failure with built-in exponential backoff.
-* Proper logging with unique id of each job attached for easy debugging and
-  filtering.
+* Proper logging with unique id of each job on each line (where appropriate)
+  makes it easy for filtering logs and therefore quick debugging.
 
 ## Installation ⬇️
 
