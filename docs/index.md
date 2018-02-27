@@ -201,7 +201,7 @@ Connection: close
 ```
 
 The status endpoint will return a `200 OK` HTTP response with details of the
-conversion job. An example of one that's still in processing:
+conversion job. An example of one that's succeeded:
 
 ```http
 HTTP/1.1 200 OK
@@ -228,12 +228,13 @@ Transfer-Encoding: chunked
 }
 ```
 
-Notably, several fields reflect the `processing` state of the conversion job:
+Notably, several fields reflect the state of the conversion job:
 
-1. `status` is set to `processing`,
+1. `status` is set to `succeeded`,
 2. `started_at` has been set to the time the processing started,
-3. `ended_at` is still empty (obviously) and
-4. `logs` has been populated with some output from the processing.
+3. `ended_at` has been set to the time the processing ended. It should be empty
+   if the it's still in processing state,
+4. `logs` has been populated with output from the processing.
 
 In case of failure, expect to recieve responses that communicate the problem.
 For example:
