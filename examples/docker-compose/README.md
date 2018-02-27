@@ -1,4 +1,8 @@
 ```console
+$ docker-compose up -d
+```
+
+```console
 $ docker-compose ps
          Name                       Command               State           Ports
 ---------------------------------------------------------------------------------------
