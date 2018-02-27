@@ -6,14 +6,19 @@ layout: default
 ## Synopsis 🔍
 
 Sanaa provides a HTTP API around `wkhtmltoimage` and `wkhtmltopdf`. There's been
-no attempt to modify those two binaries.
+no attempt to modify those two binaries. It's [BYO][byo]-wkhtmltoX.
 
-It pretty much translates options passed in as JSON to flags, runs the command,
-fetches the command-output and translates those results into a JSON response.
-The generated file should have been uploaded to an S3 bucket and the API
-response should contain a signed link to it.
+It translates options passed in as JSON to flags, runs the command, fetches the
+command-output/generated-file and translates those results into a JSON response.
+The generated file should have been uploaded to an S3 bucket (by that point) and
+the API response should contain a signed link to it.
 
-That pretty much is it! 💪
+The current implementation assumes that Sanaa's _**role is purely to render what
+you ask it to and provide you with a means to fetch it**_. This emphasis on a
+single-responsibility made for a simple design. So, it's left up to you to use
+the result as you wish.
+
+That pretty much is it 💪 ... in a nutshell! 🥜🐚
 
 ## Features 🎉
 
@@ -374,6 +379,7 @@ circumstances, then you have to provide the source code under this license. And
 this still applies if you run the modified program on a server and let other
 users communicate with it there.
 
+[byo]: https://www.urbandictionary.com/define.php?term=BYO
 [contributing]: https://github.com/itskingori/sanaa/blob/master/CONTRIBUTING.md
 [dep]: https://golang.github.io/dep/
 [dockerhub]: https://hub.docker.com/r/kingori/sanaa
