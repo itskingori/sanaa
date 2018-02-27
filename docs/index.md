@@ -45,8 +45,8 @@ Find [docker-compose][example1] and [kubernetes][example2] examples in the
 
 ## Dependencies 🖇️
 
-Just make sure that `wkhtmltoimage` and `wkhtmltopdf`  are available in your
-`$PATH` for sanaa to be able to autodetect them. Get [downloads
+Just make sure that `wkhtmltoimage` and `wkhtmltopdf` binaries are available in
+your `$PATH` for sanaa to be able to autodetect them. Fetch [downloads from
 here][wkhtmltopdf].
 
 ## Configuration 🎛️
