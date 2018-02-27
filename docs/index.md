@@ -386,7 +386,8 @@ beauty"_. I'm [Kenyan][kenya] so my bias to Swahili is obvious. 🤷
 
 Write tests (or show me how to). I'm fairly new to Go and I'm of the opinion
 that writing tests for a service like this is non-trivial. So far testing has
-been manual but I plan to read on it and write some when I get time.
+been manual but I plan to read on it and write some when I get time (as an
+exercise in continuous learning).
 
 Give feedback. Feel free to submit via [raising an issue][issue-new] or even
 comment on [the open issues][issue-list].
