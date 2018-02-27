@@ -379,8 +379,8 @@ generator) and it is [hosted on GitHub Pages][github-page]. The code is in the
 
 **What does _Sanaa_ mean?**
 
-It's the Swahili word for _"art"_ or more specifically a _"work of beauty"_. I'm
-[Kenyan][kenya] so my bias to Swahili is obvious. 🤷
+It's the [Swahili][swahili] word for _"art"_ or more specifically a _"work of
+beauty"_. I'm [Kenyan][kenya] so my bias to Swahili is obvious. 🤷
 
 **How Can I Help?**
 
@@ -415,6 +415,7 @@ users communicate with it there.
 [plan]: https://github.com/itskingori/sanaa/projects
 [personal-site]: http://kingori.co/
 [rfc3339]: https://www.ietf.org/rfc/rfc3339.txt
+[swahili]: https://en.wikipedia.org/wiki/Swahili_language
 [license]: https://raw.githubusercontent.com/itskingori/sanaa/master/LICENSE
 [releases]: https://github.com/itskingori/sanaa/releases
 [wkhtmltopdf]: https://wkhtmltopdf.org/downloads.html
