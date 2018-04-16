@@ -31,7 +31,9 @@ var serverCmd = &cobra.Command{
 	Short: "Start the application web server",
 	Long:  `Start the application web server listening on the configured binding address and port.`,
 	Args: func(cmd *cobra.Command, args []string) error {
-		err := validateRequestTTL(cmd)
+		err := cobra.NoArgs(cmd, args)
+
+		err = validateRequestTTL(cmd)
 		if err != nil {
 
 			return err
