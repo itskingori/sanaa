@@ -3,6 +3,7 @@
 set -eu
 
 version="$1"
+commit_version="$2"
 major_version="$(echo "${version}" | cut -d'.' -f1)"
 minor_version="$(echo "${version}" | cut -d'.' -f2)"
 patch_version="$(echo "${version}" | cut -d'.' -f3)"
@@ -16,7 +17,8 @@ target_platforms=(
 
 ldflags="-X ${package_path}/service.majorVersion=${major_version} \
          -X ${package_path}/service.minorVersion=${minor_version} \
-         -X ${package_path}/service.patchVersion=${patch_version}"
+         -X ${package_path}/service.patchVersion=${patch_version} \
+         -X ${package_path}/service.commitVersion=${commit_version}"
 
 echo -e "Installing gox, Go's cross compilation tool"
 go get -v github.com/mitchellh/gox
