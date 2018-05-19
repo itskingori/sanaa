@@ -31,7 +31,9 @@ var workerCmd = &cobra.Command{
 	Short: "Start the application background worker",
 	Long:  `Start the application background worker to process enqeueud jobs.`,
 	Args: func(cmd *cobra.Command, args []string) error {
-		err := validateConcurrency(cmd)
+		err := cobra.NoArgs(cmd, args)
+
+		err = validateConcurrency(cmd)
 		if err != nil {
 
 			return err

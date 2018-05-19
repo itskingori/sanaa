@@ -27,10 +27,18 @@ var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print out the version of the software",
 	Long:  "Print out the version of the software.",
+	Args: func(cmd *cobra.Command, args []string) error {
+		err := cobra.NoArgs(cmd, args)
+
+		return err
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		version := service.GetVersion()
 
-		fmt.Printf("Sanaa v%s\n", version.Str())
+		fmt.Printf("Name:    %s\n", "Sanaa")
+		fmt.Printf("Command: %s\n", "sanaa")
+		fmt.Printf("Version: %s\n", version.Str())
+		fmt.Printf("Commit:  %s\n", version.Commit)
 	},
 }
 

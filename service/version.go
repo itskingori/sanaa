@@ -16,24 +16,27 @@
 package service
 
 var (
-	majorVersion = "0"
-	minorVersion = "0"
-	patchVersion = "0"
+	majorVersion  string
+	minorVersion  string
+	patchVersion  string
+	commitVersion string
 )
 
 // Version represents version information.
 type Version struct {
-	Major string
-	Minor string
-	Patch string
+	Major  string
+	Minor  string
+	Patch  string
+	Commit string
 }
 
 // GetVersion returns version information.
 func GetVersion() Version {
 	return Version{
-		Major: majorVersion,
-		Minor: minorVersion,
-		Patch: patchVersion,
+		Major:  majorVersion,
+		Minor:  minorVersion,
+		Patch:  patchVersion,
+		Commit: commitVersion,
 	}
 }
 
