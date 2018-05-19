@@ -2,8 +2,8 @@
 
 ## 0.8.0
 
-*  Configure commands to not accept arguments i.e. `server`, `worker` and
-   `version`.
+* Configure commands to not accept arguments i.e. `server`, `worker` and
+  `version`.
 * Improve `version` command to include build SHA.
 
 ## 0.7.0
