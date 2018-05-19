@@ -35,6 +35,8 @@ dependencies:
 build:
 	@mkdir -p bin/
 	go build -ldflags="$(LDFLAGS)" -o ./bin/sanaa
+	@echo
+	@./bin/sanaa version
 
 lint:
 	gometalinter --config="linters.json" ./...
