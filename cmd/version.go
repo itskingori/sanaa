@@ -35,7 +35,10 @@ var versionCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		version := service.GetVersion()
 
-		fmt.Printf("Sanaa v%s\n", version.Str())
+		fmt.Printf("Name:    %s\n", "Sanaa")
+		fmt.Printf("Command: %s\n", "sanaa")
+		fmt.Printf("Version: %s\n", version.Str())
+		fmt.Printf("Commit:  %s\n", version.Commit)
 	},
 }
 
