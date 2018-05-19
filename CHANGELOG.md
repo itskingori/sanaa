@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.0
+
+* Remove explicit region configuration, no need for `--s3-region` flag since
+  it's picked from AWS configuration.
+
 ## 0.6.0
 
 * Add worker failure `--max-retries` configuration option.

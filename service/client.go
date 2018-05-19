@@ -18,7 +18,6 @@ package service
 import (
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/garyburd/redigo/redis"
 	"github.com/gocraft/work"
@@ -46,9 +45,8 @@ func NewClient() Client {
 		},
 	}
 	enqueuer := work.NewEnqueuer(viper.GetString("redis.namespace"), redisPool)
-	region := viper.GetString("worker.s3_region")
-	sess := session.Must(session.NewSession(&aws.Config{
-		Region: aws.String(region),
+	sess := session.Must(session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
 	}))
 
 	return Client{
