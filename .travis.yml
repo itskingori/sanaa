@@ -5,7 +5,7 @@ go:
   - "1.10.x"
 before_install:
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-  - make install
+  - make dependencies
 script: make test
 before_deploy:
   - ./scripts/compile.sh ${TRAVIS_TAG}

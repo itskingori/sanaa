@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-dependencies:
+tools:
 	# install golint
 	go get -u github.com/golang/lint/golint
 
@@ -13,7 +13,7 @@ dependencies:
 	# install all known linters:
 	gometalinter --install
 
-install:
+dependencies:
 	dep ensure
 
 build:
