@@ -14,5 +14,5 @@
 vendor/
 
 # Built artefact
-/binaries/
-sanaa
+/bin/
+/sanaa

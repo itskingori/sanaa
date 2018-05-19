@@ -33,7 +33,8 @@ dependencies:
 	dep ensure
 
 build:
-	go build -ldflags="$(LDFLAGS)"
+	@mkdir -p bin/
+	go build -ldflags="$(LDFLAGS)" -o ./bin/sanaa
 
 lint:
 	gometalinter --config="linters.json" ./...

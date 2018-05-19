@@ -8,7 +8,7 @@ major_version="$(echo "${version}" | cut -d'.' -f1)"
 minor_version="$(echo "${version}" | cut -d'.' -f2)"
 patch_version="$(echo "${version}" | cut -d'.' -f3)"
 
-binary_output_path="binaries"
+binary_output_path="bin"
 package_path="github.com/itskingori/sanaa"
 target_platforms=(
   'darwin/amd64'
