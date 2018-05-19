@@ -55,12 +55,23 @@ func (cl *Client) storeFileS3(cj *ConversionJob, filePath string) error {
 		"uuid": cj.Identifier,
 	}).Info("Start upload of file to S3")
 
+	startTime, err := time.Parse(time.RFC3339, cj.StartedAt)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"uuid": cj.Identifier,
+		}).Errorf("Unable to parse expire time: %v", err)
+
+		return err
+	}
+	expireTime := startTime.Add(time.Second * time.Duration(cj.ExpiresIn))
+
 	// Uploads the object to S3 ... the Context will interrupt the request if the
 	// timeout expires
 	_, err = svc.PutObjectWithContext(ctx, &s3.PutObjectInput{
-		Bucket: aws.String(cj.StorageBucket),
-		Key:    aws.String(cj.StorageKey),
-		Body:   bytes.NewReader(data),
+		Bucket:  aws.String(cj.StorageBucket),
+		Expires: &expireTime,
+		Key:     aws.String(cj.StorageKey),
+		Body:    bytes.NewReader(data),
 	})
 	if err != nil {
 		if aerr, ok := err.(awserr.Error); ok && aerr.Code() == request.CanceledErrorCode {
