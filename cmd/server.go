@@ -42,7 +42,7 @@ var serverCmd = &cobra.Command{
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		log.Info("Starting the server")
+		log.Info("starting the server")
 
 		client := service.NewClient()
 		client.StartServer()

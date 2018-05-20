@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.0
+
+* Change all logging output to start with lowercase letters.
+
 ## 0.8.0
 
 * Configure commands to not accept arguments i.e. `server`, `worker` and

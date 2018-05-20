@@ -59,14 +59,14 @@ func (ctx *workerContext) convert(job *work.Job) error {
 	jid := job.ArgString("uuid")
 	log.WithFields(log.Fields{
 		"uuid": jid,
-	}).Info("Picked up conversion job from queue")
+	}).Info("picked up conversion job from queue")
 
 	// Fetch all the job details
 	cj, _, err := cl.fetchConversionJob(jid)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"uuid": jid,
-		}).Errorf("Error: %v", err)
+		}).Errorf("error: %v", err)
 
 		return err
 	}
@@ -81,7 +81,7 @@ func (ctx *workerContext) convert(job *work.Job) error {
 	default:
 		log.WithFields(log.Fields{
 			"uuid": cj.Identifier,
-		}).Error("Invalid render target type, won't proceed")
+		}).Error("invalid render target type, won't proceed")
 
 		return nil
 	}
@@ -91,13 +91,13 @@ func (ctx *workerContext) convert(job *work.Job) error {
 	if err != nil {
 		log.WithFields(log.Fields{
 			"uuid": cj.Identifier,
-		}).Errorf("Error unmarshalling request data")
+		}).Errorf("error unmarshalling request data")
 
 		return err
 	}
 	log.WithFields(log.Fields{
 		"uuid": cj.Identifier,
-	}).Debug("Extracted request data from conversion job")
+	}).Debug("extracted request data from conversion job")
 
 	// Mark conversion job in 'processing' state and save the changes
 	cj.markAsProcessing()
@@ -105,7 +105,7 @@ func (ctx *workerContext) convert(job *work.Job) error {
 	if err != nil {
 		log.WithFields(log.Fields{
 			"uuid": cj.Identifier,
-		}).Errorf("Error: %v", err)
+		}).Errorf("error: %v", err)
 
 		return err
 	}
@@ -116,13 +116,13 @@ func (ctx *workerContext) convert(job *work.Job) error {
 	if err != nil {
 		log.WithFields(log.Fields{
 			"uuid": cj.Identifier,
-		}).Errorf("Error: %v", err)
+		}).Errorf("error: %v", err)
 
 		return err
 	}
 	log.WithFields(log.Fields{
 		"uuid": cj.Identifier,
-	}).Debug("Prepared working directory for job")
+	}).Debug("prepared working directory for job")
 
 	// Make sure we remove any generated files after we're done
 	defer os.RemoveAll(outputDir)
@@ -130,29 +130,29 @@ func (ctx *workerContext) convert(job *work.Job) error {
 	// Fulfill render request (perform actual conversion)
 	log.WithFields(log.Fields{
 		"uuid": cj.Identifier,
-	}).Info("Start conversion process")
+	}).Info("start conversion process")
 	outputLogs, outputFile, err := rR.fulfill(&cl, &cj, outputDir)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"uuid": cj.Identifier,
-		}).Errorf("Error: %v", err)
+		}).Errorf("error: %v", err)
 
 		return err
 	}
 	log.WithFields(log.Fields{
 		"uuid": cj.Identifier,
-	}).Info("Completed conversion process")
+	}).Info("completed conversion process")
 
 	// Update conversion job with results
 	cj.Logs = outputLogs
 	log.WithFields(log.Fields{
 		"uuid": cj.Identifier,
-	}).Debug("Updated conversion job with logs")
+	}).Debug("updated conversion job with logs")
 	err = cl.updateConversionJob(&cj)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"uuid": cj.Identifier,
-		}).Errorf("Error: %v", err)
+		}).Errorf("error: %v", err)
 
 		return err
 	}
@@ -164,7 +164,7 @@ func (ctx *workerContext) convert(job *work.Job) error {
 	if err != nil {
 		log.WithFields(log.Fields{
 			"uuid": cj.Identifier,
-		}).Errorf("Error: %v", err)
+		}).Errorf("error: %v", err)
 
 		return err
 	}
@@ -179,7 +179,7 @@ func (ctx *workerContext) convert(job *work.Job) error {
 	if err != nil {
 		log.WithFields(log.Fields{
 			"uuid": cj.Identifier,
-		}).Errorf("Error: %v", err)
+		}).Errorf("error: %v", err)
 
 		return err
 	}
@@ -195,23 +195,23 @@ func (c *Client) StartWorker() {
 
 	// Check for wkhtmltoimage installation
 	_, version, erri := wkhtmltox.LookupConverter("wkhtmltoimage")
-	log.Infof("Using %s", version)
+	log.Infof("using %s", version)
 	if erri != nil {
-		log.Errorln("Unable to lookup wkhtmltoimage, make sure it's installed correctly")
+		log.Errorln("unable to lookup wkhtmltoimage, make sure it's installed correctly")
 	}
 
 	// Check for wkhtmltopdf installation
 	_, version, errp := wkhtmltox.LookupConverter("wkhtmltopdf")
-	log.Infof("Using %s", version)
+	log.Infof("using %s", version)
 	if erri != nil {
-		log.Errorln("Unable to lookup wkhtmltopdf, make sure it's installed correctly")
+		log.Errorln("unable to lookup wkhtmltopdf, make sure it's installed correctly")
 	}
 
 	if erri != nil && errp != nil {
-		log.Errorln("Will not start workers due to errors")
+		log.Errorln("will not start workers due to errors")
 	} else {
-		log.Infof("Concurrency set to %d", concurrency)
-		log.Infof("Maximum retries set to %d", maxRetries)
+		log.Infof("concurrency set to %d", concurrency)
+		log.Infof("maximum retries set to %d", maxRetries)
 		pool := work.NewWorkerPool(workerContext{}, concurrency, namespace, c.redisPool)
 
 		// Set job options
@@ -219,11 +219,11 @@ func (c *Client) StartWorker() {
 		jobOptions := work.JobOptions{MaxFails: maxFails}
 
 		// Assign jobs to queue
-		log.Infof("Registering '%s' queue", conversionQueue)
+		log.Infof("registering '%s' queue", conversionQueue)
 		pool.JobWithOptions(conversionQueue, jobOptions, (*workerContext).convert)
 
 		// Start processing jobs
-		log.Infof("Waiting to pick up jobs placed on any registered queue")
+		log.Infof("waiting to pick up jobs placed on any registered queue")
 		pool.Start()
 
 		// Wait for a signal to quit

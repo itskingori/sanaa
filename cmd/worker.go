@@ -54,7 +54,7 @@ var workerCmd = &cobra.Command{
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		log.Info("Starting the worker")
+		log.Info("starting the worker")
 
 		client := service.NewClient()
 		client.StartWorker()
@@ -107,7 +107,7 @@ func validateS3Bucket(cmd *cobra.Command) error {
 	sbv, _ := cmd.Flags().GetString("s3-bucket")
 
 	if sbv == "" {
-		return fmt.Errorf("S3 bucket name cannot be empty, set --s3-bucket")
+		return fmt.Errorf("the S3 bucket name cannot be empty, set --s3-bucket")
 	}
 
 	return nil
