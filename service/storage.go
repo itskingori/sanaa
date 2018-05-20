@@ -45,7 +45,7 @@ func (cl *Client) storeFileS3(cj *ConversionJob, filePath string) error {
 
 	log.WithFields(log.Fields{
 		"uuid": cj.Identifier,
-	}).Debug("Read file from working directory")
+	}).Debug("read file from working directory")
 	data, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		return err
@@ -53,7 +53,7 @@ func (cl *Client) storeFileS3(cj *ConversionJob, filePath string) error {
 
 	log.WithFields(log.Fields{
 		"uuid": cj.Identifier,
-	}).Info("Start upload of file to S3")
+	}).Info("start upload of file to S3")
 
 	// Uploads the object to S3 ... the Context will interrupt the request if the
 	// timeout expires
@@ -68,11 +68,11 @@ func (cl *Client) storeFileS3(cj *ConversionJob, filePath string) error {
 			// by a context the CanceledErrorCode error code will be returned
 			log.WithFields(log.Fields{
 				"uuid": cj.Identifier,
-			}).Errorf("Upload cancelled due to timeout: %v", err)
+			}).Errorf("upload cancelled due to timeout: %v", err)
 		} else {
 			log.WithFields(log.Fields{
 				"uuid": cj.Identifier,
-			}).Errorf("Failed to upload file: %v", err)
+			}).Errorf("failed to upload file: %v", err)
 		}
 
 		return err
@@ -80,7 +80,7 @@ func (cl *Client) storeFileS3(cj *ConversionJob, filePath string) error {
 
 	log.WithFields(log.Fields{
 		"uuid": cj.Identifier,
-	}).Info("Completed upload of file to S3")
+	}).Info("completed upload of file to S3")
 
 	return nil
 }
@@ -95,13 +95,13 @@ func (cl *Client) getFileS3SignedURL(cj *ConversionJob, exp time.Duration) (stri
 
 	log.WithFields(log.Fields{
 		"uuid": cj.Identifier,
-	}).Debugln("Generating pre-signed url to rendered file")
+	}).Debugln("generating pre-signed url to rendered file")
 
 	url, err := req.Presign(exp)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"uuid": cj.Identifier,
-		}).Error("Failed to pre-sign url")
+		}).Error("failed to pre-sign url")
 
 		return url, err
 	}

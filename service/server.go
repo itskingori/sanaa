@@ -157,7 +157,7 @@ func (clt *Client) renderHandler(w http.ResponseWriter, r *http.Request) {
 	default:
 		ers = errorResponse{
 			Identifier: rid,
-			Message:    fmt.Sprintf("Invalid %s render request", target),
+			Message:    fmt.Sprintf("invalid %s render request", target),
 		}
 		requestBadRequestResponse(&w, r, ers)
 
@@ -168,7 +168,7 @@ func (clt *Client) renderHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		ers = errorResponse{
 			Identifier: rid,
-			Message:    fmt.Sprintf("Unable to unmarshal json to %s type", target),
+			Message:    fmt.Sprintf("unable to unmarshal json to %s type", target),
 		}
 		requestBadRequestResponse(&w, r, ers)
 
@@ -179,7 +179,7 @@ func (clt *Client) renderHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		ers = errorResponse{
 			Identifier: rid,
-			Message:    fmt.Sprintf("Unable to enqueue %s job", target),
+			Message:    fmt.Sprintf("unable to enqueue %s job", target),
 		}
 		requestInternalServerErrorResponse(&w, r, ers)
 
@@ -187,13 +187,13 @@ func (clt *Client) renderHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.WithFields(log.Fields{
 		"uuid": cj.Identifier,
-	}).Infof("Enqueued render %s job", target)
+	}).Infof("enqueued render %s job", target)
 
 	rrs, err := cj.generateRenderResponse(clt)
 	if err != nil {
 		ers = errorResponse{
 			Identifier: cj.Identifier,
-			Message:    "Failed to generate render response",
+			Message:    "failed to generate render response",
 		}
 		requestInternalServerErrorResponse(&w, r, ers)
 
@@ -213,7 +213,7 @@ func (clt *Client) statusHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		ers = errorResponse{
 			Identifier: jid,
-			Message:    "Invalid job identifier",
+			Message:    "invalid job identifier",
 		}
 		requestBadRequestResponse(&w, r, ers)
 
@@ -227,7 +227,7 @@ func (clt *Client) statusHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		ers = errorResponse{
 			Identifier: jid,
-			Message:    "Unable to fetch conversion job",
+			Message:    "unable to fetch conversion job",
 		}
 		requestInternalServerErrorResponse(&w, r, ers)
 
@@ -237,7 +237,7 @@ func (clt *Client) statusHandler(w http.ResponseWriter, r *http.Request) {
 	if !found {
 		ers = errorResponse{
 			Identifier: jid,
-			Message:    "Request not found on conversion queue",
+			Message:    "request not found on conversion queue",
 		}
 		requestNotFoundResponse(&w, r, ers)
 
@@ -248,7 +248,7 @@ func (clt *Client) statusHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		ers = errorResponse{
 			Identifier: cj.Identifier,
-			Message:    "Failed to generate render response",
+			Message:    "failed to generate render response",
 		}
 		requestInternalServerErrorResponse(&w, r, ers)
 
@@ -257,7 +257,7 @@ func (clt *Client) statusHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.WithFields(log.Fields{
 		"uuid": cj.Identifier,
-	}).Info("Conversion job status check completed")
+	}).Info("conversion job status check completed")
 
 	requestOKResponse(&w, r, rrs)
 }
@@ -288,7 +288,7 @@ func (cj *ConversionJob) generateRenderResponse(clt *Client) (renderResponse, er
 
 	log.WithFields(log.Fields{
 		"uuid": cj.Identifier,
-	}).Debugln("Conversion job found completed")
+	}).Debugln("conversion job found completed")
 
 	timeToExpire := 5 * time.Minute
 	surl, err := clt.getFileS3SignedURL(cj, timeToExpire)
@@ -307,7 +307,7 @@ func (cj *ConversionJob) generateRenderResponse(clt *Client) (renderResponse, er
 // StartServer starts the application web server
 func (clt *Client) StartServer() {
 	requestTTL := viper.GetInt("server.request_ttl")
-	log.Infof("Request TTL set to %d seconds", requestTTL)
+	log.Infof("request TTL set to %d seconds", requestTTL)
 
 	health := healthcheck.NewHandler()
 
@@ -333,7 +333,7 @@ func (clt *Client) StartServer() {
 	bindingPort := viper.GetInt("server.binding_port")
 	binding := fmt.Sprintf("%s:%d", bindingAddress, bindingPort)
 
-	log.Infof("Listening on http://%s", binding)
+	log.Infof("listening on http://%s", binding)
 	http.Handle("/", router)
 	http.ListenAndServe(binding, nil)
 }

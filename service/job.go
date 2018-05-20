@@ -56,7 +56,7 @@ func (cj *ConversionJob) markAsProcessing() {
 
 	log.WithFields(log.Fields{
 		"uuid": cj.Identifier,
-	}).Info("Marked conversion job as 'processing'")
+	}).Info("marked conversion job as 'processing'")
 }
 
 func (cj *ConversionJob) markAsFailed() {
@@ -65,7 +65,7 @@ func (cj *ConversionJob) markAsFailed() {
 
 	log.WithFields(log.Fields{
 		"uuid": cj.Identifier,
-	}).Info("Marked conversion job as 'failed'")
+	}).Info("marked conversion job as 'failed'")
 }
 
 func (cj *ConversionJob) markAsSucceeded() {
@@ -74,7 +74,7 @@ func (cj *ConversionJob) markAsSucceeded() {
 
 	log.WithFields(log.Fields{
 		"uuid": cj.Identifier,
-	}).Info("Marked conversion job as 'succeeded'")
+	}).Info("marked conversion job as 'succeeded'")
 }
 
 func (clt *Client) enqueueConversionJob(riq string) error {
@@ -116,7 +116,7 @@ func (clt *Client) createAndSaveConversionJob(rid string, rR renderRequest) (Con
 	if err != nil {
 		log.WithFields(log.Fields{
 			"uuid": rid,
-		}).Error("Error saving conversion job")
+		}).Error("error saving conversion job")
 
 		return cj, err
 	}
@@ -125,7 +125,7 @@ func (clt *Client) createAndSaveConversionJob(rid string, rR renderRequest) (Con
 	if err != nil {
 		log.WithFields(log.Fields{
 			"uuid": rid,
-		}).Error("Error setting conversion job expiry")
+		}).Error("error setting conversion job expiry")
 
 		return cj, err
 	}
@@ -149,7 +149,7 @@ func (clt *Client) fetchConversionJob(jid string) (ConversionJob, bool, error) {
 	if err != nil {
 		log.WithFields(log.Fields{
 			"uuid": jid,
-		}).Error("Unable to fetch values from redis")
+		}).Error("unable to fetch values from redis")
 
 		return cj, found, err
 	}
@@ -163,7 +163,7 @@ func (clt *Client) fetchConversionJob(jid string) (ConversionJob, bool, error) {
 	if err != nil {
 		log.WithFields(log.Fields{
 			"uuid": jid,
-		}).Error("Unable to unmarshall values to job")
+		}).Error("unable to unmarshall values to job")
 
 		return cj, found, err
 	}
@@ -171,7 +171,7 @@ func (clt *Client) fetchConversionJob(jid string) (ConversionJob, bool, error) {
 
 	log.WithFields(log.Fields{
 		"uuid": jid,
-	}).Debug("Fetched conversion job details")
+	}).Debug("fetched conversion job details")
 
 	return cj, found, nil
 }
@@ -184,7 +184,7 @@ func (clt *Client) updateConversionJob(cj *ConversionJob) error {
 	if err != nil {
 		log.WithFields(log.Fields{
 			"uuid": cj.Identifier,
-		}).Error("Unable to parse job identifier")
+		}).Error("unable to parse job identifier")
 
 		return err
 	}
@@ -195,14 +195,14 @@ func (clt *Client) updateConversionJob(cj *ConversionJob) error {
 	if err != nil {
 		log.WithFields(log.Fields{
 			"uuid": cj.Identifier,
-		}).Error("Error saving conversion job changes")
+		}).Error("error saving conversion job changes")
 
 		return err
 	}
 
 	log.WithFields(log.Fields{
 		"uuid": cj.Identifier,
-	}).Debug("Saved conversion job changes")
+	}).Debug("saved conversion job changes")
 
 	return nil
 }
