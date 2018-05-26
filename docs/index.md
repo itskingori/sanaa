@@ -92,22 +92,22 @@ Start the server (that will receive requests):
 
 ```console
 $ sanaa server --verbose
-INFO[0000] Starting the server
-INFO[0000] Request TTL set to 86400 seconds
-INFO[0000] Listening on http://0.0.0.0:8080
+INFO[0000] starting the server
+INFO[0000] request TTL set to 86400 seconds
+INFO[0000] listening on http://0.0.0.0:8080
 ```
 
 Start the worker (that will process requests):
 
 ```console
 $ sanaa worker --s3-bucket=example-bucket-name --verbose
-INFO[0000] Starting the worker
-INFO[0000] Using wkhtmltoimage 0.12.4 (with patched qt)
-INFO[0001] Using wkhtmltopdf 0.12.4 (with patched qt)
-INFO[0001] Concurrency set to 2
-INFO[0001] Maximum retries set to 1
-INFO[0001] Registering 'convert' queue
-INFO[0001] Waiting to pick up jobs placed on any registered queue
+INFO[0000] starting the worker
+INFO[0000] using wkhtmltoimage 0.12.4 (with patched qt)
+INFO[0001] using wkhtmltopdf 0.12.4 (with patched qt)
+INFO[0001] concurrency set to 2
+INFO[0001] maximum retries set to 1
+INFO[0001] registering 'convert' queue
+INFO[0001] waiting to pick up jobs placed on any registered queue
 ```
 
 ### Basic Usage
