@@ -33,19 +33,19 @@ var workerCmd = &cobra.Command{
 	Args: func(cmd *cobra.Command, args []string) error {
 		err := cobra.NoArgs(cmd, args)
 
-		err = validateConcurrency(cmd)
+		err = validateWorkerConcurrency(cmd)
 		if err != nil {
 
 			return err
 		}
 
-		err = validateMaxRetries(cmd)
+		err = validateWorkerMaxRetries(cmd)
 		if err != nil {
 
 			return err
 		}
 
-		err = validateS3Bucket(cmd)
+		err = validateWorkerS3Bucket(cmd)
 		if err != nil {
 
 			return err
@@ -70,14 +70,17 @@ func init() {
 	workerCmd.PersistentFlags().Int("max-retries", 1, "maximum number of times to retry a job on failure")
 	workerCmd.PersistentFlags().String("s3-bucket", "", "the name of the S3 bucket to use when storing rendered files ")
 
+	// Configure required flags
+	workerCmd.MarkFlagRequired("s3-bucket")
+
 	// Bind workerCmd flags with viper configuration
 	viper.BindPFlag("worker.concurrency", workerCmd.PersistentFlags().Lookup("concurrency"))
 	viper.BindPFlag("worker.max-retries", workerCmd.PersistentFlags().Lookup("max-retries"))
 	viper.BindPFlag("worker.s3_bucket", workerCmd.PersistentFlags().Lookup("s3-bucket"))
 }
 
-// validateConcurrency validates the concurrency flag
-func validateConcurrency(cmd *cobra.Command) error {
+// validateWorkerConcurrency validate the concurrency flag
+func validateWorkerConcurrency(cmd *cobra.Command) error {
 	cv, _ := cmd.Flags().GetInt("concurrency")
 
 	if cv < service.MinWorkerConcurrency {
@@ -91,8 +94,8 @@ func validateConcurrency(cmd *cobra.Command) error {
 	return nil
 }
 
-// validateMaxRetries validates the max-retries flag
-func validateMaxRetries(cmd *cobra.Command) error {
+// validateWorkerMaxRetries validate the max-retries flag
+func validateWorkerMaxRetries(cmd *cobra.Command) error {
 	mrv, _ := cmd.Flags().GetInt("max-retries")
 
 	if mrv < service.MinWorkerMaxRetries {
@@ -102,8 +105,8 @@ func validateMaxRetries(cmd *cobra.Command) error {
 	return nil
 }
 
-// validateS3Bucket validates the s3-bucket flag
-func validateS3Bucket(cmd *cobra.Command) error {
+// validateWorkerS3Bucket validate the s3-bucket flag
+func validateWorkerS3Bucket(cmd *cobra.Command) error {
 	sbv, _ := cmd.Flags().GetString("s3-bucket")
 
 	if sbv == "" {
