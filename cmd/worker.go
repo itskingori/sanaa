@@ -70,6 +70,9 @@ func init() {
 	workerCmd.PersistentFlags().Int("max-retries", 1, "maximum number of times to retry a job on failure")
 	workerCmd.PersistentFlags().String("s3-bucket", "", "the name of the S3 bucket to use when storing rendered files ")
 
+	// Configure required flags
+	workerCmd.MarkFlagRequired("s3-bucket")
+
 	// Bind workerCmd flags with viper configuration
 	viper.BindPFlag("worker.concurrency", workerCmd.PersistentFlags().Lookup("concurrency"))
 	viper.BindPFlag("worker.max-retries", workerCmd.PersistentFlags().Lookup("max-retries"))
