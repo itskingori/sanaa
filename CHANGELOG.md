@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.10.0
+
+* Mark the `--s3-bucket` worker flag as required.
+
 ## 0.9.0
 
 * Change all logging output to start with lowercase letters.
