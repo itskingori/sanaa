@@ -33,7 +33,7 @@ var serverCmd = &cobra.Command{
 	Args: func(cmd *cobra.Command, args []string) error {
 		err := cobra.NoArgs(cmd, args)
 
-		err = validateRequestTTL(cmd)
+		err = validateServerRequestTTL(cmd)
 		if err != nil {
 
 			return err
@@ -64,8 +64,8 @@ func init() {
 	viper.BindPFlag("server.request_ttl", serverCmd.PersistentFlags().Lookup("request-ttl"))
 }
 
-// validateRequestTTL validates the request-ttl flag
-func validateRequestTTL(cmd *cobra.Command) error {
+// validateServerRequestTTL validates the request-ttl flag
+func validateServerRequestTTL(cmd *cobra.Command) error {
 	rt, _ := cmd.Flags().GetInt("request-ttl")
 
 	if rt < service.MinRequestTTL {
